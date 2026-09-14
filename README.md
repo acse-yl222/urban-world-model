@@ -26,6 +26,12 @@ Interactive 3-D web page for the South Kensington core008 urban world model: the
 Entry points stay at the root: `serve.py` (static server with Range support, opens `/viewer/3d/`), `start_server.sh` (workstation).
 Everything under `*.glb`, `*.npy`, `*.blend` and `geometry/expansion/output/` is git-ignored; see `.gitignore`.
 
+## Online
+
+- **Live viewer**: https://acse-yl222.github.io/urban-world-model/viewer/3d/ (GitHub Pages; the 254 MB city model comes from the `models-v1` release)
+- **Project page**: https://acse-yl222.github.io/urban-world-model/docs/
+- Repository: https://github.com/acse-yl222/urban-world-model
+
 ## Start locally
 
 ```bash

@@ -826,6 +826,7 @@ async function boot() {
     const roof = await loadMask('masks/roof_height_m_yx.npy');
     const proxy = buildProxyCity({ footprint, roof, W, H, CELL, X0, ZS });
     model.add(proxy.mesh);
+    base.material.color.set(0x8f938c);   // the proxy city has no ground layer: a lighter plate stands in for it
     console.log('lite city:', proxy.boxes, 'columns,', proxy.triangles, 'triangles');
     $('lite-hint').style.display = ''; $('l-supplement').closest('label').style.display = 'none';
     ui.pct.textContent = 'Traffic and UAV replay…';

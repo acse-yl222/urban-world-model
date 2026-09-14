@@ -32,6 +32,11 @@ Everything under `*.glb`, `*.npy`, `*.blend` and `geometry/expansion/output/` is
 - **Project page**: https://acse-yl222.github.io/urban-world-model/docs/
 - Repository: https://github.com/acse-yl222/urban-world-model
 
+Phones, tablets and machines that report 4 GB or less get **lite mode** automatically: the buildings are 4 m voxel columns
+extruded from the physics masks (2 MB, loads in a few seconds) instead of the 254 MB model, everything else (fields, traffic,
+UAVs, birds) is the same. `?lite=1` forces it on any device, `?lite=0` forces the full model. On narrow screens the layer
+panel folds behind a **Layers** button.
+
 ## Start locally
 
 ```bash

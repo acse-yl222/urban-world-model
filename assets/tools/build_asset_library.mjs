@@ -212,6 +212,7 @@ function exportActors() {
     ['agents/demo_rev02/actors/pigeon.glb', 'actors/birds/pigeon.glb', 'low-poly pigeon, instanced for the flock replay'],
     ['agents/demo_rev02/actors/build_pigeon.mjs', 'actors/birds/build_pigeon.mjs', 'generator of pigeon.glb'],
     ['agents/demo_rev02/actors/pigeon_geometry_QA.json', 'actors/birds/pigeon_geometry_QA.json', 'QA record for pigeon.glb'],
+    ['agents/demo_rev02/actors/sedan_4p5m.glb', 'actors/vehicles/sedan_4p5m.glb', 'the 4.5 m sedan used for every SUMO car (instanced, per-id colour)'],
     ['agents/demo_rev02/actors/build_sedan.mjs', 'actors/vehicles/build_sedan.mjs', 'generator of the 4.5 m sedan used for every SUMO car (built at runtime by actor-layer.js; instanced, per-id colour)'],
     ['agents/demo_rev02/actors/actor-layer.js', 'actors/actor-layer.js', 'instanced car / UAV layer (three.js) that consumes these models'],
     ['agents/demo_rev02/actors/README.md', 'actors/README.md', 'actor layer documentation'],

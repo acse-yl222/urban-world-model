@@ -43,3 +43,4 @@ agents/demo_rev02/assets/city.glb
 !physics/masks/building_footprint_yx.npy
 !physics/masks/solid_4m_zyx.npy
 !physics/temperature2d/study_area_mask_yx.npy
+!agents/demo_rev02/actors/sedan_4p5m.glb

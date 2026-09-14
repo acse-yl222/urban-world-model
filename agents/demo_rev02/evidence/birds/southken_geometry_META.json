@@ -1,0 +1,40 @@
+{
+ "schema": "UWM_VIEWER_BIRD_GEOMETRY_SOUTHKEN_V1",
+ "source_mask": {
+  "path": "physics/masks/solid_4m_zyx.npy",
+  "sha256": "70166adeb698acfb8d51bc61e66f9d7199b861f74e0a4d720b84a7614d2b06e9",
+  "meaning": "physics/masks/solid_4m_zyx.npy, 16 x 4 m layers of conservative building voxels (wind model solids)"
+ },
+ "transform": "bird=(worldX, -worldZ, worldY); viewer=(bird_x, bird_z, -bird_y)",
+ "ground_datum_m": 0.0,
+ "world_box": {
+  "x": [
+   600.0,
+   1300.0
+  ],
+  "z": [
+   348.0,
+   1052.0
+  ],
+  "ceiling_m": 100.0
+ },
+ "bird_grid": {
+  "origin": [
+   600.0,
+   -1052.0,
+   0.0
+  ],
+  "spacing_xy_m": 4.0,
+  "spacing_z_m": 4.0,
+  "shape_zyx": [
+   25,
+   176,
+   175
+  ],
+  "voxels": 770000,
+  "occupied_voxels": 77835,
+  "occupied_share": 0.1011
+ },
+ "landmark_checks": [],
+ "note": "South Kensington station is at world (937, 674); box chosen so that roost / forage sites lie around the station"
+}

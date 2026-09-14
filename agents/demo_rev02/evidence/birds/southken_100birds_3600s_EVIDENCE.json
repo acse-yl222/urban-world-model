@@ -1,0 +1,623 @@
+{
+ "schema": "UWM_DEMO_REVISION_02_BIRD_CITY_RUN_V3",
+ "source_snapshot": {
+  "path": "/private/tmp/claude-502/-Users-yl222-Desktop-UrbanWorldModelVisualizer/22fb5775-4fba-4035-9fda-f61eab2019e6/scratchpad/uwm/birds",
+  "files_sha256": {
+   "sim/config.py": "584c0ffb5261345deda0934ebc79128439e085015a1754f0d2e6e062ccb0f1a2",
+   "sim/integrator.py": "fd5a13474325570a72f8ea369a8170f4e60dae9d48628d46bf55567c2a05dbd6",
+   "sim/forces.py": "17e9a3c428b5af49636d18b8f98ddb99ab680ce587f4fd52336a908ad418f537",
+   "sim/routing.py": "76b5e8a62dfced52a59dcc4fc6bc5754acc5a552d6486f6da87cc6193c0f8804",
+   "sim/environment.py": "2b6c4557803385f264c477961d4f7c1422f26d9952952e2eb341d90b204bf000",
+   "sim/world_gen.py": "07615afdb6f2accc966e6bd140b993faedfb5bca6322a12bdac7f91336f98391",
+   "sim/sites.py": "b01ec0780653398a4c45e24bea1c8f28081fb0c9bc87ff0534bfde23cb56d593",
+   "sim/states.py": "ff6437b4d420c4266d200b42a2758448e545412801ed55822a8f57ee4e31c4c6",
+   "sim/foraging.py": "fa4e370edbc79d5e97222076746062139280e3c581ff42de3d4d376e0b43aa73",
+   "sim/neighbors.py": "887ccf566bd978b1d364834db69ca7e4059a271db02e629482f0823b4f25e2d2",
+   "sim/wind.py": "8ec7be4f1ec7877b7d8ab4d4dd2ae91285b3058e56c74409eba43f16c01e1148"
+  }
+ },
+ "geometry": {
+  "path": "/private/tmp/claude-502/-Users-yl222-Desktop-UrbanWorldModelVisualizer/22fb5775-4fba-4035-9fda-f61eab2019e6/scratchpad/birdrun/southken_geometry.npz",
+  "sha256": "031678403e5c5ed1515c25309eb69a3fce8dbe708ac3b180ac1a5ac9b7a2a890",
+  "shape_zyx": [
+   25,
+   176,
+   175
+  ],
+  "spacing": [
+   4.0,
+   4.0
+  ],
+  "origin": [
+   600.0,
+   -1052.0,
+   0.0
+  ]
+ },
+ "clock": {
+  "method": "explicit day length: n_days = n_steps*dt/day_length_s (source formula kept, n_days chosen so day_length = day_length_s)",
+  "day_length_s": 86400.0,
+  "n_days": 0.041666666666666664,
+  "day_phase_start": 0.5,
+  "physical_seconds_per_city_second": 1.0,
+  "sky_light_first_last": [
+   0.9999999999173672,
+   0.9829629131444935
+  ]
+ },
+ "run": {
+  "n_birds": 100,
+  "n_steps": 72000,
+  "dt_s": 0.05,
+  "physical_time_s": 3600.000000004331,
+  "saved_frames": 14400,
+  "first_frame_time_s": 0.25,
+  "save_every": 5,
+  "display_frame_dt_s": 0.25,
+  "seed": 42,
+  "wall_s": 182.0,
+  "seconds_per_step": 0.0025,
+  "peak_rss_mb": 1793328.0
+ },
+ "sites": {
+  "auto_generated": {
+   "roosts": [
+    {
+     "center": [
+      1092.0,
+      -376.0,
+      16.0
+     ],
+     "size": [
+      16.0,
+      16.0
+     ],
+     "forward": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "normal": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "quality": 1.0
+    }
+   ],
+   "roads": [],
+   "point_sources": [],
+   "forage_sites": [
+    {
+     "center": [
+      950.0,
+      -874.0,
+      4.0
+     ],
+     "size": [
+      20.0,
+      20.0
+     ],
+     "forward": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "normal": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "quality": 1.0
+    },
+    {
+     "center": [
+      982.0,
+      -846.0,
+      4.0
+     ],
+     "size": [
+      20.0,
+      20.0
+     ],
+     "forward": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "normal": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "quality": 0.8333333333333334
+    },
+    {
+     "center": [
+      610.0,
+      -514.0,
+      4.0
+     ],
+     "size": [
+      20.0,
+      20.0
+     ],
+     "forward": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "normal": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "quality": 0.6666666666666667
+    }
+   ]
+  },
+  "auto_site_reports": [
+   {
+    "kind": "roost",
+    "center": [
+     1092.0,
+     -376.0,
+     16.0
+    ],
+    "size": [
+     16.0,
+     16.0
+    ],
+    "inside_grid": true,
+    "surface_height_m": 16.0,
+    "surface_flat": true,
+    "obstructed_above_surface": false,
+    "on_building_roof": "True",
+    "nearest_drivable_lane_m": null,
+    "valid": true
+   },
+   {
+    "kind": "forage",
+    "center": [
+     950.0,
+     -874.0,
+     4.0
+    ],
+    "size": [
+     20.0,
+     20.0
+    ],
+    "inside_grid": true,
+    "surface_height_m": 4.0,
+    "surface_flat": true,
+    "obstructed_above_surface": false,
+    "on_building_roof": "True",
+    "nearest_drivable_lane_m": 39.52,
+    "valid": true
+   },
+   {
+    "kind": "forage",
+    "center": [
+     982.0,
+     -846.0,
+     4.0
+    ],
+    "size": [
+     20.0,
+     20.0
+    ],
+    "inside_grid": true,
+    "surface_height_m": 4.0,
+    "surface_flat": true,
+    "obstructed_above_surface": false,
+    "on_building_roof": "True",
+    "nearest_drivable_lane_m": 39.07,
+    "valid": true
+   },
+   {
+    "kind": "forage",
+    "center": [
+     610.0,
+     -514.0,
+     4.0
+    ],
+    "size": [
+     20.0,
+     20.0
+    ],
+    "inside_grid": true,
+    "surface_height_m": 4.0,
+    "surface_flat": true,
+    "obstructed_above_surface": false,
+    "on_building_roof": "True",
+    "nearest_drivable_lane_m": null,
+    "valid": true
+   }
+  ],
+  "replaced_invalid_sites": [],
+  "user_site_selection": {
+   "roost_near_world_xz": "937,674",
+   "forage_near_world_xz": "937,674",
+   "rule": "closest valid candidates of the generator to the requested point"
+  },
+  "final_world": {
+   "roosts": [
+    {
+     "center": [
+      936.0,
+      -676.0,
+      8.0
+     ],
+     "size": [
+      16.0,
+      16.0
+     ],
+     "forward": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "normal": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "quality": 1.0
+    }
+   ],
+   "forage_sites": [
+    {
+     "center": [
+      898.0,
+      -670.0,
+      4.0
+     ],
+     "size": [
+      20.0,
+      20.0
+     ],
+     "forward": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "normal": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "quality": 1.0
+    },
+    {
+     "center": [
+      986.0,
+      -682.0,
+      4.0
+     ],
+     "size": [
+      20.0,
+      20.0
+     ],
+     "forward": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "normal": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "quality": 1.0
+    },
+    {
+     "center": [
+      1026.0,
+      -678.0,
+      4.0
+     ],
+     "size": [
+      20.0,
+      20.0
+     ],
+     "forward": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "normal": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "quality": 1.0
+    }
+   ],
+   "roads": [],
+   "point_sources": []
+  },
+  "final_site_reports": [
+   {
+    "kind": "roost",
+    "center": [
+     936.0,
+     -676.0,
+     8.0
+    ],
+    "size": [
+     16.0,
+     16.0
+    ],
+    "inside_grid": true,
+    "surface_height_m": 8.0,
+    "surface_flat": true,
+    "obstructed_above_surface": false,
+    "on_building_roof": "True",
+    "nearest_drivable_lane_m": null,
+    "valid": true
+   },
+   {
+    "kind": "forage",
+    "center": [
+     898.0,
+     -670.0,
+     4.0
+    ],
+    "size": [
+     20.0,
+     20.0
+    ],
+    "inside_grid": true,
+    "surface_height_m": 4.0,
+    "surface_flat": true,
+    "obstructed_above_surface": false,
+    "on_building_roof": "True",
+    "nearest_drivable_lane_m": null,
+    "valid": true
+   },
+   {
+    "kind": "forage",
+    "center": [
+     986.0,
+     -682.0,
+     4.0
+    ],
+    "size": [
+     20.0,
+     20.0
+    ],
+    "inside_grid": true,
+    "surface_height_m": 4.0,
+    "surface_flat": true,
+    "obstructed_above_surface": false,
+    "on_building_roof": "True",
+    "nearest_drivable_lane_m": null,
+    "valid": true
+   },
+   {
+    "kind": "forage",
+    "center": [
+     1026.0,
+     -678.0,
+     4.0
+    ],
+    "size": [
+     20.0,
+     20.0
+    ],
+    "inside_grid": true,
+    "surface_height_m": 4.0,
+    "surface_flat": true,
+    "obstructed_above_surface": false,
+    "on_building_roof": "True",
+    "nearest_drivable_lane_m": null,
+    "valid": true
+   }
+  ],
+  "rule": "inside grid, flat unobstructed surface, >= 6.0 m from any drivable lane centreline (revision_02 road layer)"
+ },
+ "spawn": {
+  "spawn_point": [
+   937.0,
+   -674.0,
+   50.0
+  ],
+  "init_flock_radius_m": 8.0,
+  "min_start_alt_m": 2.0,
+  "margin_m": 6.0,
+  "resampled_birds": [],
+  "clearance_m_min": 17.89,
+  "all_valid": true
+ },
+ "checks": {
+  "nonfinite_frames_by_channel": {
+   "pos": 0,
+   "vel": 0,
+   "bank": 0,
+   "energy": 0,
+   "valence": 0,
+   "arousal": 0,
+   "sky_light": 0
+  },
+  "position_steps_by_class": {
+   "roof_contact": 0,
+   "penetration": 0,
+   "outside_grid": 0
+  },
+  "segment_samples": 7200000,
+  "segment_samples_by_class": {
+   "roof_contact": 0,
+   "penetration": 6,
+   "outside_grid": 0
+  },
+  "birds_with_any_occupied_position": {},
+  "max_displacement_per_step_m": 0.9,
+  "max_displacement_step": 20,
+  "max_plausible_per_step_m": 0.9,
+  "state_counts_first_frame": [
+   0,
+   3,
+   97,
+   0,
+   0
+  ],
+  "state_counts_last_frame": [
+   0,
+   0,
+   100,
+   0,
+   0
+  ],
+  "states_seen": [
+   1,
+   2
+  ]
+ },
+ "source_findings_kept": {
+  "W1_world_gen_scaled_grid_origin": "set equal to geometry grid_origin (wrapper), no source change",
+  "separation_mode": "config 'multi'; integrator.step does not forward it (effective baseline unchanged, not patched)",
+  "predator": "disabled (enable_predator=False)"
+ },
+ "resolved_config": {
+  "geometry_path": "/private/tmp/claude-502/-Users-yl222-Desktop-UrbanWorldModelVisualizer/22fb5775-4fba-4035-9fda-f61eab2019e6/scratchpad/birdrun/southken_geometry.npz",
+  "world_generation": "off",
+  "world_gen_n_roosts": 1,
+  "world_gen_n_forage": 3,
+  "world_gen_min_roost_area": 200.0,
+  "world_gen_min_forage_area": 400.0,
+  "floor_z": 0.0,
+  "n_birds": 100,
+  "dt": 0.05,
+  "n_steps": 72000,
+  "seed": 42,
+  "enable_individuality": true,
+  "valence_disposition": 1.0,
+  "arousal_excitability": 1.0,
+  "start_state": 1,
+  "n_days": 0.041666666666666664,
+  "day_phase_start": 0.5,
+  "k_neighbors": 7,
+  "r_hard_sphere": 0.2,
+  "r_separation": 3.5933,
+  "separation_gaussian_floor": 0.0054,
+  "blind_angle": 1.3617,
+  "separation_mode": "multi",
+  "mass": 0.08,
+  "cl_cd_ratio": 3.3,
+  "cruise_speed": 8.2095,
+  "gravity": 9.81,
+  "max_load_factor": 3.0,
+  "speed_relaxation": 0.8619,
+  "physics_sub_steps": 10,
+  "w_noise": 0.0049,
+  "max_turn_rate": 4.0,
+  "max_bank_angle": 1.2,
+  "v_min": 2.0,
+  "v_min_descent": 2.0,
+  "v_min_sustained": 6.0,
+  "v_max": 18.0,
+  "max_climb_angle": 1.047,
+  "w_bank_in": 6.7119,
+  "w_bank_out": 1.0291,
+  "tau_wind": 0.8,
+  "k_wind_bail": 0.5,
+  "enable_wave_routing": true,
+  "w_wave_guidance": 1.5,
+  "route_use_wind": true,
+  "route_wind_static": true,
+  "route_use_pollution": true,
+  "route_pollution_cost": 2.0,
+  "route_use_noise": true,
+  "route_noise_cost": 0.5,
+  "murmuration_entry_radius": 20.0,
+  "roost_descent_time_frac": 0.75,
+  "w_roost_vertical": 0.3367,
+  "roost_vertical_damping": 0.0097,
+  "roost_flight_offset": 20.0,
+  "descent_vertical_multiplier": 1.0,
+  "descent_slowdown_height": 20.0,
+  "descent_flare_drag": 10.0,
+  "roost_land_tolerance": 0.1,
+  "roost_tanh_halfdist": 50.0,
+  "roost_altitude_band": 4.4946,
+  "spawn_point": [
+   937.0,
+   -674.0,
+   50.0
+  ],
+  "init_flock_radius": 8.0,
+  "min_start_alt": 2.0,
+  "wind_mode": "none",
+  "wind_strength": 3.0,
+  "wind_direction": [
+   1.0,
+   0.0,
+   0.0
+  ],
+  "scaled_wind_path": "birds/data/geometry.npz",
+  "embed_detailed_model": false,
+  "detailed_model_path": "vis/southken_detailed.glb",
+  "scaled_wind_speed": 5.0,
+  "scaled_grid_origin": [
+   600.0,
+   -1052.0,
+   0.0
+  ],
+  "scaled_dt": 24.0,
+  "w_building_avoidance": 8.0,
+  "building_detection_dist": 8.0,
+  "enable_environment": true,
+  "enable_predator": false,
+  "w_pollution_avoidance": 1.5,
+  "w_noise_avoidance": 0.0235,
+  "energy_drain_rate": 0.01,
+  "energy_drain_speed_exponent": 3.0,
+  "tau_valence": 4.0,
+  "tau_arousal": 1.5,
+  "roost_light_threshold": 0.1,
+  "cold_cohesion_boost": 0.5,
+  "cold_threshold": 8.0,
+  "predator_detection_radius": 80.0,
+  "w_predator_avoidance": 5.0,
+  "energy_roost_threshold": 0.3,
+  "energy_roost_sensitivity": 0.5,
+  "energy_roost_max_boost": 0.15,
+  "stress_roost_sensitivity": 0.1,
+  "stress_roost_max_boost": 0.1,
+  "cold_roost_sensitivity": 0.02,
+  "cold_roost_max_boost": 0.1,
+  "roost_max_chance_per_step": 0.1,
+  "roost_chance_ramp": 0.1,
+  "lock_state": -1,
+  "dawn_light_threshold": 0.1,
+  "n_dawn_waves": 5,
+  "wave_light_step": 0.05,
+  "wave_energy_bias": 0.3,
+  "dusk_light_threshold": 0.55,
+  "dusk_distance_scale": 200.0,
+  "dusk_distance_boost": 0.15,
+  "dusk_energy_bias": 0.1,
+  "dusk_departure_noise": 0.08,
+  "forage_arrival_frac": 0.6,
+  "forage_land_tolerance": 0.2,
+  "ars_dwell_time": 0.5,
+  "ars_hop_extensive": 0.6,
+  "ars_hop_intensive": 0.15,
+  "ars_hop_duration": 0.3,
+  "ars_hop_height": 0.12,
+  "ars_turn_extensive": 0.3,
+  "ars_turn_intensive": 1.5,
+  "ars_giveup_hops": 6,
+  "ars_food_threshold": 0.1,
+  "ars_enhancement": 0.4,
+  "ars_energy_intake": 0.004,
+  "ars_depletion_per_probe": 0.02,
+  "ars_food_recovery": 0.005,
+  "food_field_resolution": 32,
+  "food_patch_density": 0.005,
+  "food_patch_sigma_m": 5,
+  "save_every": 5,
+  "metrics_every": 20
+ },
+ "claim": "Akira original init_state/step unchanged on the revision_02 campus voxel geometry; wrapper-level spawn/site validation and export fixes only. Not ecological validation, not wind/traffic/UAV coupling, soft obstacle forces are not a collision certificate."
+}

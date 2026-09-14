@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Urban World Model · 3D</title>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "../../vendor/three/build/three.module.js",
+  "three/addons/": "../../vendor/three/examples/jsm/",
+  "three/addons/lines/": "../../vendor/three/examples/jsm/lines/"
+} }
+</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div class="hud top-left">
+  <div class="title">South Kensington core008</div>
+  <div class="sub" id="stage">Loading the 3D model…</div>
+  <div class="sub info" id="info"></div>
+</div>
+
+<nav class="hud top-tabs">
+  <button class="tab shot" data-shot="overview">Campus</button>
+  <button class="tab shot" data-shot="junction">Junction</button>
+  <button class="tab shot" data-shot="traffic">Traffic</button>
+  <button class="tab shot" data-shot="uavs">UAVs</button>
+  <button class="tab shot" data-shot="birds">Birds</button>
+  <button class="tab field" data-field="wind">Wind</button>
+  <button class="tab field" data-field="temp">Temperature</button>
+  <button class="tab field" data-field="solar">Sunlight</button>
+  <button class="tab field" data-field="diurnal">Day cycle</button>
+  <button class="tab field" data-field="poll">Pollution</button>
+  <button class="tab field" data-field="flood">Flooding</button>
+  <label class="tab auto" title="Play the views one after another and loop"><input type="checkbox" id="auto" checked> Auto loop</label>
+</nav>
+
+<div class="hud top-right panel" id="layers">
+  <div class="row head">
+    <span>Camera</span>
+    <button id="replay" class="btn" title="Restart from the campus tour">Restart</button>
+  </div>
+  <div class="row head" style="margin-top:8px">
+    <span>Physics fields</span>
+    <select id="mode" title="Playback mode"><option value="seq">One after another</option><option value="overlay">Overlay</option></select>
+  </div>
+  <label class="layer">
+    <input type="checkbox" id="l-wind" checked><span class="sw wind"></span>Wind speed · 8–12 m
+    <input type="range" id="o-wind" min="0" max="1" step="0.05" value="0.95">
+  </label>
+  <div class="legend"><span class="bar wind"></span><span>0</span><span>|V| m/s</span><span>1.6</span></div>
+  <label class="layer">
+    <input type="checkbox" id="l-temp" checked><span class="sw temp"></span>Temperature · 2-D model (12–16 m)
+    <select id="temp-mode" title="Temperature display"><option value="plane">Heat map on ground</option><option value="iso">Isotherms (every 0.1 °C)</option></select>
+    <input type="range" id="o-temp" min="0" max="1" step="0.05" value="0.9">
+  </label>
+  <div class="legend"><span class="bar temp"></span><span>31.2</span><span>°C</span><span>32.2</span></div>
+  <label class="layer">
+    <input type="checkbox" id="l-solar" checked><span class="sw solar"></span>Sunlight · clear-sky shadows and irradiance
+    <select id="solar-date" title="Day"><option value="20260621">21 June</option><option value="20261221">21 December</option></select>
+    <select id="solar-mode" title="Sunlight display" style="grid-column:1 / span 3"><option value="ghi">Irradiance · 4 m, every 10 min</option><option value="shadow">Shadows · 1 m, on the hour</option></select>
+    <input type="range" id="o-solar" min="0" max="1" step="0.05" value="0.9">
+  </label>
+  <div class="legend"><span class="bar solar"></span><span>shade</span><span>GHI W/m²</span><span id="solar-open">full sun</span></div>
+  <label class="layer">
+    <input type="checkbox" id="l-diurnal" checked><span class="sw diurnal"></span>Day cycle · solar-coupled 3-D temperature, 21 June
+    <select id="diurnal-mode" title="Diurnal display"><option value="groundRel">Ground surface · vs ambient air</option><option value="ground">Ground surface · °C</option><option value="air0Rel">Air 0–4 m · vs ambient air</option><option value="air0">Air 0–4 m · °C</option><option value="air12">Air 12–16 m · °C</option></select>
+    <input type="range" id="o-diurnal" min="0" max="1" step="0.05" value="0.9">
+  </label>
+  <div class="legend"><span class="bar diurnal"></span><span id="diurnal-lo">−12</span><span id="diurnal-unit">Δ°C vs ambient air</span><span id="diurnal-hi">+12</span></div>
+  <label class="layer">
+    <input type="checkbox" id="l-poll" checked><span class="sw poll"></span>Pollution · 12–16 m concentration layer
+    <input type="range" id="o-poll" min="0" max="1" step="0.05" value="0.95">
+  </label>
+  <div class="legend"><span class="bar poll"></span><span>0.1</span><span>concentration (log)</span><span>1000</span></div>
+  <label class="layer">
+    <input type="checkbox" id="l-flood" checked><span class="sw flood"></span>Flooding · surface water depth (3 h cloudburst)
+    <input type="range" id="o-flood" min="0" max="1" step="0.05" value="0.9">
+  </label>
+  <div class="legend"><span class="bar flood"></span><span>0.02</span><span>depth m</span><span>≥ 0.6</span></div>
+  <label class="layer small">
+    <input type="checkbox" id="l-model" checked><span class="sw model"></span>Buildings
+    <input type="checkbox" id="l-ground" checked><span class="sw ground"></span>Ground / roads
+  </label>
+  <label class="layer small" title="306 OSM footprints; estimated heights and facades. Existing physics fields have not been recomputed."><input type="checkbox" id="l-supplement" checked><span class="sw model"></span>Added buildings · 306</label>
+  <label id="expansion-ctl" class="layer small" style="display:none" title="Mapped footprints with reference-informed architecture and estimated or imagined details. Uncheck to compare with the originals."><input type="checkbox" id="l-expansion" checked><span class="sw model"></span><span id="expansion-label">Building refinements</span></label>
+  <div class="hint"><a href="../../geometry/expansion/docs/ATTRIBUTION.md" target="_blank" rel="noopener">Refinement references and attribution</a></div>
+  <div class="hint"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors · ODbL</a></div>
+  <label class="layer small">
+    <input type="checkbox" id="l-trees" checked><span class="sw trees"></span>Trees / vegetation
+    <span id="tile-ctl" style="display:none"><input type="checkbox" id="l-tile" checked><span class="sw tile"></span>Station detail tile</span>
+  </label>
+  <label class="layer small">
+    <input type="checkbox" id="l-part"><span class="sw part"></span>Streamline particles
+    <input type="range" id="n-part" min="1000" max="12000" step="1000" value="4000" title="Particle count">
+  </label>
+  <div class="row head" style="margin-top:8px"><span>Traffic / UAVs (demo_rev02)</span></div>
+  <div class="grid2">
+    <label class="layer small"><input type="checkbox" id="l-cars" checked><span class="sw cars"></span>Cars</label>
+    <label class="layer small"><input type="checkbox" id="l-uavs" checked><span class="sw uavs"></span>UAVs</label>
+    <label class="layer small"><input type="checkbox" id="l-birds" checked><span class="sw birds"></span>Birds</label>
+    <label class="layer small"><input type="checkbox" id="l-signals" checked><span class="sw signals"></span>Signals</label>
+    <label class="layer small"><input type="checkbox" id="l-stations" checked><span class="sw stations"></span>Stations</label>
+    <label class="layer small"><input type="checkbox" id="l-roads" checked><span class="sw roads"></span>Lane surfaces</label>
+    <label class="layer small"><input type="checkbox" id="l-map"><span class="sw map"></span>Map markers</label>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div id="bird-tracker" style="display:none">
+    <div class="row head" style="margin-top:8px"><span>Bird tracker</span></div>
+    <div class="grid2">
+      <select id="bird-target" title="What the camera follows"><option value="">Not tracking</option><option value="flock">Whole flock (centroid)</option></select>
+      <select id="bird-mode" title="Camera behaviour"><option value="auto">Auto: orbit flock / behind bird</option><option value="free">Free orbit (moves with target)</option></select>
+    </div>
+    <div class="stats" id="bird-readout"></div>
+  </div>
+
+</div>
+
+<div class="hud readout" id="readout" hidden></div>
+
+<div class="hud bottom timebar">
+  <button id="play" class="btn icon">▶</button>
+  <input type="range" id="step" min="1" max="100" value="1">
+  <span class="time" id="time-label">Step 1 · t = 25 s</span>
+  <select id="rate" title="Playback speed"></select>
+</div>
+
+<div class="overlay" id="loading">
+  <div class="box">
+    <div class="big">Loading the South Kensington 3D model</div>
+    <div class="bar"><span id="bar"></span></div>
+    <div class="small" id="pct">0 %</div>
+  </div>
+</div>
+<script type="module" src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+Second-build supplemental85closecontext from945,-285,25 clipped foreground terrace and obscuredtarget. Rejected as review image; master/GLB unchanged. Thirdfullbuildwilluse high85context camera preserving allscene geometry. Secondbuild7visualrejectedforcoplanarwindowframe; current counted44.

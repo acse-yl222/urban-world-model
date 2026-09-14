@@ -1,0 +1,764 @@
+{
+ "replacement_origin_analysis": [
+  [
+   "car_0003",
+   "58112559#0_0",
+   "West Cromwell Road",
+   0.0,
+   "3040412_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0012",
+   "836346677#2_0",
+   "Palace Court",
+   0.0,
+   "836346677#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0018",
+   "633622745#0_1",
+   "Cromwell Road",
+   0.0,
+   "633622745#0_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0049",
+   "-8391902#1_0",
+   "Holland Park",
+   0.0,
+   "-8391902#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0051",
+   "-663502528#1_0",
+   "Holland Park",
+   0.0,
+   "-663502528#2_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0122",
+   "-279553202#8_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0123",
+   "161783577#3_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0124",
+   "161783228#1_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0157",
+   "209257192#0_1",
+   "West Cromwell Road",
+   0.0,
+   "209257192#0_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0186",
+   "58112559#1_1",
+   "West Cromwell Road",
+   0.0,
+   "3040412_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0190",
+   "3040412_2",
+   "West Cromwell Road",
+   0.0,
+   "3040412_2",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0211",
+   "-663502528#2_0",
+   "Holland Park",
+   0.0,
+   "-663502528#2_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0271",
+   "633585189_0",
+   "Cromwell Gardens",
+   0.0,
+   "942140756#2_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0302",
+   "-279553202#1_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0319",
+   "-27366189#0_0",
+   "Old Brompton Road",
+   0.0,
+   "-27366189#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0355",
+   "207824948#0_1",
+   "Cromwell Road",
+   0.0,
+   "207824948#0_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0379",
+   "836346677#3_0",
+   "Palace Court",
+   0.0,
+   "836346677#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0384",
+   "-663502528#4_0",
+   "Holland Park",
+   0.0,
+   "-687328077#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0404",
+   "-279553202#5_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0420",
+   "-279553202#9_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0451",
+   "416164327#2_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0453",
+   "-28178562#3_0",
+   "Kensington Park Gardens",
+   0.0,
+   "-28178562#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0460",
+   "942140756#2_1",
+   "Cromwell Gardens",
+   0.0,
+   "942140756#2_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0468",
+   "207824948#1_0",
+   "Cromwell Road",
+   0.0,
+   "207824948#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0522",
+   "-663502528#3_0",
+   "Holland Park",
+   0.0,
+   "-663502528#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0536",
+   "416164327#1_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0551",
+   "-279553202#7_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0584",
+   "110301668#2_0",
+   "Point W Access Road",
+   32.9,
+   "1459652368_0",
+   "no allowed v2 lane within 6 m of the v1 origin (lane closed in v2)"
+  ],
+  [
+   "car_0591",
+   "-4779903#2_0",
+   "Queensborough Terrace",
+   0.0,
+   "-4779903#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0614",
+   "836346677#2_0",
+   "Palace Court",
+   0.0,
+   "836346677#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0616",
+   "633622745#0_1",
+   "Cromwell Road",
+   0.0,
+   "633622745#0_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0627",
+   "-8391902#1_0",
+   "Holland Park",
+   0.0,
+   "-8391902#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0629",
+   "-663502528#1_0",
+   "Holland Park",
+   0.0,
+   "-663502528#2_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0668",
+   "161783577#3_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0669",
+   "161783228#1_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0692",
+   "209257192#0_1",
+   "West Cromwell Road",
+   0.0,
+   "209257192#0_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0713",
+   "58112559#1_1",
+   "West Cromwell Road",
+   0.0,
+   "3040412_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0715",
+   "3040412_2",
+   "West Cromwell Road",
+   0.0,
+   "3040412_2",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0772",
+   "-279553202#1_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0799",
+   "207824948#0_1",
+   "Cromwell Road",
+   0.0,
+   "207824948#0_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0810",
+   "836346677#3_0",
+   "Palace Court",
+   0.0,
+   "836346677#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0827",
+   "-279553202#5_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0836",
+   "-279553202#9_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0859",
+   "416164327#2_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0901",
+   "-663502528#3_0",
+   "Holland Park",
+   0.0,
+   "-663502528#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0920",
+   "-279553202#7_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0937",
+   "-4779903#2_0",
+   "Queensborough Terrace",
+   0.0,
+   "-4779903#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0950",
+   "836346677#2_0",
+   "Palace Court",
+   0.0,
+   "836346677#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0952",
+   "633622745#0_1",
+   "Cromwell Road",
+   0.0,
+   "633622745#0_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0960",
+   "-8391902#1_0",
+   "Holland Park",
+   0.0,
+   "-8391902#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0961",
+   "-663502528#1_0",
+   "Holland Park",
+   0.0,
+   "-663502528#2_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0988",
+   "161783577#3_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_0989",
+   "161783228#1_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1000",
+   "209257192#0_1",
+   "West Cromwell Road",
+   0.0,
+   "209257192#0_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1011",
+   "58112559#1_1",
+   "West Cromwell Road",
+   0.0,
+   "3040412_1",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1013",
+   "3040412_2",
+   "West Cromwell Road",
+   0.0,
+   "3040412_2",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1049",
+   "-279553202#1_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1072",
+   "836346677#3_0",
+   "Palace Court",
+   0.0,
+   "836346677#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1086",
+   "-279553202#5_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1090",
+   "-279553202#9_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1110",
+   "207824948#1_0",
+   "Cromwell Road",
+   0.0,
+   "207824948#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1131",
+   "-663502528#3_0",
+   "Holland Park",
+   0.0,
+   "-663502528#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1143",
+   "-279553202#7_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1151",
+   "-4779903#2_0",
+   "Queensborough Terrace",
+   0.0,
+   "-4779903#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1166",
+   "-8391902#1_0",
+   "Holland Park",
+   0.0,
+   "-8391902#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1168",
+   "-663502528#1_0",
+   "Holland Park",
+   0.0,
+   "-663502528#2_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1188",
+   "161783228#1_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1223",
+   "3040412_0",
+   "West Cromwell Road",
+   0.0,
+   "3040412_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1248",
+   "-279553202#5_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1275",
+   "-663502528#3_0",
+   "Holland Park",
+   0.0,
+   "-663502528#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1283",
+   "-279553202#7_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1288",
+   "-4779903#2_0",
+   "Queensborough Terrace",
+   0.0,
+   "-4779903#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1299",
+   "-8391902#1_0",
+   "Holland Park",
+   0.0,
+   "-8391902#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1301",
+   "-663502528#1_0",
+   "Holland Park",
+   0.0,
+   "-663502528#2_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1315",
+   "161783228#1_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1373",
+   "-279553202#7_0",
+   "South Carriage Drive",
+   0.0,
+   "-279553202#9_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1378",
+   "-4779903#2_0",
+   "Queensborough Terrace",
+   0.0,
+   "-4779903#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1384",
+   "-8391902#1_0",
+   "Holland Park",
+   0.0,
+   "-8391902#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1392",
+   "161783228#1_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1428",
+   "-4779903#2_0",
+   "Queensborough Terrace",
+   0.0,
+   "-4779903#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1433",
+   "-8391902#1_0",
+   "Holland Park",
+   0.0,
+   "-8391902#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1439",
+   "161783228#1_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1462",
+   "-4779903#2_0",
+   "Queensborough Terrace",
+   0.0,
+   "-4779903#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1466",
+   "-8391902#1_0",
+   "Holland Park",
+   0.0,
+   "-8391902#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1473",
+   "161783228#1_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1493",
+   "-4779903#2_0",
+   "Queensborough Terrace",
+   0.0,
+   "-4779903#3_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1497",
+   "-8391902#1_0",
+   "Holland Park",
+   0.0,
+   "-8391902#1_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ],
+  [
+   "car_1500",
+   "161783228#1_0",
+   "West Carriage Drive",
+   0.0,
+   "161783577#0_0",
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)"
+  ]
+ ],
+ "reasons": [
+  [
+   "nearest v2 lane allowed but outside the largest SCC (dead-end pocket)",
+   87
+  ],
+  [
+   "no allowed v2 lane within 6 m of the v1 origin (lane closed in v2)",
+   1
+  ]
+ ],
+ "streets": [
+  [
+   "Holland Park",
+   20
+  ],
+  [
+   "South Carriage Drive",
+   16
+  ],
+  [
+   "West Carriage Drive",
+   15
+  ],
+  [
+   "West Cromwell Road",
+   11
+  ],
+  [
+   "Queensborough Terrace",
+   8
+  ],
+  [
+   "Cromwell Road",
+   7
+  ],
+  [
+   "Palace Court",
+   6
+  ],
+  [
+   "Cromwell Gardens",
+   2
+  ],
+  [
+   "Old Brompton Road",
+   1
+  ],
+  [
+   "Kensington Park Gardens",
+   1
+  ],
+  [
+   "Point W Access Road",
+   1
+  ]
+ ]
+}

@@ -1,0 +1,497 @@
+{
+ "schema": "UWM_DEMO_REVISION_02_ROAD_REPAIR_LEDGER_V1",
+ "created_utc": "2026-09-11T14:35:02Z",
+ "inputs": {
+  "net": {
+   "path": "net_v2_f2/derived_v2.net.xml",
+   "sha256": "1c46383d60860f8c16a1410fbd74caae35851b65540e93f3341c747416d4dbd9"
+  },
+  "source_net": {
+   "path": "net_f2/rebuilt.net.xml",
+   "sha256": "6010939745deca56fb44446413069a6a73667e5a45ca749c12f82fa462a42241"
+  }
+ },
+ "parameters": {
+  "net": "net_v2_f2/derived_v2.net.xml",
+  "source_net": "net_f2/rebuilt.net.xml",
+  "decisions": "net_v2_f2/lane_decisions_v2.json",
+  "tags": "/mnt/user-data/uploads/IRP/IRP-Traffic/LONDON_AOI_20260909/outputs/road_source_tags.json",
+  "out": "net_v2_f2/repair",
+  "max_gap_m": 120.0,
+  "restrict": "net_f2/MOVEMENT_RESTRICTIONS.json"
+ },
+ "A_gap_fill_restored_edges": [
+  {
+   "edge": "-121375108#0",
+   "name": "Caroline Place",
+   "length_m": 26.2,
+   "lanes": [
+    "-121375108#0_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-121375098",
+    "-121375108#1"
+   ],
+   "allowed_downstream": [
+    "121375102#1"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-1433209904#1",
+   "name": "Brompton Road",
+   "length_m": 73.4,
+   "lanes": [
+    "-1433209904#1_0",
+    "-1433209904#1_1"
+   ],
+   "cover": 0.1121,
+   "allowed_upstream": [
+    "-4422938#1",
+    "104644375#0"
+   ],
+   "allowed_downstream": [
+    "1497653572#2"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-8364112#2",
+   "name": "Oakwood Court",
+   "length_m": 80.8,
+   "lanes": [
+    "-8364112#2_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-792995050#1"
+   ],
+   "allowed_downstream": [
+    "10238043"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-871899300",
+   "name": "Roland Gardens",
+   "length_m": 84.5,
+   "lanes": [
+    "-871899300_0"
+   ],
+   "cover": 0.1477,
+   "allowed_upstream": [
+    "4422803#0"
+   ],
+   "allowed_downstream": [
+    "-4422804#3"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-892932075#4",
+   "name": "Ixworth Place",
+   "length_m": 41.3,
+   "lanes": [
+    "-892932075#4_0"
+   ],
+   "cover": 0.0132,
+   "allowed_upstream": [
+    "4595104#0"
+   ],
+   "allowed_downstream": [
+    "-4595102#2",
+    "4595102#3"
+   ],
+   "same_road_name_neighbour": false,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-936153669",
+   "name": "Ladbroke Grove",
+   "length_m": 11.8,
+   "lanes": [
+    "-936153669_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-663503960#0"
+   ],
+   "allowed_downstream": [
+    "-663505245"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-97453762#1",
+   "name": "North End Road",
+   "length_m": 39.6,
+   "lanes": [
+    "-97453762#1_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-4999436#4"
+   ],
+   "allowed_downstream": [
+    "96997380#0"
+   ],
+   "same_road_name_neighbour": false,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "10664236#0",
+   "name": "Lansdowne Road",
+   "length_m": 42.9,
+   "lanes": [
+    "10664236#0_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-1136308589#11",
+    "1136308589#7"
+   ],
+   "allowed_downstream": [
+    "10664196#0"
+   ],
+   "same_road_name_neighbour": false,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "121375108#0",
+   "name": "Caroline Place",
+   "length_m": 26.2,
+   "lanes": [
+    "121375108#0_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-121375102#2",
+    "-121375108#0",
+    "121375100#1"
+   ],
+   "allowed_downstream": [
+    "-121375108#0",
+    "121375098",
+    "121375108#1"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "139470181#1",
+   "name": "Earl's Court Square",
+   "length_m": 34.2,
+   "lanes": [
+    "139470181#1_0"
+   ],
+   "cover": 0.0386,
+   "allowed_upstream": [
+    "-139470179"
+   ],
+   "allowed_downstream": [
+    "139470175#0",
+    "139470180#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "1433209904#1",
+   "name": "Brompton Road",
+   "length_m": 73.3,
+   "lanes": [
+    "1433209904#1_0",
+    "1433209904#1_1"
+   ],
+   "cover": 0.1156,
+   "allowed_upstream": [
+    "-1433209904#1",
+    "1497653581#1"
+   ],
+   "allowed_downstream": [
+    "-1433209904#1",
+    "4422938#1"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "625314981#3",
+   "name": "Brompton Road",
+   "length_m": 6.1,
+   "lanes": [
+    "625314981#3_0",
+    "625314981#3_1",
+    "625314981#3_2"
+   ],
+   "cover": 0.6205,
+   "allowed_upstream": [
+    "156871427#3"
+   ],
+   "allowed_downstream": [
+    "156871427#0"
+   ],
+   "same_road_name_neighbour": false,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "663503961",
+   "name": "Ladbroke Grove",
+   "length_m": 11.8,
+   "lanes": [
+    "663503961_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-936153669",
+    "663505245"
+   ],
+   "allowed_downstream": [
+    "-936153669",
+    "663503960#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "670642942",
+   "name": "Brompton Road",
+   "length_m": 72.2,
+   "lanes": [
+    "670642942_0",
+    "670642942_1",
+    "670642942_2"
+   ],
+   "cover": 0.7082,
+   "allowed_upstream": [
+    "625314981#3"
+   ],
+   "allowed_downstream": [
+    "378425515#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "8364112#2",
+   "name": "Oakwood Court",
+   "length_m": 80.8,
+   "lanes": [
+    "8364112#2_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-10238043",
+    "-8364112#2"
+   ],
+   "allowed_downstream": [
+    "-8364112#2",
+    "792995050#1"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "871795161#0",
+   "name": "Roland Gardens",
+   "length_m": 85.2,
+   "lanes": [
+    "871795161#0_0"
+   ],
+   "cover": 0.1405,
+   "allowed_upstream": [
+    "-871899300",
+    "4422804#0"
+   ],
+   "allowed_downstream": [
+    "-4422803#1",
+    "-871899300"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "888717353#0",
+   "name": "Dovehouse Street",
+   "length_m": 57.7,
+   "lanes": [
+    "888717353#0_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "510327059#3"
+   ],
+   "allowed_downstream": [
+    "482125810#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "892932075#4",
+   "name": "Ixworth Place",
+   "length_m": 41.3,
+   "lanes": [
+    "892932075#4_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-4595102#4",
+    "-892932075#4",
+    "4595102#2"
+   ],
+   "allowed_downstream": [
+    "-892932075#4"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "893249190#0",
+   "name": "Ixworth Place",
+   "length_m": 85.3,
+   "lanes": [
+    "893249190#0_0"
+   ],
+   "cover": 0.399,
+   "allowed_upstream": [
+    "4595104#0",
+    "892932075#4"
+   ],
+   "allowed_downstream": [
+    "4595105#2"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "939535167",
+   "name": "Lansdowne Road",
+   "length_m": 25.3,
+   "lanes": [
+    "939535167_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-10664196#1",
+    "10664236#0"
+   ],
+   "allowed_downstream": [
+    "679937877#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "97453771#2",
+   "name": "North End Road",
+   "length_m": 39.6,
+   "lanes": [
+    "97453771#2_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-97453762#1",
+    "503646125#1"
+   ],
+   "allowed_downstream": [
+    "-97453762#1",
+    "4999436#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  }
+ ],
+ "A_reopened_internal_lanes": [
+  ":84852048_1_0",
+  ":94239831_4_0",
+  ":cluster_10593617552_10593617553_2631539937_395865883_2_0",
+  ":cluster_10593617552_10593617553_2631539937_395865883_6_0",
+  ":1359128795_0_0",
+  ":cluster_255567921_26373999_1_0",
+  ":cluster_255567921_26373999_2_0",
+  ":1359128795_3_0",
+  ":1528999942_0_0",
+  ":cluster_13716074298_13716160212_13716160214_13716160221_#4more_3_0",
+  ":cluster_13716074298_13716160212_13716160214_13716160221_#4more_3_1",
+  ":cluster_1960954870_21105283_277313428_10_1",
+  ":26594443_8_0",
+  ":cluster_1605031206_20961350_33203791_7080456655_5_0",
+  ":7339659491_1_0",
+  ":275524_0_0",
+  ":84852048_2_0",
+  ":6309420802_3_0",
+  ":26594443_9_0",
+  ":26594443_11_0",
+  ":26373749_1_0",
+  ":26373749_6_0",
+  ":cluster_1960954870_21105283_277313428_15_0",
+  ":94239831_1_0",
+  ":94239831_2_0",
+  ":cluster_10593617552_10593617553_2631539937_395865883_3_0",
+  ":cluster_255567921_26373999_7_0",
+  ":1359128795_4_0",
+  ":1359128795_5_0",
+  ":1528999945_1_0",
+  ":1528999945_2_0",
+  ":cluster_1960954870_21105283_277313428_16_0",
+  ":cluster_1960954870_21105283_277313428_16_1",
+  ":cluster_13716074298_13716160212_13716160214_13716160221_#4more_5_0",
+  ":cluster_13716074298_13716160212_13716160214_13716160221_#4more_5_1",
+  ":cluster_1691189629_3818359148_5904372082_4_0",
+  ":cluster_1691189629_3818359148_5904372082_4_1",
+  ":18127040_6_0",
+  ":6309420802_2_0",
+  ":26594443_0_0",
+  ":26594442_3_0",
+  ":26594442_4_0",
+  ":8270176267_2_0",
+  ":cluster_109679_1691189628_3818359146_3818359149_#2more_6_1",
+  ":cluster_109679_1691189628_3818359146_3818359149_#2more_6_2",
+  ":7339659491_2_0",
+  ":26373749_2_0",
+  ":3818359137_0_0",
+  ":275524_5_0",
+  ":18127040_5_0",
+  ":26389190_1_0",
+  ":26594442_2_0",
+  ":27511218_3_0",
+  ":cluster_1605031206_20961350_33203791_7080456655_7_0"
+ ],
+ "B_movement_restrictions": [
+  {
+   "from_lane": "-88443018#2_0",
+   "to_lane": "26429154#1_0",
+   "reason": "junction blocking: the turning vehicle waits at the end of its internal lane for a full target lane and is repeatedly hit by the crossing movement; contPos=0 (iteration 1) did not remove it",
+   "evidence": "Queen's Gate Place Mews -> Queen's Gate Place: 7 collision records in netE_demE_3600 and 9 in netF_3600 (stationary party on :1027237558_1_0)",
+   "tried": [
+    "geometric qualification",
+    "contPos=0 waiting-position removal (iteration 1)"
+   ],
+   "detour": "left turn / next junction; checked by reachability after closure",
+   "status": "APPLIED",
+   "internal_lanes_closed": [
+    ":1027237558_1_0"
+   ],
+   "tls": null,
+   "link_index": null
+  }
+ ],
+ "counts": {
+  "restored_edges": 21,
+  "restored_lane_km": 1.343,
+  "reopened_internal_lanes": 54,
+  "restrictions_applied": 1
+ },
+ "output": {
+  "net": "net_v2_f2/repair/derived_v2_repaired.net.xml",
+  "sha256": "25354a604e42a42f5e01eed4d6db1cf49e1b7ab23069a8b8382587e4444e11a7"
+ },
+ "wall_s": 4.3
+}

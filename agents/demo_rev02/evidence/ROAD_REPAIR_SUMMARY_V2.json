@@ -1,0 +1,1196 @@
+{
+ "schema": "UWM_DEMO_REVISION_02_ROAD_REPAIR_SUMMARY_V1",
+ "method": "lane-geometry comparison (2.5 m tolerance, >=90 % of sampled points; v1 lanes < 1 m ignored as merged micro-edges) between the v1 simulation network and the final revision_02 network",
+ "v1": {
+  "net": "/mnt/user-data/uploads/IRP/IRP-Urban World Model System Interface/UWM_DEMO_20260911/traffic/flow_v3_internal/FLOW_INTERNAL_3600S_V3/derived_qualified.net.xml",
+  "allowed_lanes": 3298,
+  "allowed_lane_km": 102.84,
+  "closed_lanes": 12489
+ },
+ "v2": {
+  "net": "net_v2_f2/repair/derived_v2_repaired.net.xml",
+  "allowed_lanes": 2433,
+  "allowed_lane_km": 133.68,
+  "closed_lanes": 6424,
+  "largest_scc_edges": 1369
+ },
+ "reopened": {
+  "lanes": 611,
+  "lane_km": 35.43,
+  "by_street_top40": [
+   [
+    "Notting Hill Gate",
+    20
+   ],
+   [
+    "Brompton Road",
+    19
+   ],
+   [
+    "Fulham Road",
+    14
+   ],
+   [
+    "Adam and Eve Mews",
+    10
+   ],
+   [
+    "Kensington Church Street",
+    10
+   ],
+   [
+    "Kensington Gore",
+    10
+   ],
+   [
+    "Uxbridge Street",
+    9
+   ],
+   [
+    "Pembridge Road",
+    9
+   ],
+   [
+    "Elvaston Mews",
+    8
+   ],
+   [
+    "Queensberry Mews West",
+    8
+   ],
+   [
+    "Cromwell Mews",
+    8
+   ],
+   [
+    "Old Brompton Road",
+    8
+   ],
+   [
+    "West Cromwell Road",
+    8
+   ],
+   [
+    "Kensington High Street",
+    7
+   ],
+   [
+    "Stratford Road",
+    7
+   ],
+   [
+    "Gloucester Road",
+    7
+   ],
+   [
+    "Warwick Road",
+    7
+   ],
+   [
+    "Pembroke Mews",
+    6
+   ],
+   [
+    "Hesper Mews",
+    6
+   ],
+   [
+    "Princes Gate Mews",
+    6
+   ],
+   [
+    "Ennismore Gardens",
+    6
+   ],
+   [
+    "St Alban's Grove",
+    5
+   ],
+   [
+    "Radley Mews",
+    5
+   ],
+   [
+    "Campden Hill Road",
+    5
+   ],
+   [
+    "Hyde Park Gate",
+    5
+   ],
+   [
+    "Kelso Place",
+    5
+   ],
+   [
+    "Bury Walk",
+    5
+   ],
+   [
+    "Ensor Mews",
+    5
+   ],
+   [
+    "Victoria Road",
+    5
+   ],
+   [
+    "Cromwell Road",
+    5
+   ],
+   [
+    "Hornton Street",
+    4
+   ],
+   [
+    "Caroline Place",
+    4
+   ],
+   [
+    "Cornwall Gardens",
+    4
+   ],
+   [
+    "Pembroke Road",
+    4
+   ],
+   [
+    "Emperor's Gate",
+    4
+   ],
+   [
+    "Ennismore Mews",
+    4
+   ],
+   [
+    "Thornwood Gardens",
+    4
+   ],
+   [
+    "Onslow Gardens",
+    4
+   ],
+   [
+    "Holland Park Mews",
+    4
+   ],
+   [
+    "Earl's Court Road",
+    4
+   ]
+  ]
+ },
+ "newly_closed": {
+  "lanes": 65,
+  "lane_km": 0.93,
+  "by_street": [
+   [
+    "Bayswater Road",
+    9
+   ],
+   [
+    "Orme Square",
+    4
+   ],
+   [
+    "Kensington Road",
+    4
+   ],
+   [
+    "Brompton Road",
+    4
+   ],
+   [
+    "Ennismore Gardens Mews",
+    3
+   ],
+   [
+    "Fulham Road",
+    3
+   ],
+   [
+    "Sumner Place",
+    3
+   ],
+   [
+    "Ixworth Place",
+    2
+   ],
+   [
+    "Aubrey Walk",
+    2
+   ],
+   [
+    "Abbotsbury Road",
+    2
+   ],
+   [
+    "Point W Access Road",
+    2
+   ],
+   [
+    "Holland Street",
+    2
+   ],
+   [
+    "Lancaster Gate",
+    2
+   ],
+   [
+    "Kelso Place",
+    2
+   ],
+   [
+    "-10663810#0",
+    1
+   ],
+   [
+    "-58523667#0",
+    1
+   ],
+   [
+    "Marloes Road",
+    1
+   ],
+   [
+    "Pennant Mews",
+    1
+   ],
+   [
+    "Alexander Square",
+    1
+   ],
+   [
+    "Ladbroke Grove",
+    1
+   ],
+   [
+    "Phillimore Walk",
+    1
+   ],
+   [
+    "Edwardes Square",
+    1
+   ],
+   [
+    "Collingham Road",
+    1
+   ],
+   [
+    "Kensington Church Street",
+    1
+   ],
+   [
+    "32954707#1",
+    1
+   ],
+   [
+    "Alexander Place",
+    1
+   ],
+   [
+    "Exhibition Road",
+    1
+   ],
+   [
+    "Lucan Place",
+    1
+   ],
+   [
+    "Nevern Place",
+    1
+   ],
+   [
+    "Dieppe Close",
+    1
+   ],
+   [
+    "Avonmore Road",
+    1
+   ],
+   [
+    "58523667#0",
+    1
+   ],
+   [
+    "Philbeach Gardens",
+    1
+   ],
+   [
+    "Emperor's Gate",
+    1
+   ],
+   [
+    "Marlborough Street",
+    1
+   ]
+  ],
+  "lanes_list": [
+   [
+    "-10663810#0_0",
+    "",
+    1.1
+   ],
+   [
+    "-1355629939#0_0",
+    "Bayswater Road",
+    16.1
+   ],
+   [
+    "-1355629939#0_1",
+    "Bayswater Road",
+    16.1
+   ],
+   [
+    "-1355629939#4_0",
+    "Bayswater Road",
+    7.7
+   ],
+   [
+    "-1383069554_0",
+    "Orme Square",
+    3.0
+   ],
+   [
+    "-1383069555_0",
+    "Orme Square",
+    3.2
+   ],
+   [
+    "-33854643#0_0",
+    "Ennismore Gardens Mews",
+    2.0
+   ],
+   [
+    "-33854643#1_0",
+    "Ennismore Gardens Mews",
+    78.6
+   ],
+   [
+    "-33854643#2_0",
+    "Ennismore Gardens Mews",
+    1.2
+   ],
+   [
+    "-4006388#0_0",
+    "Fulham Road",
+    11.5
+   ],
+   [
+    "-4595105#0_0",
+    "Ixworth Place",
+    21.1
+   ],
+   [
+    "-4595105#1_0",
+    "Ixworth Place",
+    6.6
+   ],
+   [
+    "-567401264#2_0",
+    "Aubrey Walk",
+    13.5
+   ],
+   [
+    "-58523667#0_0",
+    "",
+    12.4
+   ],
+   [
+    "-663502521#4_0",
+    "Marloes Road",
+    11.8
+   ],
+   [
+    "-792995050#0_0",
+    "Abbotsbury Road",
+    42.2
+   ],
+   [
+    "-9710354#1_0",
+    "Pennant Mews",
+    12.8
+   ],
+   [
+    "104644375#0_0",
+    "Alexander Square",
+    13.8
+   ],
+   [
+    "110301668#2_0",
+    "Point W Access Road",
+    38.4
+   ],
+   [
+    "1136871942#3_0",
+    "Ladbroke Grove",
+    14.6
+   ],
+   [
+    "1176480313#1_0",
+    "Holland Street",
+    2.6
+   ],
+   [
+    "1176480315#0_0",
+    "Holland Street",
+    1.9
+   ],
+   [
+    "1176482311_0",
+    "Phillimore Walk",
+    4.9
+   ],
+   [
+    "1202954616_0",
+    "Kensington Road",
+    7.9
+   ],
+   [
+    "1202954616_1",
+    "Kensington Road",
+    7.9
+   ],
+   [
+    "1202954622#1_0",
+    "Kensington Road",
+    5.8
+   ],
+   [
+    "1202954622#1_1",
+    "Kensington Road",
+    5.8
+   ],
+   [
+    "123520000_0",
+    "Edwardes Square",
+    36.8
+   ],
+   [
+    "1245801506#1_0",
+    "Fulham Road",
+    10.0
+   ],
+   [
+    "1286991209#0_0",
+    "Lancaster Gate",
+    2.7
+   ],
+   [
+    "1286991209#1_0",
+    "Lancaster Gate",
+    9.5
+   ],
+   [
+    "1314656067_0",
+    "Collingham Road",
+    22.1
+   ],
+   [
+    "1355629939#0_0",
+    "Bayswater Road",
+    16.1
+   ],
+   [
+    "1355629939#0_1",
+    "Bayswater Road",
+    16.1
+   ],
+   [
+    "1355629939#4_0",
+    "Bayswater Road",
+    7.7
+   ],
+   [
+    "1383069554_0",
+    "Orme Square",
+    3.0
+   ],
+   [
+    "1383069555_0",
+    "Orme Square",
+    3.2
+   ],
+   [
+    "1454964245_0",
+    "Kensington Church Street",
+    11.2
+   ],
+   [
+    "1465769701#0_0",
+    "Sumner Place",
+    2.0
+   ],
+   [
+    "1465769701#1_0",
+    "Sumner Place",
+    7.7
+   ],
+   [
+    "1465769708_0",
+    "Sumner Place",
+    9.0
+   ],
+   [
+    "32954707#1_0",
+    "",
+    41.1
+   ],
+   [
+    "378425509#0_0",
+    "Brompton Road",
+    15.7
+   ],
+   [
+    "378425509#0_1",
+    "Brompton Road",
+    15.7
+   ],
+   [
+    "378425509#1_0",
+    "Brompton Road",
+    7.7
+   ],
+   [
+    "378425509#1_1",
+    "Brompton Road",
+    7.7
+   ],
+   [
+    "4006388#0_0",
+    "Fulham Road",
+    11.5
+   ],
+   [
+    "4422839#1_0",
+    "Alexander Place",
+    14.0
+   ],
+   [
+    "4422907#0_0",
+    "Exhibition Road",
+    7.3
+   ],
+   [
+    "4595102#1_0",
+    "Lucan Place",
+    28.2
+   ],
+   [
+    "4944375#0_0",
+    "Nevern Place",
+    3.5
+   ],
+   [
+    "4999428#1_0",
+    "Dieppe Close",
+    18.4
+   ],
+   [
+    "4999999#0_0",
+    "Avonmore Road",
+    22.7
+   ],
+   [
+    "567401264#2_0",
+    "Aubrey Walk",
+    13.5
+   ],
+   [
+    "58523667#0_0",
+    "",
+    12.4
+   ],
+   [
+    "662988336#0_0",
+    "Point W Access Road",
+    35.6
+   ],
+   [
+    "784641385#0_0",
+    "Philbeach Gardens",
+    6.2
+   ],
+   [
+    "792995050#0_0",
+    "Abbotsbury Road",
+    42.2
+   ],
+   [
+    "814521039#1_0",
+    "Kelso Place",
+    2.7
+   ],
+   [
+    "814521039#2_0",
+    "Kelso Place",
+    18.1
+   ],
+   [
+    "822364721#0_0",
+    "Bayswater Road",
+    10.4
+   ],
+   [
+    "822364726#4_0",
+    "Bayswater Road",
+    7.9
+   ],
+   [
+    "822364726#4_1",
+    "Bayswater Road",
+    7.9
+   ],
+   [
+    "8419319#0_0",
+    "Emperor's Gate",
+    16.7
+   ],
+   [
+    "893586071_0",
+    "Marlborough Street",
+    41.3
+   ]
+  ]
+ },
+ "gap_fill_restored_edges": [
+  {
+   "edge": "-121375108#0",
+   "name": "Caroline Place",
+   "length_m": 26.2,
+   "lanes": [
+    "-121375108#0_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-121375098",
+    "-121375108#1"
+   ],
+   "allowed_downstream": [
+    "121375102#1"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-1433209904#1",
+   "name": "Brompton Road",
+   "length_m": 73.4,
+   "lanes": [
+    "-1433209904#1_0",
+    "-1433209904#1_1"
+   ],
+   "cover": 0.1121,
+   "allowed_upstream": [
+    "-4422938#1",
+    "104644375#0"
+   ],
+   "allowed_downstream": [
+    "1497653572#2"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-8364112#2",
+   "name": "Oakwood Court",
+   "length_m": 80.8,
+   "lanes": [
+    "-8364112#2_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-792995050#1"
+   ],
+   "allowed_downstream": [
+    "10238043"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-871899300",
+   "name": "Roland Gardens",
+   "length_m": 84.5,
+   "lanes": [
+    "-871899300_0"
+   ],
+   "cover": 0.1477,
+   "allowed_upstream": [
+    "4422803#0"
+   ],
+   "allowed_downstream": [
+    "-4422804#3"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-892932075#4",
+   "name": "Ixworth Place",
+   "length_m": 41.3,
+   "lanes": [
+    "-892932075#4_0"
+   ],
+   "cover": 0.0132,
+   "allowed_upstream": [
+    "4595104#0"
+   ],
+   "allowed_downstream": [
+    "-4595102#2",
+    "4595102#3"
+   ],
+   "same_road_name_neighbour": false,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-936153669",
+   "name": "Ladbroke Grove",
+   "length_m": 11.8,
+   "lanes": [
+    "-936153669_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-663503960#0"
+   ],
+   "allowed_downstream": [
+    "-663505245"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "-97453762#1",
+   "name": "North End Road",
+   "length_m": 39.6,
+   "lanes": [
+    "-97453762#1_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-4999436#4"
+   ],
+   "allowed_downstream": [
+    "96997380#0"
+   ],
+   "same_road_name_neighbour": false,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "10664236#0",
+   "name": "Lansdowne Road",
+   "length_m": 42.9,
+   "lanes": [
+    "10664236#0_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-1136308589#11",
+    "1136308589#7"
+   ],
+   "allowed_downstream": [
+    "10664196#0"
+   ],
+   "same_road_name_neighbour": false,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "121375108#0",
+   "name": "Caroline Place",
+   "length_m": 26.2,
+   "lanes": [
+    "121375108#0_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-121375102#2",
+    "-121375108#0",
+    "121375100#1"
+   ],
+   "allowed_downstream": [
+    "-121375108#0",
+    "121375098",
+    "121375108#1"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "139470181#1",
+   "name": "Earl's Court Square",
+   "length_m": 34.2,
+   "lanes": [
+    "139470181#1_0"
+   ],
+   "cover": 0.0386,
+   "allowed_upstream": [
+    "-139470179"
+   ],
+   "allowed_downstream": [
+    "139470175#0",
+    "139470180#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "1433209904#1",
+   "name": "Brompton Road",
+   "length_m": 73.3,
+   "lanes": [
+    "1433209904#1_0",
+    "1433209904#1_1"
+   ],
+   "cover": 0.1156,
+   "allowed_upstream": [
+    "-1433209904#1",
+    "1497653581#1"
+   ],
+   "allowed_downstream": [
+    "-1433209904#1",
+    "4422938#1"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "625314981#3",
+   "name": "Brompton Road",
+   "length_m": 6.1,
+   "lanes": [
+    "625314981#3_0",
+    "625314981#3_1",
+    "625314981#3_2"
+   ],
+   "cover": 0.6205,
+   "allowed_upstream": [
+    "156871427#3"
+   ],
+   "allowed_downstream": [
+    "156871427#0"
+   ],
+   "same_road_name_neighbour": false,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "663503961",
+   "name": "Ladbroke Grove",
+   "length_m": 11.8,
+   "lanes": [
+    "663503961_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-936153669",
+    "663505245"
+   ],
+   "allowed_downstream": [
+    "-936153669",
+    "663503960#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "670642942",
+   "name": "Brompton Road",
+   "length_m": 72.2,
+   "lanes": [
+    "670642942_0",
+    "670642942_1",
+    "670642942_2"
+   ],
+   "cover": 0.7082,
+   "allowed_upstream": [
+    "625314981#3"
+   ],
+   "allowed_downstream": [
+    "378425515#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "8364112#2",
+   "name": "Oakwood Court",
+   "length_m": 80.8,
+   "lanes": [
+    "8364112#2_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-10238043",
+    "-8364112#2"
+   ],
+   "allowed_downstream": [
+    "-8364112#2",
+    "792995050#1"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "871795161#0",
+   "name": "Roland Gardens",
+   "length_m": 85.2,
+   "lanes": [
+    "871795161#0_0"
+   ],
+   "cover": 0.1405,
+   "allowed_upstream": [
+    "-871899300",
+    "4422804#0"
+   ],
+   "allowed_downstream": [
+    "-4422803#1",
+    "-871899300"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "888717353#0",
+   "name": "Dovehouse Street",
+   "length_m": 57.7,
+   "lanes": [
+    "888717353#0_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "510327059#3"
+   ],
+   "allowed_downstream": [
+    "482125810#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "892932075#4",
+   "name": "Ixworth Place",
+   "length_m": 41.3,
+   "lanes": [
+    "892932075#4_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-4595102#4",
+    "-892932075#4",
+    "4595102#2"
+   ],
+   "allowed_downstream": [
+    "-892932075#4"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "893249190#0",
+   "name": "Ixworth Place",
+   "length_m": 85.3,
+   "lanes": [
+    "893249190#0_0"
+   ],
+   "cover": 0.399,
+   "allowed_upstream": [
+    "4595104#0",
+    "892932075#4"
+   ],
+   "allowed_downstream": [
+    "4595105#2"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "939535167",
+   "name": "Lansdowne Road",
+   "length_m": 25.3,
+   "lanes": [
+    "939535167_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-10664196#1",
+    "10664236#0"
+   ],
+   "allowed_downstream": [
+    "679937877#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  },
+  {
+   "edge": "97453771#2",
+   "name": "North End Road",
+   "length_m": 39.6,
+   "lanes": [
+    "97453771#2_0"
+   ],
+   "cover": 0.0,
+   "allowed_upstream": [
+    "-97453762#1",
+    "503646125#1"
+   ],
+   "allowed_downstream": [
+    "-97453762#1",
+    "4999436#0"
+   ],
+   "same_road_name_neighbour": true,
+   "reason": "closed only because the GLB way-strip list lacks this segment; rendered road continues at both ends; building clearance and source permissions pass"
+  }
+ ],
+ "contpos_patches": [
+  {
+   "from": "939548790#0",
+   "to": "876112128#0",
+   "fromLane": "1",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Gloucester Road -> Elvaston Place (right turn); 17 junction-collision records in netE_demE_3600 with the turning vehicle stopped at its internal waiting position on the path of the opposing straight movement"
+  },
+  {
+   "from": "482125812#2",
+   "to": "72454096#1",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Harrington Road -> Queen's Gate (right turn); 14 records"
+  },
+  {
+   "from": "824795213#3",
+   "to": "8392414#0",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Earl's Court Road -> Pembroke Square (right turn); 8 records"
+  },
+  {
+   "from": "-88443018#2",
+   "to": "26429154#1",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Queen's Gate Place Mews -> Queen's Gate Place (right turn); 7 records"
+  },
+  {
+   "from": "-98222517#5",
+   "to": "-4981795#2",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Kensington Church Street -> Campden Grove (right turn); 6 records (also 10 in netR3_900)"
+  },
+  {
+   "from": "83606936#9",
+   "to": "58112580#0",
+   "fromLane": "1",
+   "toLane": "1",
+   "contPos": "0",
+   "evidence": "Kensington High Street -> Kensington High Street via Abingdon Road cluster (right/merge); 5 records"
+  },
+  {
+   "from": "-72454089#1",
+   "to": "72454092#1",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Stanhope Gardens -> Queen's Gate (right turn); 5 records"
+  },
+  {
+   "from": "-24433777#0",
+   "to": "876112133#1",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Elvaston Mews -> Elvaston Place (right turn); 4 records"
+  },
+  {
+   "from": "43583117#1",
+   "to": "-1106758781#1",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Gloucester Road -> Hereford Square (right turn); 2 records"
+  },
+  {
+   "from": "-8419307#0",
+   "to": "10277371",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Victoria Road -> St Alban's Grove (right turn); 1 record (same mechanism)"
+  },
+  {
+   "from": "-8391948#6",
+   "to": "11994258#0",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Campden Hill Road -> Campden Hill (right turn); 27 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  },
+  {
+   "from": "-824795212",
+   "to": "1116261149#0",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Earl's Court Road -> Scarsdale Villas (right turn); 12 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  },
+  {
+   "from": "-939429883#1",
+   "to": "1176480314",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Kensington Church Street -> Holland Street (right turn); 11 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  },
+  {
+   "from": "8319770#0",
+   "to": "881023275#1",
+   "fromLane": "0",
+   "toLane": "1",
+   "contPos": "0",
+   "evidence": "Young Street -> Kensington High Street (right turn); 5 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  },
+  {
+   "from": "-4422918#1",
+   "to": "4353057#0",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Old Brompton Road -> Gledhow Gardens (right turn); 2 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  },
+  {
+   "from": "-820118781",
+   "to": "9888532#2",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Petersham Mews -> Queen's Gate Place (right turn); 2 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  }
+ ],
+ "movement_restrictions": [
+  {
+   "from_lane": "-88443018#2_0",
+   "to_lane": "26429154#1_0",
+   "reason": "junction blocking: the turning vehicle waits at the end of its internal lane for a full target lane and is repeatedly hit by the crossing movement; contPos=0 (iteration 1) did not remove it",
+   "evidence": "Queen's Gate Place Mews -> Queen's Gate Place: 7 collision records in netE_demE_3600 and 9 in netF_3600 (stationary party on :1027237558_1_0)",
+   "tried": [
+    "geometric qualification",
+    "contPos=0 waiting-position removal (iteration 1)"
+   ],
+   "detour": "left turn / next junction; checked by reachability after closure"
+  }
+ ],
+ "glb_roads_absent_from_sumo_candidates": 282,
+ "maps": [
+  "MAP_01_before_v1.png",
+  "MAP_02_after_v2.png",
+  "MAP_03_diff.png",
+  "MAP_04_campus_after.png",
+  "MAP_05_campus_diff.png",
+  "MAP_06_residual_kensington.png"
+ ]
+}

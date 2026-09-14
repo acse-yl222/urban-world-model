@@ -1,0 +1,280 @@
+{
+ "schema": "UWM_DEMO_REVISION_02_PACKAGE_FILES_V1",
+ "created_utc": "2026-09-11T18:03:42Z",
+ "files": {
+  "README.md": {
+   "bytes": 4353,
+   "sha256": "01033cc5fef9fac9d70a5ee033402d3fac3751022723a1dcd6de9aabefc92ff0"
+  },
+  "Start Demo.command": {
+   "bytes": 66,
+   "sha256": "c1c13a8e633553d254e47e3434b25574b616447141f57cb7ea507b4e0637b415"
+  },
+  "UAV\u6f14\u793a\u63d0\u793a\uff08\u7b2c\u4e00\u7248\u539f\u6587\uff09.md": {
+   "bytes": 1968,
+   "sha256": "b8cce2c18dae2dfb8a50ddf34bff9f7b479cd55270008eddeb508816fc82e9af"
+  },
+  "actors/README.md": {
+   "bytes": 4481,
+   "sha256": "96d89cd63849c81ea0b52316b442799049ea386fbcfd2a652bdec01622aad481"
+  },
+  "actors/actor-layer.js": {
+   "bytes": 11047,
+   "sha256": "e98d85a0b9ac660e2d561983f5cac9d66830d40f23c110418e79c8500f328131"
+  },
+  "actors/build_sedan.mjs": {
+   "bytes": 6382,
+   "sha256": "f8430181c0aa3a1f30e8ec3303100f955ed14dc9d704837d55248691c8669232"
+  },
+  "actors/sedan_4p5m.glb": {
+   "bytes": 52236,
+   "sha256": "b26fa30fb495067b7ceb7cd234e1038b0fc6ffcb372e9702a7825ba934b99f44"
+  },
+  "data/hub-bays.json": {
+   "bytes": 143341,
+   "sha256": "6fdce6c572db2148104528a2345989d529176b8fd192c9e1d34233b2a99e11a2"
+  },
+  "data/roads.json": {
+   "bytes": 2524897,
+   "sha256": "8209508c8f279f2dfa94e7518056d15bfe03e52833d252a506007b6b3ad28cd7"
+  },
+  "data/routes.json": {
+   "bytes": 336318,
+   "sha256": "1bdf71f852ab9aef00fa87afc7c269027e6cc911645df769caadb5c5486e724b"
+  },
+  "data/schedule.json": {
+   "bytes": 1784316,
+   "sha256": "330851b5fbf90450e2a71af722f5c1528f0179f8160c80ef3febfc04153f5992"
+  },
+  "data/schedule_original.json": {
+   "bytes": 1710573,
+   "sha256": "1e03dc2dc53d45cfee92028a4226a6d510a11973aac2826180c8a616bc32be74"
+  },
+  "data/static-vehicle-filter.json": {
+   "bytes": 7211,
+   "sha256": "b352a65f0c27c6c4afe51cc26b5fa8d28ae0afc68a661f697b28bd6033ca249c"
+  },
+  "data/stations.json": {
+   "bytes": 53362,
+   "sha256": "6552acf2adcd271e8e6b18ac2d7ca46997c6c0b346992cf4dd09e798f0ade664"
+  },
+  "data/traffic/current_replay.json": {
+   "bytes": 10359,
+   "sha256": "e1842d91427b4c7f9b6fbcd642e04fe887ee7efdf03ea11aa774ccde80442345"
+  },
+  "data/traffic/replay/DEMO_CUES.json": {
+   "bytes": 7984,
+   "sha256": "d7a5f7fce9f72db427e0771d4773d4ecda6bcd3c321ae23929c5b89810941567"
+  },
+  "data/traffic/replay/RUN_CONFIG_V2.json": {
+   "bytes": 3826,
+   "sha256": "3a40a9ff9cc612db70f2d429efee10eaddcf03e5d607dc30d11b79ff195a73f2"
+  },
+  "data/traffic/replay/actors.json": {
+   "bytes": 6716508,
+   "sha256": "8f10b63c9426dc015d285048a56fa8e6fff1758a2b314c87e7aaa5baf5132d63"
+  },
+  "data/traffic/replay/flow_v2.rou.xml": {
+   "bytes": 705171,
+   "sha256": "72095bea1decbcc5e8beebbea167504f39477048089324d15ac28811488547d6"
+  },
+  "data/traffic/replay/frames_index.json": {
+   "bytes": 200311,
+   "sha256": "2d8031fcb0132a639e39284cfeaf0988eb7910433890ade6b8277bd936bae661"
+  },
+  "data/traffic/replay/population_events.jsonl": {
+   "bytes": 2045817,
+   "sha256": "62a585f89f0cc13ba80a8d9f9e0450d52ca0bd2b8fee9c311cde8b0fd19fdf45"
+  },
+  "data/traffic/replay/simulation.json": {
+   "bytes": 2017301,
+   "sha256": "a854bea6b3c22dd0638ac9b540e1792df8688a0110e0a669f07cd0455a46f00b"
+  },
+  "data/traffic/replay/sumo_errors.log": {
+   "bytes": 1509,
+   "sha256": "234fa472d9333a2701eb358768db48b61417db4cf047ae5c97a79907ab3973a5"
+  },
+  "data/traffic/replay/sumo_messages.log": {
+   "bytes": 540,
+   "sha256": "50b344b473332edb4e07af84e28be89ce49a3fec37c3ba4889cc1db9e2ea3028"
+  },
+  "data/traffic/replay/tls_frames.jsonl": {
+   "bytes": 85300893,
+   "sha256": "31e2deda347349f4056d6557f0eede1612fb5c49c26cba8246315c1eeed4009f"
+  },
+  "data/traffic/replay/traffic_flow.f32": {
+   "bytes": 105780340,
+   "sha256": "4c62cac605b7eb307fea9527a133f1d7a2b5ee576b8dd0a885a78355e06f6b82"
+  },
+  "data/traffic/signal_layer_v2.json": {
+   "bytes": 791656,
+   "sha256": "05b62182b345a258459f56dd650f420d1e9a4bd6d80fc6695377e2f28beae93e"
+  },
+  "data/uav-cues.json": {
+   "bytes": 14493,
+   "sha256": "9e4403aeaff5464e3d385940950be7aeb0764453bc79f76e57a7e0c8dcbde9da"
+  },
+  "demo-cues.js": {
+   "bytes": 1537,
+   "sha256": "1f48805ab37cc876489a223bb89d947b5cbf85d6a425d9e8c5209d4639a0818e"
+  },
+  "evidence/AUDIT_REPLAY_V1_baseline.json": {
+   "bytes": 12409,
+   "sha256": "f94006c046e262333e92ec8e2c5412893f1ca27eee8ec80ef27bf9b46d0caf17"
+  },
+  "evidence/AUDIT_REPLAY_V2.json": {
+   "bytes": 14329,
+   "sha256": "541cc29ef724f15decb01554e6890e758b46a71fcb71b1afa2905d42c9051759"
+  },
+  "evidence/INTERNAL_JUNCTION_PATCH.json": {
+   "bytes": 4406,
+   "sha256": "14d28954feeee4c7acf169a37aea10768ee4383e00d4cd92f6fe84ee623f3475"
+  },
+  "evidence/MOVEMENT_RESTRICTIONS.json": {
+   "bytes": 615,
+   "sha256": "884c8e313dade47c499c93c6df5e838e4b81ca3253e6eb9c5e50e98eabdcd149"
+  },
+  "evidence/ORIGINAL_ASSET_HASHES.txt": {
+   "bytes": 318,
+   "sha256": "816ace1f7f222e2522c0d992e4e20a71d642bf88b4b18c93279f944ff374c909"
+  },
+  "evidence/PASS_TESTS_GAP_FILL.json": {
+   "bytes": 82355,
+   "sha256": "9f34cc01a3e970911a95638eac62bb64cba8cbbf96a21bf3bd7ef660b59aff54"
+  },
+  "evidence/QUALIFICATION_V2.json": {
+   "bytes": 2366,
+   "sha256": "5d626cf99cb1edef55773ad7664e1003705f0033ac864c080e3ee2403e4a8f05"
+  },
+  "evidence/RED_CROSSING_CHECK_V2.json": {
+   "bytes": 24839,
+   "sha256": "f1a4721febbdedebc08d9fe777ca3b337419df6a6c4c0c996335fe72d5b0d132"
+  },
+  "evidence/REPLACEMENT_SPAWN_ANALYSIS.json": {
+   "bytes": 15656,
+   "sha256": "8f6577ef2aace07bef2be182f59401088a054872700070051a114ed61db115aa"
+  },
+  "evidence/ROAD_REPAIR_LEDGER_V2.json": {
+   "bytes": 13533,
+   "sha256": "a566eb56e2698d4724a4abaf21e35e81089c525bb571a7553e1233e318951c33"
+  },
+  "evidence/ROAD_REPAIR_SUMMARY_V2.json": {
+   "bytes": 22729,
+   "sha256": "6c4c348be18d6e7393a1a7aa27031c6a7092d56f7a9ac08a53ca064f77252d6d"
+  },
+  "evidence/SCC_SUMMARY.json": {
+   "bytes": 179,
+   "sha256": "3230e60c7a316a9584ba12abf0fd9f97b4b74b37f1388dd36d8a7713baf667b1"
+  },
+  "evidence/maps/MAP_01_before_v1.png": {
+   "bytes": 1631053,
+   "sha256": "ee6632695e86796c09e4f7e0a7ad35a5d9591cdfe2a25b37ae0dea17dbc0cfe9"
+  },
+  "evidence/maps/MAP_02_after_v2.png": {
+   "bytes": 1692341,
+   "sha256": "ee481fc0e7575794b2b4a83176a5a655dca760747ec5cb23e1524c077e74db74"
+  },
+  "evidence/maps/MAP_03_diff.png": {
+   "bytes": 1411019,
+   "sha256": "8ff206dd7424e7b9e4b827fbdb095c7bfb45d053949987e1ca9e06a8515ccc2f"
+  },
+  "evidence/maps/MAP_04_campus_after.png": {
+   "bytes": 557592,
+   "sha256": "928e2cce0bfc208583993b296984fbc7bc2107e8c16a33bceada742c9cf1860f"
+  },
+  "evidence/maps/MAP_05_campus_diff.png": {
+   "bytes": 457717,
+   "sha256": "6aee8df903c881c4120442132cf76c5be6f35c32452932d6b52b078795f5a3de"
+  },
+  "evidence/maps/MAP_06_residual_kensington.png": {
+   "bytes": 573410,
+   "sha256": "922e67318bee9837d345207eec633fbff8f0bb19cc25d26b723011d613277579"
+  },
+  "evidence/uav/uav_replay_staggered_v2.json": {
+   "bytes": 1784316,
+   "sha256": "330851b5fbf90450e2a71af722f5c1528f0179f8160c80ef3febfc04153f5992"
+  },
+  "finish_on_mac.sh": {
+   "bytes": 1760,
+   "sha256": "596d02e097f65f65e8d4d20511cacbfcd90efca3a3c668d570b9e755197767d1"
+  },
+  "follow-camera.js": {
+   "bytes": 5696,
+   "sha256": "d1a385138020b2aa26345c3e9ad261df7254414bbe9c709d15ecd892edd3adca"
+  },
+  "index.html": {
+   "bytes": 9560,
+   "sha256": "1b906e7857b7928c016929d2129d4b97f83f1c0b34c4048086d41a304103e545"
+  },
+  "index.js": {
+   "bytes": 25990,
+   "sha256": "8b9cc366271f0500b3c0ba5bf59cf48cb7c6c8203d46cb693d8f42bd2c2b097c"
+  },
+  "parking.js": {
+   "bytes": 3410,
+   "sha256": "bba8dd456544c98a3adc3d2a2ca1e8540c7364f37620209893e9da6e6aa1ff1b"
+  },
+  "serve_demo.py": {
+   "bytes": 1108,
+   "sha256": "7acb7d575bbcf8b094c842c55f560a76c473f69b22cb584f64cd097209b7d2ae"
+  },
+  "signals-v2.js": {
+   "bytes": 7133,
+   "sha256": "389d75b41647026afdc9b2e874d6e6cff87502955d3155530f43b87f2fb459aa"
+  },
+  "signals.js": {
+   "bytes": 2223,
+   "sha256": "117c322f5bb0302936931118e1e3ce1a1605537e2ff07953c6c603099363078c"
+  },
+  "static-batches.js": {
+   "bytes": 2905,
+   "sha256": "441b31fc67dc9fc6d7168587d0ea65e8926281c0d93f492421cb2e8da712aee8"
+  },
+  "stations.js": {
+   "bytes": 3925,
+   "sha256": "7a96384eac58ece41b2bbb587318600e092cd74abd820e421e18da692416f22a"
+  },
+  "vendor/three/LICENSE": {
+   "bytes": 1081,
+   "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc"
+  },
+  "vendor/three/build/three.core.js": {
+   "bytes": 1443056,
+   "sha256": "3718df126d69c125362a03340913204470d8c50238605150e57f808840fb7759"
+  },
+  "vendor/three/build/three.module.js": {
+   "bytes": 650153,
+   "sha256": "bbf5ed13fe4373f5bd38b14ea8e62e9f157327da5638edc6d3863e08b167c9c7"
+  },
+  "vendor/three/examples/jsm/controls/OrbitControls.js": {
+   "bytes": 40504,
+   "sha256": "faabb4e8dfd9235ee4a9fd7c9a3d75f90f1689dbd4944bd6fd32117dacec5f93"
+  },
+  "vendor/three/examples/jsm/libs/meshopt_decoder.module.js": {
+   "bytes": 29256,
+   "sha256": "d428e73a000057c6c94bfcedc3412d0c2dc14ca8800e88553aab05113ad2bf19"
+  },
+  "vendor/three/examples/jsm/loaders/GLTFLoader.js": {
+   "bytes": 114959,
+   "sha256": "97642d720f16cc9a0c9844934198e4d0c023bea8e89576d0f7545d03b2d103d2"
+  },
+  "vendor/three/examples/jsm/utils/BufferGeometryUtils.js": {
+   "bytes": 37621,
+   "sha256": "5c552223a9309883743b80538d6e9cdb45e3227f30d3ec56fb2c39b46e78d595"
+  },
+  "vendor/three/examples/jsm/utils/SkeletonUtils.js": {
+   "bytes": 11535,
+   "sha256": "b1632a703206c3d830de9fcbe515696770d04b71a15ee6b50afa6d2c3298c86f"
+  },
+  "vendor/three/package.json": {
+   "bytes": 3826,
+   "sha256": "1d5c438acdc1fe5a52fb8ede2e417afd91fec91d22275c40f7b739591b24e4df"
+  }
+ },
+ "expected_from_mac": [
+  "assets/city.glb",
+  "assets/hexacopter_cargo.glb",
+  "data/parking.json"
+ ],
+ "revision_note": "index.js patched 2026-09-11 18:10 UTC: parked-vehicle filter names compared after GLTFLoader sanitisation"
+}

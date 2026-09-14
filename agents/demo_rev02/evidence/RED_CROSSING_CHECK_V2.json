@@ -1,0 +1,972 @@
+{
+ "schema": "UWM_DEMO_REVISION_02_RED_CROSSING_CHECK_V1",
+ "run": "runs/netF2_3600",
+ "crossings_by_state": {
+  "G": 81834,
+  "g": 11207,
+  "r": 997,
+  "y": 785
+ },
+ "red_flag_classes": {
+  "ADJACENT_LANE": 726,
+  "OTHER_TRAFFIC": 271
+ },
+ "true_red_by_movement": [],
+ "examples": {
+  "ADJACENT_LANE": [
+   {
+    "t": 6,
+    "id": 301,
+    "tls": "cluster_109873_11338967299_2152592819_8526839819",
+    "link": 2,
+    "from_lane": "1070598999#1_0",
+    "nearest_lane_prev": "1070598999#1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_109873_11338967299_2152592819_8526839819_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.0,
+    "speed_after": 8.91,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     114.6,
+     634.5
+    ]
+   },
+   {
+    "t": 9,
+    "id": 985,
+    "tls": "cluster_13156048979_14454852_2808877326_2808877328_#3more",
+    "link": 5,
+    "from_lane": "307128376#1_0",
+    "nearest_lane_prev": "307128376#1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_13156048979_14454852_2808877326_2808877328_#3more_3_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -653.4,
+     534.2
+    ]
+   },
+   {
+    "t": 9,
+    "id": 985,
+    "tls": "cluster_13156048979_14454852_2808877326_2808877328_#3more",
+    "link": 4,
+    "from_lane": "307128376#1_0",
+    "nearest_lane_prev": "307128376#1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_13156048979_14454852_2808877326_2808877328_#3more_3_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -653.4,
+     534.2
+    ]
+   },
+   {
+    "t": 13,
+    "id": 104,
+    "tls": "cluster_1145297639_4749990829_5940891839_5940891843_#1more",
+    "link": 2,
+    "from_lane": "482128758#1_0",
+    "nearest_lane_prev": "482128758#1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1145297639_4749990829_5940891839_5940891843_#1more_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.65,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     188.3,
+     623.2
+    ]
+   },
+   {
+    "t": 27,
+    "id": 213,
+    "tls": "cluster_109870_1356901661_2360736224_2360736225_#10more",
+    "link": 1,
+    "from_lane": "-3997784#2_0",
+    "nearest_lane_prev": "-3997784#2_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_109870_1356901661_2360736224_2360736225_#10more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 0.0,
+    "speed_after": 2.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     318.1,
+     615.1
+    ]
+   },
+   {
+    "t": 31,
+    "id": 360,
+    "tls": "cluster_104401_11158072325_1351879191_3054882678_#3more",
+    "link": 3,
+    "from_lane": "-795483123#4_0",
+    "nearest_lane_prev": "-795483123#4_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_104401_11158072325_1351879191_3054882678_#3more_2_0",
+    "d_now_m": 0.0,
+    "speed_before": 0.0,
+    "speed_after": 2.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -786.7,
+     186.0
+    ]
+   },
+   {
+    "t": 31,
+    "id": 776,
+    "tls": "cluster_1127947209_2104376780_3925964620_3925964626_#4more",
+    "link": 1,
+    "from_lane": "301816047#2_0",
+    "nearest_lane_prev": "301816047#2_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1127947209_2104376780_3925964620_3925964626_#4more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 0.0,
+    "speed_after": 2.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     881.2,
+     686.5
+    ]
+   },
+   {
+    "t": 35,
+    "id": 73,
+    "tls": "cluster_1508464353_1508464354_8194160536",
+    "link": 3,
+    "from_lane": "137521442#0_1",
+    "nearest_lane_prev": "137521442#0_1",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1508464353_1508464354_8194160536_4_0",
+    "d_now_m": 0.0,
+    "speed_before": 0.0,
+    "speed_after": 2.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -435.6,
+     -32.2
+    ]
+   },
+   {
+    "t": 41,
+    "id": 55,
+    "tls": "cluster_1508464353_1508464354_8194160536",
+    "link": 2,
+    "from_lane": "137521442#0_0",
+    "nearest_lane_prev": "137521442#0_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1508464353_1508464354_8194160536_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -437.5,
+     -26.7
+    ]
+   },
+   {
+    "t": 44,
+    "id": 956,
+    "tls": "cluster_109870_1356901661_2360736224_2360736225_#10more",
+    "link": 3,
+    "from_lane": "207825582#5_0",
+    "nearest_lane_prev": "207825582#5_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_109870_1356901661_2360736224_2360736225_#10more_2_0",
+    "d_now_m": 0.0,
+    "speed_before": 0.0,
+    "speed_after": 2.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     325.4,
+     601.8
+    ]
+   },
+   {
+    "t": 47,
+    "id": 28,
+    "tls": "cluster_109870_1356901661_2360736224_2360736225_#10more",
+    "link": 3,
+    "from_lane": "207825582#5_0",
+    "nearest_lane_prev": "207825582#5_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_109870_1356901661_2360736224_2360736225_#10more_2_0",
+    "d_now_m": 0.0,
+    "speed_before": 4.0,
+    "speed_after": 6.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     322.6,
+     602.8
+    ]
+   },
+   {
+    "t": 49,
+    "id": 1110,
+    "tls": "cluster_2104376750_2326030939_3925964637_5146350397_#2more",
+    "link": 5,
+    "from_lane": "529826521#2_0",
+    "nearest_lane_prev": "529826521#2_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_2104376750_2326030939_3925964637_5146350397_#2more_4_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     878.8,
+     722.1
+    ]
+   },
+   {
+    "t": 57,
+    "id": 745,
+    "tls": "cluster_2104376750_2326030939_3925964637_5146350397_#2more",
+    "link": 5,
+    "from_lane": "529826521#2_0",
+    "nearest_lane_prev": "529826521#2_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_2104376750_2326030939_3925964637_5146350397_#2more_4_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     878.6,
+     722.2
+    ]
+   },
+   {
+    "t": 91,
+    "id": 302,
+    "tls": "cluster_1127947209_2104376780_3925964620_3925964626_#4more",
+    "link": 1,
+    "from_lane": "301816047#2_0",
+    "nearest_lane_prev": "301816047#2_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1127947209_2104376780_3925964620_3925964626_#4more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 1.08,
+    "speed_after": 3.08,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     880.5,
+     684.7
+    ]
+   },
+   {
+    "t": 94,
+    "id": 154,
+    "tls": "747427235",
+    "link": 6,
+    "from_lane": "1135962269#2_0",
+    "nearest_lane_prev": "1135962269#2_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":747427235_5_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 6.27,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1150.9,
+     -783.4
+    ]
+   },
+   {
+    "t": 95,
+    "id": 1465,
+    "tls": "cluster_1508464353_1508464354_8194160536",
+    "link": 2,
+    "from_lane": "137521442#0_0",
+    "nearest_lane_prev": "137521442#0_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1508464353_1508464354_8194160536_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 0.0,
+    "speed_after": 2.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -433.0,
+     -29.8
+    ]
+   },
+   {
+    "t": 98,
+    "id": 1086,
+    "tls": "cluster_1508464353_1508464354_8194160536",
+    "link": 2,
+    "from_lane": "137521442#0_0",
+    "nearest_lane_prev": "137521442#0_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1508464353_1508464354_8194160536_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 4.0,
+    "speed_after": 6.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -435.5,
+     -28.1
+    ]
+   },
+   {
+    "t": 100,
+    "id": 1536,
+    "tls": "cluster_13021902028_20963439_2290501003_3925964625_#1more",
+    "link": 8,
+    "from_lane": "313185430#1_0",
+    "nearest_lane_prev": "313185430#1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_13021902028_20963439_2290501003_3925964625_#1more_6_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     953.0,
+     555.6
+    ]
+   },
+   {
+    "t": 100,
+    "id": 1536,
+    "tls": "cluster_13021902028_20963439_2290501003_3925964625_#1more",
+    "link": 7,
+    "from_lane": "313185430#1_0",
+    "nearest_lane_prev": "313185430#1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_13021902028_20963439_2290501003_3925964625_#1more_6_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     953.0,
+     555.6
+    ]
+   },
+   {
+    "t": 147,
+    "id": 642,
+    "tls": "cluster_109870_1356901661_2360736224_2360736225_#10more",
+    "link": 1,
+    "from_lane": "-3997784#2_0",
+    "nearest_lane_prev": "-3997784#2_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_109870_1356901661_2360736224_2360736225_#10more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 0.0,
+    "speed_after": 2.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     318.1,
+     615.1
+    ]
+   },
+   {
+    "t": 151,
+    "id": 1358,
+    "tls": "cluster_1127947209_2104376780_3925964620_3925964626_#4more",
+    "link": 1,
+    "from_lane": "301816047#2_0",
+    "nearest_lane_prev": "301816047#2_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1127947209_2104376780_3925964620_3925964626_#4more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 6.44,
+    "speed_after": 8.44,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     880.3,
+     684.1
+    ]
+   },
+   {
+    "t": 155,
+    "id": 1569,
+    "tls": "cluster_13917552919_5898890864_5898890865_6210383755_#5more",
+    "link": 1,
+    "from_lane": "821523180#0_0",
+    "nearest_lane_prev": "821523180#0_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_13917552919_5898890864_5898890865_6210383755_#5more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 0.0,
+    "speed_after": 2.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -247.1,
+     659.6
+    ]
+   },
+   {
+    "t": 164,
+    "id": 718,
+    "tls": "cluster_13444569005_198057_6322348156_6322357952",
+    "link": 4,
+    "from_lane": "-1245801506#1_0",
+    "nearest_lane_prev": "-1245801506#1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_13444569005_198057_6322348156_6322357952_2_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     1077.7,
+     950.7
+    ]
+   },
+   {
+    "t": 207,
+    "id": 1009,
+    "tls": "cluster_109870_1356901661_2360736224_2360736225_#10more",
+    "link": 1,
+    "from_lane": "-3997784#2_0",
+    "nearest_lane_prev": "-3997784#2_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_109870_1356901661_2360736224_2360736225_#10more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 0.0,
+    "speed_after": 2.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     318.0,
+     614.8
+    ]
+   },
+   {
+    "t": 211,
+    "id": 1615,
+    "tls": "cluster_1127947209_2104376780_3925964620_3925964626_#4more",
+    "link": 1,
+    "from_lane": "301816047#2_0",
+    "nearest_lane_prev": "301816047#2_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1127947209_2104376780_3925964620_3925964626_#4more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 0.0,
+    "speed_after": 2.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     881.2,
+     686.5
+    ]
+   }
+  ],
+  "OTHER_TRAFFIC": [
+   {
+    "t": 10,
+    "id": 513,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": "1434937799_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1173.2,
+     441.4
+    ]
+   },
+   {
+    "t": 15,
+    "id": 354,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": "1434937799_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1173.6,
+     440.9
+    ]
+   },
+   {
+    "t": 32,
+    "id": 747,
+    "tls": "cluster_109870_1356901661_2360736224_2360736225_#10more",
+    "link": 1,
+    "from_lane": "-3997784#2_0",
+    "nearest_lane_prev": ":cluster_265565440_27322675_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_109870_1356901661_2360736224_2360736225_#10more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 6.0,
+    "speed_after": 8.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     316.8,
+     611.3
+    ]
+   },
+   {
+    "t": 152,
+    "id": 842,
+    "tls": "cluster_109870_1356901661_2360736224_2360736225_#10more",
+    "link": 1,
+    "from_lane": "-3997784#2_0",
+    "nearest_lane_prev": ":cluster_265565440_27322675_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_109870_1356901661_2360736224_2360736225_#10more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 6.0,
+    "speed_after": 8.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     316.8,
+     611.3
+    ]
+   },
+   {
+    "t": 207,
+    "id": 412,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1175.5,
+     437.6
+    ]
+   },
+   {
+    "t": 246,
+    "id": 1381,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1175.2,
+     438.0
+    ]
+   },
+   {
+    "t": 248,
+    "id": 1307,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": "1434937799_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1174.4,
+     439.8
+    ]
+   },
+   {
+    "t": 270,
+    "id": 173,
+    "tls": "cluster_109870_1356901661_2360736224_2360736225_#10more",
+    "link": 1,
+    "from_lane": "-3997784#2_0",
+    "nearest_lane_prev": ":cluster_265565440_27322675_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_109870_1356901661_2360736224_2360736225_#10more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 4.0,
+    "speed_after": 6.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     317.0,
+     611.9
+    ]
+   },
+   {
+    "t": 306,
+    "id": 1454,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1175.2,
+     438.0
+    ]
+   },
+   {
+    "t": 308,
+    "id": 1415,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": "1434937799_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1174.4,
+     439.8
+    ]
+   },
+   {
+    "t": 313,
+    "id": 491,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1175.0,
+     438.5
+    ]
+   },
+   {
+    "t": 315,
+    "id": 995,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1174.8,
+     438.9
+    ]
+   },
+   {
+    "t": 320,
+    "id": 352,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": "1434937799_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1173.2,
+     441.5
+    ]
+   },
+   {
+    "t": 322,
+    "id": 680,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": "1434937799_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1174.0,
+     440.3
+    ]
+   },
+   {
+    "t": 330,
+    "id": 1037,
+    "tls": "cluster_109870_1356901661_2360736224_2360736225_#10more",
+    "link": 1,
+    "from_lane": "-3997784#2_0",
+    "nearest_lane_prev": ":cluster_265565440_27322675_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_109870_1356901661_2360736224_2360736225_#10more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 4.0,
+    "speed_after": 6.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     317.0,
+     611.9
+    ]
+   },
+   {
+    "t": 332,
+    "id": 754,
+    "tls": "cluster_109870_1356901661_2360736224_2360736225_#10more",
+    "link": 1,
+    "from_lane": "-3997784#2_0",
+    "nearest_lane_prev": ":cluster_265565440_27322675_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_109870_1356901661_2360736224_2360736225_#10more_0_0",
+    "d_now_m": 0.0,
+    "speed_before": 6.0,
+    "speed_after": 8.0,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     316.7,
+     611.0
+    ]
+   },
+   {
+    "t": 366,
+    "id": 134,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1175.2,
+     438.0
+    ]
+   },
+   {
+    "t": 368,
+    "id": 519,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": "1434937799_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1174.4,
+     439.8
+    ]
+   },
+   {
+    "t": 375,
+    "id": 1356,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1175.3,
+     437.9
+    ]
+   },
+   {
+    "t": 379,
+    "id": 1199,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1175.1,
+     438.3
+    ]
+   },
+   {
+    "t": 381,
+    "id": 1677,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": "1434937799_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1174.2,
+     440.0
+    ]
+   },
+   {
+    "t": 383,
+    "id": 988,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": "1434937799_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.93,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1173.0,
+     441.6
+    ]
+   },
+   {
+    "t": 386,
+    "id": 1255,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.91,
+    "speed_after": 8.93,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1175.6,
+     437.3
+    ]
+   },
+   {
+    "t": 426,
+    "id": 1736,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1175.2,
+     438.0
+    ]
+   },
+   {
+    "t": 428,
+    "id": 1813,
+    "tls": "cluster_1120315855_1120315880_1120315903_5675599731_#3more",
+    "link": 4,
+    "from_lane": "880973727#1_0",
+    "nearest_lane_prev": ":cluster_1120315855_1120315880_1120315903_5675599731_#3more_1_0",
+    "d_prev_m": 0.0,
+    "nearest_lane_now": "1434937799_0",
+    "d_now_m": 0.0,
+    "speed_before": 8.94,
+    "speed_after": 8.94,
+    "state_prev": "r",
+    "state_now": "r",
+    "world_xz": [
+     -1174.4,
+     439.8
+    ]
+   }
+  ]
+ },
+ "reading": "TRUE_RED counts crossings where the vehicle demonstrably approached on the red movement's own lane while that head was red for the whole crossing second. ADJACENT_LANE / OTHER_TRAFFIC are detector artefacts of the 2.5 m lateral band (the vehicle was on a different lane whose own head state applies)."
+}

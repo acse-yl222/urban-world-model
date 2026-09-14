@@ -1,0 +1,49 @@
+{
+  "materials": 12,
+  "parts": {
+    "body": {
+      "triangles": 1320,
+      "primitives": 10,
+      "pivot_translation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "wing_L": {
+      "triangles": 28,
+      "primitives": 4,
+      "pivot_translation": [
+        -0.042,
+        0.034,
+        0.02
+      ]
+    },
+    "wing_R": {
+      "triangles": 28,
+      "primitives": 4,
+      "pivot_translation": [
+        0.042,
+        0.034,
+        0.02
+      ]
+    }
+  },
+  "extents_with_wings_flat_m": {
+    "x": [
+      -0.3319999916553497,
+      0.3319999916553497
+    ],
+    "y": [
+      -0.08100000023841858,
+      0.12354999595880509
+    ],
+    "z": [
+      -0.20499999821186066,
+      0.17399999499320984
+    ]
+  },
+  "wingspan_m": 0.664,
+  "length_m": 0.379,
+  "bytes": 112208
+}

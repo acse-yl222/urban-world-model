@@ -1,0 +1,135 @@
+{
+ "schema": "UWM_DEMO_REVISION_02_INTERNAL_JUNCTION_PATCH_V1",
+ "rule": "contPos=0 removes the mid-junction waiting position of the listed turning connections only; the vehicle waits at the stop line instead. No connection is closed.",
+ "patched_connections": [
+  {
+   "from": "939548790#0",
+   "to": "876112128#0",
+   "fromLane": "1",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Gloucester Road -> Elvaston Place (right turn); 17 junction-collision records in netE_demE_3600 with the turning vehicle stopped at its internal waiting position on the path of the opposing straight movement"
+  },
+  {
+   "from": "482125812#2",
+   "to": "72454096#1",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Harrington Road -> Queen's Gate (right turn); 14 records"
+  },
+  {
+   "from": "824795213#3",
+   "to": "8392414#0",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Earl's Court Road -> Pembroke Square (right turn); 8 records"
+  },
+  {
+   "from": "-88443018#2",
+   "to": "26429154#1",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Queen's Gate Place Mews -> Queen's Gate Place (right turn); 7 records"
+  },
+  {
+   "from": "-98222517#5",
+   "to": "-4981795#2",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Kensington Church Street -> Campden Grove (right turn); 6 records (also 10 in netR3_900)"
+  },
+  {
+   "from": "83606936#9",
+   "to": "58112580#0",
+   "fromLane": "1",
+   "toLane": "1",
+   "contPos": "0",
+   "evidence": "Kensington High Street -> Kensington High Street via Abingdon Road cluster (right/merge); 5 records"
+  },
+  {
+   "from": "-72454089#1",
+   "to": "72454092#1",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Stanhope Gardens -> Queen's Gate (right turn); 5 records"
+  },
+  {
+   "from": "-24433777#0",
+   "to": "876112133#1",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Elvaston Mews -> Elvaston Place (right turn); 4 records"
+  },
+  {
+   "from": "43583117#1",
+   "to": "-1106758781#1",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Gloucester Road -> Hereford Square (right turn); 2 records"
+  },
+  {
+   "from": "-8419307#0",
+   "to": "10277371",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Victoria Road -> St Alban's Grove (right turn); 1 record (same mechanism)"
+  },
+  {
+   "from": "-8391948#6",
+   "to": "11994258#0",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Campden Hill Road -> Campden Hill (right turn); 27 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  },
+  {
+   "from": "-824795212",
+   "to": "1116261149#0",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Earl's Court Road -> Scarsdale Villas (right turn); 12 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  },
+  {
+   "from": "-939429883#1",
+   "to": "1176480314",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Kensington Church Street -> Holland Street (right turn); 11 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  },
+  {
+   "from": "8319770#0",
+   "to": "881023275#1",
+   "fromLane": "0",
+   "toLane": "1",
+   "contPos": "0",
+   "evidence": "Young Street -> Kensington High Street (right turn); 5 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  },
+  {
+   "from": "-4422918#1",
+   "to": "4353057#0",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Old Brompton Road -> Gledhow Gardens (right turn); 2 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  },
+  {
+   "from": "-820118781",
+   "to": "9888532#2",
+   "fromLane": "0",
+   "toLane": "0",
+   "contPos": "0",
+   "evidence": "Petersham Mews -> Queen's Gate Place (right turn); 2 junction-collision records in netF_3600 with the turning vehicle stopped at its internal waiting position on the path of the crossing movement"
+  }
+ ],
+ "iteration": 2
+}

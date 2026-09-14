@@ -1,0 +1,119 @@
+{
+ "schema": "UWM_DEMO_REVISION_02_BIRD_GEOMETRY_V1",
+ "source_hulls": {
+  "path": "/mnt/user-data/uploads/IRP/IRP-Urban World Model System Interface/UWM_DEMO_20260911/traffic/decoded_building_hulls_v1.json",
+  "sha256": "a16883d0879f16d18b2fa7b3d0b7ec00c1796d206a350f29c949e67f9883a6b8"
+ },
+ "exact_footprints_used": 1141,
+ "transform": "bird=(worldX, -worldZ, worldY-datum); viewer=(bird_x, bird_z+datum, -bird_y)",
+ "ground_datum_m": 0.0,
+ "world_box": {
+  "x": [
+   350.0,
+   1250.0
+  ],
+  "z": [
+   -250.0,
+   720.0
+  ],
+  "ceiling_m": 100.0
+ },
+ "bird_grid": {
+  "origin": [
+   350.0,
+   -720.0,
+   0.0
+  ],
+  "spacing_xy_m": 4.0,
+  "spacing_z_m": 2.0,
+  "shape_zyx": [
+   50,
+   243,
+   225
+  ],
+  "voxels": 2733750,
+  "occupied_voxels": 259406,
+  "occupied_share": 0.0949
+ },
+ "buildings_selected": 1401,
+ "buildings_skipped_degenerate_or_flat": 0,
+ "selection_rule": "building_id mesh nodes only (decoded_building_hulls_v1.json); roads/trees/furniture are not building nodes and are never voxelised; hull solid from ground to its max height (conservative, fills courtyards).",
+ "landmark_checks": [
+  {
+   "name": "Queen's Tower | 01 | stone shaft and real recessed apertures",
+   "world_centre_xz": [
+    710.8,
+    211.9
+   ],
+   "top_m": 62.9,
+   "bird_xyz_mid_height": [
+    710.8,
+    -211.9,
+    31.4
+   ],
+   "occupied_at_mid_height": true,
+   "occupied_above_top_plus_4m": true
+  },
+  {
+   "name": "Natural History Museum | Mapped masonry with recessed Romanesqu",
+   "world_centre_xz": [
+    778.1,
+    427.2
+   ],
+   "top_m": 56.6,
+   "bird_xyz_mid_height": [
+    778.1,
+    -427.2,
+    28.3
+   ],
+   "occupied_at_mid_height": true,
+   "occupied_above_top_plus_4m": false
+  },
+  {
+   "name": "Sherfield Building | 01 | concrete floor bands and recessed col",
+   "world_centre_xz": [
+    672.4,
+    179.3
+   ],
+   "top_m": 17.8,
+   "bird_xyz_mid_height": [
+    672.4,
+    -179.3,
+    8.9
+   ],
+   "occupied_at_mid_height": true,
+   "occupied_above_top_plus_4m": false
+  },
+  {
+   "name": "Huxley Building | Aerial interpreted roof service assemblies",
+   "world_centre_xz": [
+    559.7,
+    162.0
+   ],
+   "top_m": 29.7,
+   "bird_xyz_mid_height": [
+    559.7,
+    -162.0,
+    14.8
+   ],
+   "occupied_at_mid_height": true,
+   "occupied_above_top_plus_4m": false
+  },
+  {
+   "name": "Royal Albert Hall | glazed elliptical dome and raised drum",
+   "world_centre_xz": [
+    663.2,
+    -83.5
+   ],
+   "top_m": 46.6,
+   "bird_xyz_mid_height": [
+    663.2,
+    83.5,
+    23.3
+   ],
+   "occupied_at_mid_height": true,
+   "occupied_above_top_plus_4m": false
+  }
+ ],
+ "wall_s": 1.6
+}

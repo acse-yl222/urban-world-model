@@ -1,0 +1,92 @@
+{
+ "schema": "UWM_DEMO_REVISION_02_NETWORK_QUALIFICATION_V1",
+ "inputs": {
+  "network": {
+   "path": "net_f2/rebuilt.net.xml",
+   "sha256": "6010939745deca56fb44446413069a6a73667e5a45ca749c12f82fa462a42241"
+  },
+  "glb_roads": {
+   "path": "/tmp/claude-0/-home-claude/ac1cefa9-c151-5b6b-9cc1-a64a346498f7/scratchpad/glb/glb_roads_vehicles.json",
+   "sha256": "76dd452631a627c000f50724f9289ba444979032efef1298685020c5b7634339"
+  },
+  "hulls": {
+   "path": "/mnt/user-data/uploads/IRP/IRP-Urban World Model System Interface/UWM_DEMO_20260911/traffic/decoded_building_hulls_v1.json",
+   "sha256": "a16883d0879f16d18b2fa7b3d0b7ec00c1796d206a350f29c949e67f9883a6b8"
+  }
+ },
+ "parameters": {
+  "net": "net_f2/rebuilt.net.xml",
+  "glb_roads": "/tmp/claude-0/-home-claude/ac1cefa9-c151-5b6b-9cc1-a64a346498f7/scratchpad/glb/glb_roads_vehicles.json",
+  "hulls": "/mnt/user-data/uploads/IRP/IRP-Urban World Model System Interface/UWM_DEMO_20260911/traffic/decoded_building_hulls_v1.json",
+  "out": "net_v2_f2",
+  "road_buffer": 2.4,
+  "road_buffer_per_lane": 3.2,
+  "internal_buffer": 12.0,
+  "road_cover": 0.9,
+  "internal_cover": 0.3,
+  "building_clearance": 2.534,
+  "reversal_deg": 150.0,
+  "keep_v1_allowed": null,
+  "exact_footprints": "net_f2/exact_footprints.pkl",
+  "exact_clearance": 1.2,
+  "exact_clearance_internal": 1.5
+ },
+ "counts": {
+  "lanes": 24101,
+  "external_lanes": 8857,
+  "external_allowed": 2406,
+  "external_allowed_km": 132.33,
+  "internal_allowed": 3723,
+  "closed_lanes_total": 17972,
+  "usable_connections": 3515,
+  "allowed_edges": 1913,
+  "scc_count": 581,
+  "scc_sizes_top10": [
+   1329,
+   2,
+   2,
+   2,
+   2,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "largest_scc_edges": 1329,
+  "largest_scc_lane_km": 91.79,
+  "largest_scc_share_of_allowed_lane_km": 0.6936
+ },
+ "external_closure_reasons": [
+  [
+   "off_glb_road",
+   6244
+  ],
+  [
+   "glb_building_clearance",
+   195
+  ],
+  [
+   "not_passenger_in_source",
+   4
+  ],
+  [
+   "off_glb_road,glb_building_clearance",
+   3
+  ],
+  [
+   "not_passenger_in_source,off_glb_road",
+   2
+  ],
+  [
+   "shape_reversal",
+   2
+  ],
+  [
+   "off_glb_road,shape_reversal",
+   1
+  ]
+ ],
+ "wall_s": 8.2,
+ "claim": "Geometric qualification against decoded GLB road ribbons and building convex hulls. Convex hulls over-exclude courtyards; a closed lane is a model restriction, not a statement about the real street."
+}

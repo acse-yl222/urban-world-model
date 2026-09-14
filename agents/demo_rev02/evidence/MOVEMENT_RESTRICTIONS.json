@@ -1,0 +1,13 @@
+[
+ {
+  "from_lane": "-88443018#2_0",
+  "to_lane": "26429154#1_0",
+  "reason": "junction blocking: the turning vehicle waits at the end of its internal lane for a full target lane and is repeatedly hit by the crossing movement; contPos=0 (iteration 1) did not remove it",
+  "evidence": "Queen's Gate Place Mews -> Queen's Gate Place: 7 collision records in netE_demE_3600 and 9 in netF_3600 (stationary party on :1027237558_1_0)",
+  "tried": [
+   "geometric qualification",
+   "contPos=0 waiting-position removal (iteration 1)"
+  ],
+  "detour": "left turn / next junction; checked by reachability after closure"
+ }
+]

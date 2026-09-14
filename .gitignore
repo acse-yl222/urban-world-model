@@ -36,3 +36,10 @@ __pycache__/
 !assets/actors/**/*.glb
 !docs/media/**
 !assets/index.json
+# symlinks (GitHub Pages cannot build them); the viewer uses vendor/ and models/ directly
+agents/demo_rev02/vendor
+agents/demo_rev02/assets/city.glb
+# the three masks the viewer reads by Range request
+!physics/masks/building_footprint_yx.npy
+!physics/masks/solid_4m_zyx.npy
+!physics/temperature2d/study_area_mask_yx.npy

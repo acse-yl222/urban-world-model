@@ -9,6 +9,12 @@ import { getFrame, f16, loadMask, npy, DATA } from '../npy.js';
 import { initFrames, hasLayer, getFrameF32, framesInfo } from '../frames.js';
 import { CITY_GLB } from '../config.js';
 import { CITY_FROM_PARTS, fetchCityModel } from '../model-source.js';
+import { buildProxyCity } from './proxy.js';
+// Lite mode: phones, tablets and low-memory machines get a proxy city extruded from the 4 m voxel masks instead of the
+// 254 MB model (which needs ~1.6 GB of browser memory). ?lite=1 forces it, ?lite=0 forces the full model.
+const qs0 = new URLSearchParams(location.search);
+const LITE = qs0.get('lite') === '1' || (qs0.get('lite') !== '0' && (/iPhone|iPad|Android|Mobile/i.test(navigator.userAgent)
+  || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform)) || (navigator.deviceMemory !== undefined && navigator.deviceMemory <= 4)));
 import { batchStaticCity } from '../../agents/demo_rev02/static-batches.js';
 import { createReplay, applyCityFilter, SHOT_ORDER, timeString } from './replay.js';
 import { TILE, placeTile, tileClipPlanes, setClipping, tileBuildingCentre, tileBuildingIds, hideReplaced, materialsOf } from './tile.js';
@@ -813,6 +819,20 @@ async function boot() {
     ui.bar.style.width = pct.toFixed(1) + '%';
     ui.pct.textContent = `${(ev.loaded / 1048576).toFixed(0)} / ${(total / 1048576).toFixed(0)} MB · ${pct.toFixed(0)} %${tileMB}`;
   };
+  if (LITE) {
+    // proxy city from the masks (already needed for the fields), then the replay layers
+    ui.pct.textContent = 'Lite mode · building the voxel city…';
+    await dataReady;
+    const roof = await loadMask('masks/roof_height_m_yx.npy');
+    const proxy = buildProxyCity({ footprint, roof, W, H, CELL, X0, ZS });
+    model.add(proxy.mesh);
+    console.log('lite city:', proxy.boxes, 'columns,', proxy.triangles, 'triangles');
+    $('lite-hint').style.display = ''; $('l-supplement').closest('label').style.display = 'none';
+    ui.pct.textContent = 'Traffic and UAV replay…';
+    replayLayer = await createReplay({ scene, camera, controls, campusCentre, campusPose: campusPoseDeg, flyTo, onProgress: t => { ui.pct.textContent = t; } })
+      .catch(e => { console.error('replay unavailable', e); return null; });
+    applyReplayLayers(); setupBirdTracker();
+  } else {
   await new Promise((resolve, reject) => {
     if (CITY_FROM_PARTS) fetchCityModel(onCityProgress).then(buf => loader.parse(buf, '', gltf => onCity(gltf, resolve), reject)).catch(reject);   // GitHub Pages: parts from the models repository
     else loader.load(GLB, gltf => onCity(gltf, resolve), onCityProgress, err => reject(err));
@@ -883,6 +903,7 @@ async function boot() {
     applyReplayLayers(); setupBirdTracker();
   }).catch(e => { ui.pct.textContent = 'Loading failed: ' + (e.message || e); console.error(e); throw e; });
   releaseBatchedGeometry();
+  }
   await dataReady;
   ui.loading.classList.add('hide');
   // ?pose=campus|overhead jumps straight to that view (no intro); ?step=N picks the time step

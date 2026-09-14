@@ -42,5 +42,6 @@ agents/demo_rev02/assets/city.glb
 # the three masks the viewer reads by Range request
 !physics/masks/building_footprint_yx.npy
 !physics/masks/solid_4m_zyx.npy
+!physics/masks/roof_height_m_yx.npy
 !physics/temperature2d/study_area_mask_yx.npy
 !agents/demo_rev02/actors/sedan_4p5m.glb

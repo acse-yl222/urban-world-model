@@ -59,3 +59,15 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #0f1216; fon
 .top-tabs .tab.auto { font-weight: 500; font-size: 13px; color: #ffd98a; display: flex; align-items: center; gap: 6px; padding: 8px 12px; margin-left: 6px; border-left: 1px solid rgba(255,255,255,.15); border-radius: 0; }
 .top-tabs .tab.auto input { margin: 0; }
 @media (max-width: 1400px) { .top-left { max-width: 320px; } .top-tabs .tab { font-size: 13px; padding: 8px 12px; } }
+
+/* small screens: the layer panel folds behind a button, tabs scroll sideways */
+#panel-toggle { display: none; right: 14px; top: 14px; z-index: 3; }
+@media (max-width: 820px) {
+  #panel-toggle { display: block; }
+  .panel { display: none; width: min(320px, 92vw); max-height: 70vh; overflow-y: auto; top: 52px; }
+  .panel.open { display: block; }
+  .top-left { max-width: 55vw; }
+  .top-tabs { left: 12px; right: auto; transform: none; width: auto; max-width: calc(100vw - 24px); overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; top: 54px; }
+  .top-tabs .tab { font-size: 12px; padding: 6px 9px; }
+  .timebar .time { min-width: 0; font-size: 11px; }
+}

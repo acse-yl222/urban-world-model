@@ -22,6 +22,7 @@
   <div class="sub info" id="info"></div>
 </div>
 
+<button id="panel-toggle" class="hud btn" title="Layers and settings">Layers</button>
 <nav class="hud top-tabs">
   <button class="tab shot" data-shot="overview">Campus</button>
   <button class="tab shot" data-shot="junction">Junction</button>
@@ -85,6 +86,7 @@
     <input type="checkbox" id="l-ground" checked><span class="sw ground"></span>Ground / roads
   </label>
   <label class="layer small" title="306 OSM footprints; estimated heights and facades. Existing physics fields have not been recomputed."><input type="checkbox" id="l-supplement" checked><span class="sw model"></span>Added buildings · 306</label>
+  <div class="hint" id="lite-hint" style="display:none">Lite mode: buildings are 4 m voxel columns from the physics masks, because this device has limited memory. <a href="?lite=0">Load the full model</a></div>
   <label id="expansion-ctl" class="layer small" style="display:none" title="Mapped footprints with reference-informed architecture and estimated or imagined details. Uncheck to compare with the originals."><input type="checkbox" id="l-expansion" checked><span class="sw model"></span><span id="expansion-label">Building refinements</span></label>
   <div class="hint"><a href="../../geometry/expansion/docs/ATTRIBUTION.md" target="_blank" rel="noopener">Refinement references and attribution</a></div>
   <div class="hint"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors · ODbL</a></div>
@@ -134,6 +136,7 @@
     <div class="small" id="pct">0 %</div>
   </div>
 </div>
+<script>document.getElementById('panel-toggle').addEventListener('click', () => document.getElementById('layers').classList.toggle('open'));</script>
 <script type="module" src="main.js"></script>
 </body>
 </html>

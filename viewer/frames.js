@@ -24,7 +24,7 @@ async function decode(key, k) {
   const url = `${BASE}${key}/${String(k).padStart(3, '0')}.png`;
   const r = await fetch(url); if (!r.ok) throw new Error('frame missing: ' + url);
   const bmp = await createImageBitmap(await r.blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' });
-  if (!canvas || canvas.width !== w || canvas.height !== h) { canvas = new OffscreenCanvas(w, h); ctx = canvas.getContext('2d', { willReadFrequently: true }); }
+  if (!canvas || canvas.width !== w || canvas.height !== h) { canvas = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(w, h) : Object.assign(document.createElement('canvas'), { width: w, height: h }); ctx = canvas.getContext('2d', { willReadFrequently: true }); }
   ctx.drawImage(bmp, 0, 0); bmp.close();
   const px = ctx.getImageData(0, 0, w, h).data, n = w * h;
   if (meta.kind === 'bit') { const out = new Uint8Array(n); for (let i = 0; i < n; i++) out[i] = px[i * 4] > 127 ? 1 : 0; return out; }

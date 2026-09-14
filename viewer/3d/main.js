@@ -8,6 +8,7 @@ import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { getFrame, f16, loadMask, npy, DATA } from '../npy.js';
 import { initFrames, hasLayer, getFrameF32, framesInfo } from '../frames.js';
 import { CITY_GLB } from '../config.js';
+import { CITY_FROM_PARTS, fetchCityModel } from '../model-source.js';
 import { batchStaticCity } from '../../agents/demo_rev02/static-batches.js';
 import { createReplay, applyCityFilter, SHOT_ORDER, timeString } from './replay.js';
 import { TILE, placeTile, tileClipPlanes, setClipping, tileBuildingCentre, tileBuildingIds, hideReplaced, materialsOf } from './tile.js';
@@ -789,8 +790,7 @@ async function boot() {
   const tileLoad = new URLSearchParams(location.search).get('tile') !== '1' ? Promise.resolve(null)
     : new Promise((resolve, reject) => loader.load(TILE.url, resolve, ev => { tileMB = ` · tile ${(ev.loaded / 1048576).toFixed(0)} / ${(TILE.bytes / 1048576).toFixed(0)} MB`; }, reject))
       .catch(e => { console.error('detail tile failed to load', e); return null; });
-  await new Promise((resolve, reject) => {
-    loader.load(GLB, gltf => {
+  const onCity = (gltf, resolve) => {
       gltf.scene.updateMatrixWorld(true);
       const box = new THREE.Box3(), size = new THREE.Vector3();
       gltf.scene.traverse(o => {
@@ -807,11 +807,15 @@ async function boot() {
       });
       model.add(gltf.scene);
       resolve(gltf);
-    }, ev => {
-      const total = ev.total || 254723368, pct = Math.min(100, ev.loaded / total * 100);
-      ui.bar.style.width = pct.toFixed(1) + '%';
-      ui.pct.textContent = `${(ev.loaded / 1048576).toFixed(0)} / ${(total / 1048576).toFixed(0)} MB · ${pct.toFixed(0)} %${tileMB}`;
-    }, err => reject(err));
+  };
+  const onCityProgress = ev => {
+    const total = ev.total || 254723368, pct = Math.min(100, ev.loaded / total * 100);
+    ui.bar.style.width = pct.toFixed(1) + '%';
+    ui.pct.textContent = `${(ev.loaded / 1048576).toFixed(0)} / ${(total / 1048576).toFixed(0)} MB · ${pct.toFixed(0)} %${tileMB}`;
+  };
+  await new Promise((resolve, reject) => {
+    if (CITY_FROM_PARTS) fetchCityModel(onCityProgress).then(buf => loader.parse(buf, '', gltf => onCity(gltf, resolve), reject)).catch(reject);   // GitHub Pages: parts from the models repository
+    else loader.load(GLB, gltf => onCity(gltf, resolve), onCityProgress, err => reject(err));
   }).then(async gltf => {
     // demo_rev02's display filter (hide the GLB's own animated traffic / birds; parked-car filter), then merge the
     // static buildings into a few draw calls. Ground and trees stay separate meshes so their toggles keep working.

@@ -28,7 +28,7 @@ Everything under `*.glb`, `*.npy`, `*.blend` and `geometry/expansion/output/` is
 
 ## Online
 
-- **Live viewer**: https://acse-yl222.github.io/urban-world-model/viewer/3d/ (GitHub Pages; the 254 MB city model comes from the `models-v1` release)
+- **Live viewer**: https://acse-yl222.github.io/urban-world-model/viewer/3d/ (GitHub Pages; the 254 MB city model is fetched in three parts from the companion repository https://github.com/acse-yl222/urban-world-model-models, whose Pages site allows cross-origin reads; the `models-v1` release holds the same file for download)
 - **Project page**: https://acse-yl222.github.io/urban-world-model/docs/
 - Repository: https://github.com/acse-yl222/urban-world-model
 

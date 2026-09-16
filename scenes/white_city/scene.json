@@ -18,7 +18,8 @@
   "model": {
     "url": "models/white_city_9km2.glb",
     "bytes": 190588872,
-    "compression": "meshopt"
+    "compression": "meshopt",
+    "parts_manifest": "https://acse-yl222.github.io/urban-world-model-models/white_city/manifest.json"
   },
   "lite": {
     "footprint": "masks/building_footprint_2m_yx.npy",

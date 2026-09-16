@@ -57,16 +57,17 @@
   "focus": {
     "box": [
       [
-        160,
-        540
+        -120,
+        -210
       ],
       [
-        560,
-        1000
+        140,
+        140
       ]
     ],
-    "orbit_m": 900,
-    "label": "Television Centre, Westfield and the White City campus"
+    "orbit_m": 520,
+    "label": "Imperial College White City campus",
+    "note": "88 Wood Lane, Uren, Molecular Sciences, I-HUB, Academic Commons, Innovation Court, Scale Space (model X, Z)"
   },
   "timeline": {
     "step_s": 50,

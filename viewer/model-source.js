@@ -5,12 +5,12 @@
 
 /** Fetch a model described by a parts manifest as one ArrayBuffer, reporting {loaded, total} like GLTFLoader's progress. */
 export async function fetchCityModel(manifestUrl, onProgress = () => {}) {
-  const man = await (await fetch(manifestUrl, { cache: 'force-cache' })).json();
+  const man = await (await fetch(manifestUrl, { cache: 'no-cache' })).json();   // always revalidated: a stale manifest with old part sizes made the load fail after a model update
   const base = new URL('./', manifestUrl).href;
   const parts = man.parts, total = man.total_bytes, got = parts.map(() => 0);
   const report = () => onProgress({ loaded: got.reduce((a, b) => a + b, 0), total });
   const buffers = await Promise.all(parts.map(async (p, i) => {
-    const r = await fetch(base + p.file); if (!r.ok) throw new Error(`model part ${p.file}: HTTP ${r.status}`);
+    const r = await fetch(base + p.file + (p.sha256 ? '?v=' + p.sha256.slice(0, 12) : '')); if (!r.ok) throw new Error(`model part ${p.file}: HTTP ${r.status}`);
     const reader = r.body.getReader(), chunks = [];
     for (;;) { const { done, value } = await reader.read(); if (done) break; chunks.push(value); got[i] += value.byteLength; report(); }
     const out = new Uint8Array(p.bytes); let o = 0; for (const c of chunks) { out.set(c, o); o += c.byteLength; }

@@ -92,7 +92,7 @@ function setupSceneUI() {
   sel.replaceChildren(...SCENE.index.scenes.map(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.short ?? s.title; return o; }));
   sel.value = SCENE.id; sel.addEventListener('change', () => { location.href = sceneLink(sel.value); });
   const tabs = $('tabs'), auto = $('auto').closest('label'), mk = (cls, data, key, text) => { const b = document.createElement('button'); b.className = 'tab ' + cls; b.dataset[data] = key; b.textContent = text; return b; };
-  const shots = HAS_REPLAY ? [['overview', 'Campus'], ['junction', 'Junction'], ['traffic', 'Traffic'], ['uavs', 'UAVs'], ['birds', 'Birds']] : [['overview', 'Overview'], ...(SCENE.traffic ? [['traffic', 'Traffic'], ['trafficMap', 'Traffic map']] : []), ...(SCENE.transport ? [['transport', 'Transport']] : [])];
+  const shots = HAS_REPLAY ? [['overview', 'Campus'], ['junction', 'Junction'], ['traffic', 'Traffic'], ['uavs', 'UAVs'], ['birds', 'Birds']] : [['overview', 'Overview'], ...(SCENE.traffic ? [['trafficMap', 'Traffic map']] : [])];   // the close-up traffic and transport orbits stay reachable by ?shot=traffic|transport
   tabs.replaceChildren(...shots.map(([k, t]) => mk('shot', 'shot', k, t)), ...PHASE_ORDER.map(k => mk('field', 'field', k, TAB_NAME[k] ?? k)), auto);
   for (const el of document.querySelectorAll('[data-layer]')) el.style.display = has(el.dataset.layer) ? '' : 'none';
   const legend = (k, L) => { if (!L.legend) return; $(`lg-${k}-lo`).textContent = L.legend[0]; $(`lg-${k}-unit`).textContent = L.legend[1]; $(`lg-${k}-hi`).textContent = L.legend[2]; };
@@ -717,7 +717,7 @@ const TOUR_SHOTS = { overview: { dist: 1, elev: 32, dur: 16000, label: () => `${
   traffic: { dist: 0.55, elev: 48, dur: 18000, label: () => `${SCENE.traffic?.label ?? 'Traffic'} · cars and signal states of the SUMO run`, time: () => traffic ? `Replay ${trafficTime(traffic.t)} · ${traffic.speed}×` : 'Traffic' },
   trafficMap: { fixed: () => overheadPose(), dur: 16000, label: () => `${SCENE.traffic?.label ?? 'Traffic'} · whole area: cars as white (moving) / amber (stopped) dots, signal heads as red / amber / green dots`, time: () => traffic ? `Replay ${trafficTime(traffic.t)} · ${traffic.speed}×` : 'Traffic' },
   transport: { dist: 2.4, elev: 52, dur: 14000, label: () => `${SCENE.transport?.label ?? 'Transport'} · tube, rail and bus network, road disruptions and traffic cameras`, time: () => transport?.summary ?? 'Transport' } };
-const TOUR_ORDER = ['overview', ...(SCENE.traffic ? ['traffic', 'trafficMap'] : []), ...(SCENE.transport ? ['transport'] : [])];
+const TOUR_ORDER = ['overview', ...(SCENE.traffic ? ['trafficMap'] : [])];
 const trafficTime = s => { const t = Math.max(0, Math.floor(s)); return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`; };
 const tour = { active: false, paused: false, az: 0, t0: 0, dur: 16000, shot: 'overview', hold: false };
 function tourPose(az, shot = tour.shot) {

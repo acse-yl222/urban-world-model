@@ -1,0 +1,19 @@
+{
+ "schema": "UWM_WHITE_CITY_TRAFFIC_REPLAY_V1",
+ "generated": "2026-09-16T13:02",
+ "seconds": 3600,
+ "frames": 3600,
+ "record": [
+  "id",
+  "x",
+  "z",
+  "yaw_rad",
+  "speed_m_s"
+ ],
+ "coordinate_frame": "glTF world XYZ; records are vehicle centres at ground level; yaw about +Y (pi - SUMO angle)",
+ "vehicles_peak": 1060,
+ "trips_period_s": 0.6,
+ "seed": 42,
+ "method": "SUMO 1.27.1 (eclipse-sumo pip), OSM highways -> netconvert (--tls.guess-signals, actuated default programmes), randomTrips (fringe factor 5, min distance 400 m), 1 s steps, TraCI recording",
+ "claim": "Synthetic demand and synthetic signal timings on the OSM network; not observed White City traffic."
+}

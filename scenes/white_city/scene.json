@@ -209,5 +209,10 @@
     "label": "TfL transport",
     "attribution": "Powered by TfL Open Data · contains OS data © Crown copyright and database rights"
   },
-  "georeference": "georef.json"
+  "georeference": "georef.json",
+  "traffic": {
+    "dir": "traffic/",
+    "label": "Traffic · SUMO replay",
+    "note": "one-hour SUMO run on the OSM road network with guessed, actuated signals; synthetic demand"
+  }
 }

@@ -100,6 +100,16 @@
       <label class="layer small"><input type="checkbox" id="l-map"><span class="sw map"></span>Map markers</label>
     </div>
   </div>
+  <div id="traffic-ctl" style="display:none">
+    <div class="row head" style="margin-top:8px"><span id="traffic-title">Traffic · SUMO replay</span><input type="checkbox" id="l-traffic" checked title="Show the traffic replay"></div>
+    <div class="grid2">
+      <label class="layer small"><input type="checkbox" id="l-tf-cars" checked><span class="sw cars"></span>Cars</label>
+      <label class="layer small"><input type="checkbox" id="l-tf-signals" checked><span class="sw signals"></span>Signals</label>
+      <label class="layer small"><input type="checkbox" id="l-tf-roads" checked><span class="sw roads"></span>Lane surfaces</label>
+      <label class="layer small"><input type="checkbox" id="l-tf-paths"><span class="sw map"></span>Signal paths</label>
+    </div>
+    <div class="stats" id="traffic-stats"></div>
+  </div>
   <div id="transport-ctl" style="display:none">
     <div class="row head" style="margin-top:8px"><span id="transport-title">Transport · TfL</span><input type="checkbox" id="l-transport" checked title="Show the transport layer"></div>
     <div class="grid2">

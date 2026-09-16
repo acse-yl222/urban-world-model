@@ -17,7 +17,8 @@ scenes/
     ├── models/                white_city_9km2.glb (191 MB, meshopt; from the uploaded Draco GLB via gltf-transform)
     ├── physics/               2 m / 8 m grids: masks/, wind/, temperature/, pollution/, solar/, flood/, web/, manifest.json
     ├── transport/             transport.json (TfL network in model coordinates) and raw/ (the TfL API snapshot)
-    └── tools/                 export_from_run.py (workstation run output -> physics/), build_transport.py (raw TfL -> transport.json)
+    ├── traffic/               SUMO run: white_city.net.xml (OSM -> netconvert), roads.json, signal_layer.json, replay/ (cars once a second, signal states)
+    └── tools/                 export_from_run.py (workstation run output -> physics/), fetch_tfl.py + build_transport.py (TfL), run_sumo.py + build_traffic.py (SUMO)
 ```
 
 The big arrays (`.npy`, `.glb`) are git-ignored; the masks the viewer needs, the PNG frames, the manifests and the
@@ -36,6 +37,7 @@ and the building refinements in `geometry/`; the scene file only switches them o
 | `focus` | `box` [[x, z], [x, z]] of the area the tour orbits, `orbit_m`, `label` |
 | `replay` | `"demo_rev02"` switches on the South Kensington traffic / UAV / bird replay and its tabs |
 | `transport` | `file` (transport.json), `label`, `attribution`: the TfL layer and its tab |
+| `traffic` | `dir` (traffic/), `label`: a SUMO replay (roads.json, signal_layer.json, replay/) drawn with demo_rev02's car, signal and lane modules; its Traffic tab and panel block |
 | `timeline` | `step_s`, `steps`: the wind run's clock, shared by the layers that map onto it |
 | `phase_order` | the field tabs and their sequence |
 | `layers` | one entry per field type: `wind`, `temp`, `solar`, `diurnal`, `poll`, `flood` (any subset) |
@@ -59,3 +61,10 @@ temperatures). The `manifest.json` in `physics/` carries per-array frame times (
 4. `uv run --with numpy,pillow python3 scenes/tools/export_web_frames.py <id>` for the PNG frames (optional locally, required for
    the GitHub Pages copy, which cannot Range-read the arrays).
 5. Optional: a TfL transport layer needs a georeference (`georef.json`, see `white_city/tools/build_transport.py`).
+
+## Traffic (SUMO)
+
+`white_city/tools/run_sumo.py` (`uv run --with eclipse-sumo,numpy`) builds random trips on `traffic/white_city.net.xml` (OSM highways ->
+`netconvert --tls.guess-signals --tls.default-type actuated`, UTM) and records one hour through TraCI; `build_traffic.py`
+(`--with eclipse-sumo,numpy,pyproj`) writes the viewer files in the model frame through `georef.json`. Synthetic demand and signal
+timings, not observed traffic; the A40 Westway runs at ground level in SUMO while the model has the flyover.

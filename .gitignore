@@ -31,6 +31,12 @@ __pycache__/
 !geometry/expansion/output/*/retained_*.glb
 !agents/demo_rev02/data/traffic/replay/*.f32
 !agents/demo_rev02/data/traffic/replay/*.jsonl
+!scenes/*/traffic/replay/*.f32
+!scenes/*/traffic/replay/*.jsonl
+# SUMO inputs that can be rebuilt (OSM extract, trips, raw TraCI recording); the net and the viewer files are kept
+scenes/*/traffic/osm/
+scenes/*/traffic/sim/
+scenes/*/traffic/sim_run.log
 !agents/demo_rev02/assets/hexacopter_cargo.glb
 !agents/demo_rev02/actors/pigeon.glb
 !assets/actors/**/*.glb

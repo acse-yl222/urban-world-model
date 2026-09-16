@@ -1,6 +1,6 @@
 {
  "schema": "UWM_WHITE_CITY_TRAFFIC_REPLAY_V1",
- "generated": "2026-09-16T13:02",
+ "generated": "2026-09-16T13:35",
  "seconds": 3600,
  "frames": 3600,
  "record": [
@@ -8,7 +8,8 @@
   "x",
   "z",
   "yaw_rad",
-  "speed_m_s"
+  "speed_m_s",
+  "lane_index"
  ],
  "coordinate_frame": "glTF world XYZ; records are vehicle centres at ground level; yaw about +Y (pi - SUMO angle)",
  "vehicles_peak": 1060,

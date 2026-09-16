@@ -92,7 +92,7 @@ function setupSceneUI() {
   sel.replaceChildren(...SCENE.index.scenes.map(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.short ?? s.title; return o; }));
   sel.value = SCENE.id; sel.addEventListener('change', () => { location.href = sceneLink(sel.value); });
   const tabs = $('tabs'), auto = $('auto').closest('label'), mk = (cls, data, key, text) => { const b = document.createElement('button'); b.className = 'tab ' + cls; b.dataset[data] = key; b.textContent = text; return b; };
-  const shots = HAS_REPLAY ? [['overview', 'Campus'], ['junction', 'Junction'], ['traffic', 'Traffic'], ['uavs', 'UAVs'], ['birds', 'Birds']] : [['overview', 'Overview'], ...(SCENE.traffic ? [['traffic', 'Traffic']] : []), ...(SCENE.transport ? [['transport', 'Transport']] : [])];
+  const shots = HAS_REPLAY ? [['overview', 'Campus'], ['junction', 'Junction'], ['traffic', 'Traffic'], ['uavs', 'UAVs'], ['birds', 'Birds']] : [['overview', 'Overview'], ...(SCENE.traffic ? [['traffic', 'Traffic'], ['trafficMap', 'Traffic map']] : []), ...(SCENE.transport ? [['transport', 'Transport']] : [])];
   tabs.replaceChildren(...shots.map(([k, t]) => mk('shot', 'shot', k, t)), ...PHASE_ORDER.map(k => mk('field', 'field', k, TAB_NAME[k] ?? k)), auto);
   for (const el of document.querySelectorAll('[data-layer]')) el.style.display = has(el.dataset.layer) ? '' : 'none';
   const legend = (k, L) => { if (!L.legend) return; $(`lg-${k}-lo`).textContent = L.legend[0]; $(`lg-${k}-unit`).textContent = L.legend[1]; $(`lg-${k}-hi`).textContent = L.legend[2]; };
@@ -575,6 +575,7 @@ document.addEventListener('keydown', e => {
 
 // ------------------------------------------------------------------ layer controls (with per-layer fades)
 const groundMeshes = [];   // flat, wide meshes of the model (site ground, roads, paving)
+const elevatedMeshes = []; // road decks the model lifts above the ground ("<road>_way-<id>_|_surface…" with a top above 1 m): the SUMO lanes on those ways follow them
 const treeMeshes = [];     // canopies, trunks, hedges, planters
 // South Kensington detail tile (tile.js): the main model is clipped inside the tile's plate, the tile outside it
 let mainScene = null, mainBatches = null, tileGroup = null, tileBatches = null, tileIds = new Set();
@@ -714,12 +715,14 @@ function campusPoseDeg(azDeg) { return campusPose(THREE.MathUtils.degToRad(azDeg
 // over the network), then (auto loop) the fields.
 const TOUR_SHOTS = { overview: { dist: 1, elev: 32, dur: 16000, label: () => `${FOCUS.label ?? SCENE.title} · overview`, time: () => `Overview · orbiting ${FOCUS.label ?? SCENE.title}` },
   traffic: { dist: 0.55, elev: 48, dur: 18000, label: () => `${SCENE.traffic?.label ?? 'Traffic'} · cars and signal states of the SUMO run`, time: () => traffic ? `Replay ${trafficTime(traffic.t)} · ${traffic.speed}×` : 'Traffic' },
+  trafficMap: { fixed: () => overheadPose(), dur: 16000, label: () => `${SCENE.traffic?.label ?? 'Traffic'} · whole area: cars as white (moving) / amber (stopped) dots, signal heads as red / amber / green dots`, time: () => traffic ? `Replay ${trafficTime(traffic.t)} · ${traffic.speed}×` : 'Traffic' },
   transport: { dist: 2.4, elev: 52, dur: 14000, label: () => `${SCENE.transport?.label ?? 'Transport'} · tube, rail and bus network, road disruptions and traffic cameras`, time: () => transport?.summary ?? 'Transport' } };
-const TOUR_ORDER = ['overview', ...(SCENE.traffic ? ['traffic'] : []), ...(SCENE.transport ? ['transport'] : [])];
+const TOUR_ORDER = ['overview', ...(SCENE.traffic ? ['traffic', 'trafficMap'] : []), ...(SCENE.transport ? ['transport'] : [])];
 const trafficTime = s => { const t = Math.max(0, Math.floor(s)); return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`; };
 const tour = { active: false, paused: false, az: 0, t0: 0, dur: 16000, shot: 'overview', hold: false };
 function tourPose(az, shot = tour.shot) {
-  const s = TOUR_SHOTS[shot], dist = (FOCUS.orbit_m ?? 480) * s.dist, elev = THREE.MathUtils.degToRad(s.elev);
+  const s = TOUR_SHOTS[shot]; if (s.fixed) return s.fixed();
+  const dist = (FOCUS.orbit_m ?? 480) * s.dist, elev = THREE.MathUtils.degToRad(s.elev);
   return { pos: new THREE.Vector3(campusCentre.x + dist * Math.cos(elev) * Math.sin(az), campusCentre.y + dist * Math.sin(elev), campusCentre.z + dist * Math.cos(elev) * Math.cos(az)), target: campusCentre.clone() };
 }
 function startTour(shot = 'overview') {
@@ -727,7 +730,7 @@ function startTour(shot = 'overview') {
   tour.active = true; tour.paused = false; tour.shot = shot; tour.t0 = performance.now(); tour.dur = TOUR_SHOTS[shot].dur;
   if (first) tour.az = THREE.MathUtils.degToRad(-150);
   ui.stage.textContent = TOUR_SHOTS[shot].label(); ui.info.textContent = shot === 'overview' ? (SCENE.description ?? '') : shot === 'traffic' ? (traffic?.info ?? '') : (transport?.statusLines?.slice(0, 4).join(' · ') ?? '');
-  traffic?.highlightRoads(shot === 'traffic'); traffic?.applyLayers({ cars: tfUI.cars.checked, signals: tfUI.signals.checked, roads: tfUI.roads.checked, paths: shot === 'traffic' ? tfUI.paths.checked : false });
+  applyTrafficLayers(); applyTransportLayers(); if (shot === 'traffic') traffic?.highlightRoads(true);
   const p = tourPose(tour.az);
   if (camera.position.distanceTo(p.pos) > 50) { flyTo(p, 2600, () => { controls.enabled = false; tour.t0 = performance.now(); }); }
   else { controls.enabled = false; flight = null; }
@@ -735,7 +738,7 @@ function startTour(shot = 'overview') {
 }
 function updateTour(now, dt) {
   if (!tour.active || flight) return;
-  if (!tour.paused) tour.az += dt * (tour.shot === 'overview' ? 0.09 : 0.05);
+  if (!tour.paused && !TOUR_SHOTS[tour.shot].fixed) tour.az += dt * (tour.shot === 'overview' ? 0.09 : 0.05);
   const p = tourPose(tour.az);
   camera.position.copy(p.pos); controls.target.copy(p.target); camera.lookAt(p.target);
   ui.timeLabel.textContent = TOUR_SHOTS[tour.shot].time();
@@ -766,23 +769,23 @@ function runCampus(shot = 'overview') {
   setSectionUI();
 }
 // ---- SUMO traffic replay controls (panel)
-const tfUI = { box: $('traffic-ctl'), on: $('l-traffic'), cars: $('l-tf-cars'), signals: $('l-tf-signals'), roads: $('l-tf-roads'), paths: $('l-tf-paths'), stats: $('traffic-stats') };
+const tfUI = { box: $('traffic-ctl'), on: $('l-traffic'), cars: $('l-tf-cars'), signals: $('l-tf-signals'), roads: $('l-tf-roads'), paths: $('l-tf-paths'), map: $('l-tf-map'), stats: $('traffic-stats') };
 function applyTrafficLayers() {
   if (!traffic) return;
   traffic.setVisible(tfUI.on.checked && section !== 'fields');
-  traffic.applyLayers({ cars: tfUI.cars.checked, signals: tfUI.signals.checked, roads: tfUI.roads.checked, paths: tfUI.paths.checked && tour.shot === 'traffic' });
+  traffic.applyLayers({ cars: tfUI.cars.checked, signals: tfUI.signals.checked, roads: tfUI.roads.checked, paths: tfUI.paths.checked && tour.shot === 'traffic', map: tfUI.map.checked || (section === 'campus' && tour.active && tour.shot === 'trafficMap') });
 }
 function setupTrafficUI() {
   if (!traffic) return;
   tfUI.box.style.display = ''; tfUI.stats.textContent = traffic.stats;
-  for (const el of [tfUI.on, tfUI.cars, tfUI.signals, tfUI.roads, tfUI.paths]) el.addEventListener('input', applyTrafficLayers);
+  for (const el of [tfUI.on, tfUI.cars, tfUI.signals, tfUI.roads, tfUI.paths, tfUI.map]) el.addEventListener('input', applyTrafficLayers);
   applyTrafficLayers();
 }
 // ---- transport layer controls (panel): sub-layer toggles, snapshot summary, live arrivals at a chosen station
 const trUI = { box: $('transport-ctl'), on: $('l-transport'), rail: $('l-tr-rail'), bus: $('l-tr-bus'), stations: $('l-tr-stations'), stops: $('l-tr-stops'), disruptions: $('l-tr-disruptions'), cams: $('l-tr-cams'), stats: $('transport-stats'), station: $('tr-station'), live: $('tr-live'), arrivals: $('tr-arrivals') };
 function applyTransportLayers() {
   if (!transport) return;
-  transport.setVisible(trUI.on.checked && section !== 'fields');
+  transport.setVisible(trUI.on.checked && section !== 'fields' && !(section === 'campus' && tour.active && tour.shot === 'trafficMap'));   // the traffic map keeps only the dots and lanes
   transport.setLayers({ rail: trUI.rail.checked, bus: trUI.bus.checked, stations: trUI.stations.checked, stops: trUI.stops.checked, disruptions: trUI.disruptions.checked, cams: trUI.cams.checked });
 }
 let arrivalsTimer = null;
@@ -896,7 +899,7 @@ window.addEventListener('resize', () => {
 // empty one.
 const EMPTY_GEOMETRY = new THREE.BufferGeometry();
 function releaseBatchedGeometry() {
-  const keep = new Set([...groundMeshes, ...treeMeshes, ...tileHidden]);
+  const keep = new Set([...groundMeshes, ...treeMeshes, ...tileHidden, ...elevatedMeshes]);
   for (const e of expansions) for (const o of e.originals) keep.add(o);
   if (tileGroup) tileGroup.traverse(o => keep.add(o));
   let n = 0, bytes = 0;
@@ -958,6 +961,7 @@ async function boot() {
         box.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld); box.getSize(size);
         // ground-like: thinner than 3 m and wider than 30 m (site ground, roads, paths, paving, kerbs)
         if (size.y < 3 && Math.max(size.x, size.z) > 30) groundMeshes.push(o);
+        if (/way-\d+_\|_surface/.test(o.name) && box.max.y > 1) elevatedMeshes.push(o);
         // trees / vegetation: by node (or ancestor) name, or by material name
         let names = '';
         for (let a = o; a && a !== gltf.scene; a = a.parent) names += (a.name || '') + ' | ';
@@ -1067,7 +1071,7 @@ async function boot() {
   releaseBatchedGeometry();
   }
   if (SCENE.traffic) {
-    traffic = await createTraffic({ scene, base: SCENE.url(SCENE.traffic.dir ?? 'traffic/'), onProgress: t => { ui.pct.textContent = t; } }).catch(e => { console.error('traffic replay unavailable', e); return null; });
+    traffic = await createTraffic({ scene, base: SCENE.url(SCENE.traffic.dir ?? 'traffic/'), elevated: elevatedMeshes, onProgress: t => { ui.pct.textContent = t; } }).catch(e => { console.error('traffic replay unavailable', e); return null; });
     setupTrafficUI();
   }
   if (SCENE.transport) {

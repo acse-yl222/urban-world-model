@@ -32,22 +32,28 @@ tls_ids = traci.trafficlight.getIDList()
 links = {t: traci.trafficlight.getControlledLinks(t) for t in tls_ids}
 json.dump({t: [[list(l[0]) if l else None for l in lk] for lk in links[t]] for t in tls_ids}, open(os.path.join(T, 'sim', 'tls_links.json'), 'w'))
 traci.simulation.subscribe([traci.constants.VAR_DEPARTED_VEHICLES_IDS])
-ids_all, xs, ys, angs, sps, offsets = [], [], [], [], [], [0]
+ids_all, xs, ys, angs, sps, offsets, lanes = [], [], [], [], [], [0], []
+lane_index, last_lane = {}, {}   # lane id -> index; internal (junction) lanes keep the vehicle's last real lane
 tls_states = {t: [] for t in tls_ids}   # run-length: [[t0, state], ...]
 subs = set(); t0 = time.time(); peak = 0
 for step in range(a.seconds):
     traci.simulationStep()
     for v in traci.simulation.getDepartedIDList():
-        traci.vehicle.subscribe(v, [traci.constants.VAR_POSITION, traci.constants.VAR_ANGLE, traci.constants.VAR_SPEED])
+        traci.vehicle.subscribe(v, [traci.constants.VAR_POSITION, traci.constants.VAR_ANGLE, traci.constants.VAR_SPEED, traci.constants.VAR_LANE_ID])
     res = traci.vehicle.getAllSubscriptionResults()
     for v, r in res.items():
         ids_all.append(int(v[1:])); x, y = r[traci.constants.VAR_POSITION]; xs.append(x); ys.append(y); angs.append(r[traci.constants.VAR_ANGLE]); sps.append(r[traci.constants.VAR_SPEED])
+        lid = r[traci.constants.VAR_LANE_ID]
+        if lid.startswith(':'): lid = last_lane.get(v, lid)
+        else: last_lane[v] = lid
+        lanes.append(lane_index.setdefault(lid, len(lane_index)))
     offsets.append(len(ids_all)); peak = max(peak, len(res))
     for t in tls_ids:
         s = traci.trafficlight.getRedYellowGreenState(t)
         if not tls_states[t] or tls_states[t][-1][1] != s: tls_states[t].append([step, s])
     if step % 300 == 0: print(f'step {step}: {len(res)} vehicles, {time.time() - t0:.0f} s', flush=True)
 traci.close()
-np.savez_compressed(os.path.join(T, 'sim', 'frames.npz'), ids=np.array(ids_all, np.int32), x=np.array(xs, np.float32), y=np.array(ys, np.float32), angle=np.array(angs, np.float32), speed=np.array(sps, np.float32), offsets=np.array(offsets, np.int64))
+np.savez_compressed(os.path.join(T, 'sim', 'frames.npz'), ids=np.array(ids_all, np.int32), x=np.array(xs, np.float32), y=np.array(ys, np.float32), angle=np.array(angs, np.float32), speed=np.array(sps, np.float32), offsets=np.array(offsets, np.int64), lane=np.array(lanes, np.int32))
+json.dump([k for k, _ in sorted(lane_index.items(), key=lambda kv: kv[1])], open(os.path.join(T, 'sim', 'lane_ids.json'), 'w'))
 json.dump({'seconds': a.seconds, 'period': a.period, 'seed': a.seed, 'peak_vehicles': peak, 'tls': tls_states}, open(os.path.join(T, 'sim', 'tls.json'), 'w'))
 print('done: frames', a.seconds, 'records', len(ids_all), 'peak vehicles', peak, 'tls', len(tls_ids), f'{time.time() - t0:.0f} s')

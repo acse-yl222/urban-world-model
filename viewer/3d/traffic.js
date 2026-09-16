@@ -11,7 +11,7 @@ import { addRoadSurfaces } from '../../agents/demo_rev02/stations.js';
 
 const DEMO = new URL('../../agents/demo_rev02/', import.meta.url).href;
 async function readJSON(url) { const r = await fetch(url); if (!r.ok) throw new Error(`${url}: ${r.status}`); return r.json(); }
-const REC = 6;   // floats per vehicle record: id, x, z, yaw, speed, lane index
+const REC = 6;   // int16 per vehicle record: id, x*10, z*10, yaw*10000, speed*100, lane index
 function dotTexture() {
   const c = document.createElement('canvas'); c.width = c.height = 32; const g = c.getContext('2d');
   g.beginPath(); g.arc(16, 16, 13, 0, Math.PI * 2); g.fillStyle = '#fff'; g.fill(); g.lineWidth = 3; g.strokeStyle = 'rgba(0,0,0,.55)'; g.stroke();
@@ -22,8 +22,11 @@ export async function createTraffic({ scene, base, elevated = [], onProgress = (
   onProgress('Traffic replay (SUMO)…');
   const manifest = await readJSON(base + 'replay.json');
   const group = new THREE.Group(); group.name = 'SUMO traffic'; scene.add(group);
-  const [roads, layer, frames, buffer, tlsText] = await Promise.all([readJSON(base + 'roads.json'), readJSON(base + 'signal_layer.json'), readJSON(base + 'replay/frames_index.json'),
-    fetch(base + 'replay/traffic_flow.f32').then(r => { if (!r.ok) throw new Error('traffic_flow.f32 ' + r.status); return r.arrayBuffer(); }), fetch(base + 'replay/tls_frames.jsonl').then(r => r.text())]);
+  const [roads, layer, counts, buffer, tlsChanges] = await Promise.all([readJSON(base + 'roads.json'), readJSON(base + 'signal_layer.json'), readJSON(base + 'replay/frame_counts.json'),
+    fetch(base + 'replay/traffic_flow.i16').then(r => { if (!r.ok) throw new Error('traffic_flow.i16 ' + r.status); return r.arrayBuffer(); }), readJSON(base + 'replay/tls_changes.json')]);
+  // frame table from the per-second counts; signal rows expanded from the change points (one row per second, as signals-v2 expects)
+  const frames = []; let acc = 0; for (let i = 0; i < counts.length; i++) { frames.push({ t_s: i, offset: acc * REC, count: counts[i] }); acc += counts[i]; }
+  const tlsRows = []; { const ptr = {}, cur = {}; for (let t = 0; t < tlsChanges.seconds; t++) { for (const [k, rl] of Object.entries(tlsChanges.tls)) { ptr[k] ??= 0; while (ptr[k] < rl.length && rl[ptr[k]][0] <= t) { cur[k] = rl[ptr[k]][1]; ptr[k]++; } } tlsRows.push({ t, states: { ...cur } }); } }
 
   // ---- elevated decks: lanes on a way the model lifts follow the deck top (one ray per lane vertex, once)
   const decks = new Map();   // OSM way id -> meshes of its deck
@@ -48,9 +51,9 @@ export async function createTraffic({ scene, base, elevated = [], onProgress = (
   for (const h of layer.heads) { const dy = layer.poles[h.pole]?.dy; if (dy) h.world_xyz[1] += dy; }
   const roadMesh = addRoadSurfaces(group, roads);
   const ROAD_COLOR = roadMesh.material.color.clone();
-  const signals = createSignalLayerV2(group, layer, tlsText.trim().split('\n').filter(Boolean).map(l => JSON.parse(l)));
+  const signals = createSignalLayerV2(group, layer, tlsRows);
   signals.setPathsVisible(false);
-  const binary = new Float32Array(buffer);
+  const binary = new Int16Array(buffer);
   const peak = Math.max(1, ...frames.map(f => f.count));
   const actors = await createActorLayer({ scene: group, carURL: DEMO + 'actors/sedan_4p5m.glb', uavURL: DEMO + 'assets/hexacopter_cargo.glb', carCapacity: Math.min(4000, peak + 50), uavCapacity: 1 });
   actors.uavs.group.visible = false;
@@ -67,7 +70,7 @@ export async function createTraffic({ scene, base, elevated = [], onProgress = (
     }
     return y;
   }
-  const frameMap = fr => { const m = new Map(); if (!fr) return m; const o = fr.offset_bytes / 4; for (let i = 0; i < fr.count; i++) { const k = o + i * REC; m.set(binary[k], binary.subarray(k + 1, k + REC)); } return m; };
+  const frameMap = fr => { const m = new Map(); if (!fr) return m; const o = fr.offset; for (let i = 0; i < fr.count; i++) { const k = o + i * REC; m.set(binary[k], binary.subarray(k + 1, k + REC)); } return m; };
   let cur = new Map(), curIdx = -1;
   function carsAt(t) {
     const idx = Math.floor(t), a = frames[idx], b = frames[idx + 1], f = t - idx;
@@ -75,8 +78,8 @@ export async function createTraffic({ scene, base, elevated = [], onProgress = (
     if (curIdx !== idx) { cur = frameMap(a); curIdx = idx; }
     const nxt = f > 0 ? frameMap(b) : new Map(), out = [];
     for (const [id, v] of cur) {
-      const w = nxt.get(id); let x = v[0], z = v[1], yaw = v[2], sp = v[3];
-      if (w) { x += (w[0] - x) * f; z += (w[1] - z) * f; let d = w[2] - yaw; d = Math.atan2(Math.sin(d), Math.cos(d)); yaw += d * f; sp += (w[3] - sp) * f; }
+      const w = nxt.get(id); let x = v[0] * 0.1, z = v[1] * 0.1, yaw = v[2] * 1e-4, sp = v[3] * 0.01;
+      if (w) { x += (w[0] * 0.1 - x) * f; z += (w[1] * 0.1 - z) * f; let d = w[2] * 1e-4 - yaw; d = Math.atan2(Math.sin(d), Math.cos(d)); yaw += d * f; sp += (w[3] * 0.01 - sp) * f; }
       const lane = v[4] >= 0 ? roads.lanes[v[4]] : null;
       out.push({ nativeId: id, x, y: (lane?.elevated ? laneHeight(lane, x, z) : 0.26) + 0.015, z, headingRadians: yaw, speed: sp, color: carColorForId(id) });
     }

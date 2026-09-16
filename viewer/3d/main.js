@@ -744,8 +744,8 @@ function updateTour(now, dt) {
   ui.timeLabel.textContent = TOUR_SHOTS[tour.shot].time();
   if (traffic) { ui.step.value = traffic.t; ui.stats.textContent = traffic.stats; }
   if (!tour.paused && !tour.hold && now - tour.t0 > tour.dur) {
-    const i = TOUR_ORDER.indexOf(tour.shot);
-    if (i + 1 < TOUR_ORDER.length) startTour(TOUR_ORDER[i + 1]);
+    const i = TOUR_ORDER.indexOf(tour.shot), rest = TOUR_ORDER.slice(i + 1).filter(k => traffic || !/^traffic/.test(k));
+    if (rest.length) startTour(rest[0]);
     else if (ui.auto.checked) { tour.active = false; runFields(); }
     else startTour(TOUR_ORDER[0]);
   }
@@ -1070,9 +1070,10 @@ async function boot() {
   }).catch(e => { ui.pct.textContent = 'Loading failed: ' + (e.message || e); console.error(e); throw e; });
   releaseBatchedGeometry();
   }
-  if (SCENE.traffic) {
-    traffic = await createTraffic({ scene, base: SCENE.url(SCENE.traffic.dir ?? 'traffic/'), elevated: elevatedMeshes, onProgress: t => { ui.pct.textContent = t; } }).catch(e => { console.error('traffic replay unavailable', e); return null; });
-    setupTrafficUI();
+  if (SCENE.traffic) {   // loads in the background (34 MB of vehicle records): the page opens without it and the layer appears when ready
+    tfUI.box.style.display = ''; tfUI.stats.textContent = 'Loading the SUMO replay…';
+    createTraffic({ scene, base: SCENE.url(SCENE.traffic.dir ?? 'traffic/'), elevated: elevatedMeshes }).then(T => { traffic = T; setupTrafficUI(); const q = new URLSearchParams(location.search); if (q.has('t')) { T.t = +q.get('t'); T.update(T.t); } if (q.get('play') === '0') T.playing = false; if (section === 'campus' && tour.active) startTour(tour.shot); })
+      .catch(e => { console.error('traffic replay unavailable', e); tfUI.stats.textContent = 'Traffic replay unavailable: ' + (e.message || e); });
   }
   if (SCENE.transport) {
     transport = await createTransport({ scene, url: SCENE.url(SCENE.transport.file), onProgress: t => { ui.pct.textContent = t; } }).catch(e => { console.error('transport layer unavailable', e); return null; });

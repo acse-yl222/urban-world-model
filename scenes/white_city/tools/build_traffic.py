@@ -4,9 +4,9 @@ the scene's georeference (UTM net coordinates -> lon/lat -> model):
 
     traffic/roads.json               drivable lane ribbons {lanes: [{world_xyz, width_m}]}
     traffic/signal_layer.json        {movements, poles, heads} at the SUMO stop lines (near-side kerb, left-hand traffic)
-    traffic/replay/traffic_flow.f32  per second, records [id, X, Z, yaw, speed] (world frame, yaw about +Y)
-    traffic/replay/frames_index.json [{t_s, offset_bytes, count}]
-    traffic/replay/tls_frames.jsonl  {t, states: {tls: 'rGy...'}} once a second
+    traffic/replay/traffic_flow.i16  per second, int16 records [id, x*10, z*10, yaw*10000, speed*100, lane] (world frame)
+    traffic/replay/frame_counts.json records per second
+    traffic/replay/tls_changes.json  {tls: [[t, state], ...]} signal state change points
     traffic/replay.json              manifest
 
     cd scenes/white_city && uv run --with eclipse-sumo,numpy,pyproj python3 tools/build_traffic.py
@@ -108,27 +108,26 @@ lon, lat = proj(xs.astype(np.float64) - ox, ys.astype(np.float64) - oy, inverse=
 e = (lon - lon0) * math.pi / 180 * R * math.cos(lat0 * math.pi / 180); n = (lat - lat0) * math.pi / 180 * R
 X = s * (Rm[0][0] * e + Rm[0][1] * n) + tt[0]; Z = -(s * (Rm[1][0] * e + Rm[1][1] * n) + tt[1])
 yaw = math.pi - np.radians(ang)   # SUMO angle: degrees clockwise from north; same convention as the South Kensington replay
-rec = np.stack([ids.astype(np.float32), X.astype(np.float32), Z.astype(np.float32), yaw.astype(np.float32), sp.astype(np.float32), lane_rec.astype(np.float32)], axis=1)
-# drop records without a position (vehicles being teleported) and those outside the model area (the net is a little larger)
-M = 200; keep = np.isfinite(rec).all(1) & (rec[:, 1] > -1492 - M) & (rec[:, 1] < 2092 + M) & (rec[:, 2] > -1036 - M) & (rec[:, 2] < 2548 + M)
-counts = np.array([keep[off[i]:off[i + 1]].sum() for i in range(len(off) - 1)]); rec = rec[keep]
+# compact binary: int16 x 6 per record [id, x*10, z*10, yaw*10000, speed*100, lane index] (12 bytes, 0.1 m / 0.01 m/s resolution)
+M = 200; keep = np.isfinite(X) & np.isfinite(Z) & (X > -1492 - M) & (X < 2092 + M) & (Z > -1036 - M) & (Z < 2548 + M)
+counts = np.array([int(keep[off[i]:off[i + 1]].sum()) for i in range(len(off) - 1)])
 print('dropped', int((~keep).sum()), 'records (no position or outside the model)')
+yaw = np.arctan2(np.sin(yaw), np.cos(yaw))
+rec = np.stack([ids, np.round(X * 10), np.round(Z * 10), np.round(yaw * 10000), np.round(np.clip(sp, 0, 300) * 100), lane_rec], axis=1)[keep]
+assert np.abs(rec).max() < 32768, 'record field out of int16 range'
+rec = rec.astype(np.int16)
 os.makedirs(os.path.join(T, 'replay'), exist_ok=True)
-rec.tofile(os.path.join(T, 'replay', 'traffic_flow.f32'))
-starts = np.concatenate([[0], np.cumsum(counts)])
-frames = [{'t_s': i, 'offset_bytes': int(starts[i]) * 24, 'count': int(counts[i])} for i in range(len(counts))]
-json.dump(frames, open(os.path.join(T, 'replay', 'frames_index.json'), 'w'))
-# tls states once a second from the run-length record
-with open(os.path.join(T, 'replay', 'tls_frames.jsonl'), 'w') as f:
-    cur = {}; ptr = {k: 0 for k in meta['tls']}
-    for t in range(meta['seconds']):
-        for k, rl in meta['tls'].items():
-            while ptr[k] < len(rl) and rl[ptr[k]][0] <= t: cur[k] = rl[ptr[k]][1]; ptr[k] += 1
-        f.write(json.dumps({'t': t, 'states': cur}, separators=(',', ':')) + '\n')
-man = {'schema': 'UWM_WHITE_CITY_TRAFFIC_REPLAY_V1', 'generated': time.strftime('%Y-%m-%dT%H:%M'), 'seconds': meta['seconds'], 'frames': len(frames), 'record': ['id', 'x', 'z', 'yaw_rad', 'speed_m_s', 'lane_index'],
-       'coordinate_frame': 'glTF world XYZ; records are vehicle centres at ground level; yaw about +Y (pi - SUMO angle)',
+for f in ('traffic_flow.f32', 'frames_index.json', 'tls_frames.jsonl'):
+    if os.path.exists(os.path.join(T, 'replay', f)): os.remove(os.path.join(T, 'replay', f))
+rec.tofile(os.path.join(T, 'replay', 'traffic_flow.i16'))
+json.dump(counts.tolist(), open(os.path.join(T, 'replay', 'frame_counts.json'), 'w'))
+# signal states as change points: {tls: [[t, state], ...]}; the viewer expands them
+json.dump({'seconds': meta['seconds'], 'tls': meta['tls']}, open(os.path.join(T, 'replay', 'tls_changes.json'), 'w'), separators=(',', ':'))
+man = {'schema': 'UWM_WHITE_CITY_TRAFFIC_REPLAY_V2', 'generated': time.strftime('%Y-%m-%dT%H:%M'), 'seconds': meta['seconds'], 'frames': len(counts), 'records': int(len(rec)),
+       'binary': 'replay/traffic_flow.i16: int16 x 6 per record [id, x*10, z*10, yaw*10000, speed*100, lane_index]; frame_counts.json gives the records per second in order', 'signals': 'replay/tls_changes.json: {tls: [[t, state], ...]} change points',
+       'coordinate_frame': 'glTF world XYZ; records are vehicle centres; yaw about +Y (pi - SUMO angle)',
        'vehicles_peak': meta['peak_vehicles'], 'trips_period_s': meta['period'], 'seed': meta['seed'],
        'method': 'SUMO 1.27.1 (eclipse-sumo pip), OSM highways -> netconvert (--tls.guess-signals, actuated default programmes), randomTrips (fringe factor 5, min distance 400 m), 1 s steps, TraCI recording',
        'claim': 'Synthetic demand and synthetic signal timings on the OSM network; not observed White City traffic.'}
 json.dump(man, open(os.path.join(T, 'replay.json'), 'w'), indent=1)
-print('frames', len(frames), 'records', len(rec), 'bytes', rec.nbytes, f'{time.time() - t0:.0f} s')
+print('frames', len(counts), 'records', len(rec), 'bytes', rec.nbytes, f'{time.time() - t0:.0f} s')

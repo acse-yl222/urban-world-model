@@ -1,17 +1,12 @@
 {
- "schema": "UWM_WHITE_CITY_TRAFFIC_REPLAY_V1",
- "generated": "2026-09-16T13:35",
+ "schema": "UWM_WHITE_CITY_TRAFFIC_REPLAY_V2",
+ "generated": "2026-09-16T13:43",
  "seconds": 3600,
  "frames": 3600,
- "record": [
-  "id",
-  "x",
-  "z",
-  "yaw_rad",
-  "speed_m_s",
-  "lane_index"
- ],
- "coordinate_frame": "glTF world XYZ; records are vehicle centres at ground level; yaw about +Y (pi - SUMO angle)",
+ "records": 2837951,
+ "binary": "replay/traffic_flow.i16: int16 x 6 per record [id, x*10, z*10, yaw*10000, speed*100, lane_index]; frame_counts.json gives the records per second in order",
+ "signals": "replay/tls_changes.json: {tls: [[t, state], ...]} change points",
+ "coordinate_frame": "glTF world XYZ; records are vehicle centres; yaw about +Y (pi - SUMO angle)",
  "vehicles_peak": 1060,
  "trips_period_s": 0.6,
  "seed": 42,

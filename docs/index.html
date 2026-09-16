@@ -383,7 +383,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
         <dt>File</dt><dd><code>south_kensington_core008_web.glb</code></dd>
         <dt>Size</dt><dd>254 MB, meshopt + quantised</dd>
         <dt>Extent</dt><dd>buildings X 625–3474, Y 754–3348 m (domain)</dd>
-        <dt>Masks</dt><dd><code>physics/masks/</code></dd>
+        <dt>Masks</dt><dd><code>scenes/south_kensington/physics/masks/</code></dd>
       </dl>
     </aside>
     <div class="body">
@@ -474,7 +474,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
         <dt>Method</dt><dd>SCALED latent-space domain decomposition</dd>
         <dt>Weights</dt><dd>SCALED-Tutorial <code>inference.pth</code> + <code>compression.pth</code></dd>
         <dt>Run</dt><dd>2026-09-10, 100 steps</dd>
-        <dt>Export</dt><dd><code>physics/wind/</code></dd>
+        <dt>Export</dt><dd><code>scenes/south_kensington/physics/wind/</code></dd>
       </dl>
     </aside>
     <div class="body">
@@ -533,7 +533,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
         <dt>Method</dt><dd>ShadowNet + HorizonNet: fixed-weight tensor layers, no training</dd>
         <dt>Terrain</dt><dd>EA LIDAR DTM 2022 + core008 buildings, 1 m</dd>
         <dt>Days</dt><dd>21 June and 21 December 2026, every 10 min</dd>
-        <dt>Export</dt><dd><code>physics/solar/</code></dd>
+        <dt>Export</dt><dd><code>scenes/south_kensington/physics/solar/</code></dd>
       </dl>
     </aside>
     <div class="body">
@@ -570,7 +570,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
         <dt>Model</dt><dd>Yi Qi's 3-D temperature physical model, source unchanged, two functions swapped at run time</dd>
         <dt>Wind</dt><dd>SCALED steps 81–100, 16 layers, 90 s frames</dd>
         <dt>Runs</dt><dd>single-time comparison · 21 June hourly 04:00–24:00</dd>
-        <dt>Export</dt><dd><code>physics/temperature3d_solar/</code></dd>
+        <dt>Export</dt><dd><code>scenes/south_kensington/physics/temperature3d_solar/</code></dd>
       </dl>
     </aside>
     <div class="body">
@@ -624,7 +624,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
         <dt>Method</dt><dd>shallow-water solver in the NN4PDEs style (Chen et al. 2025)</dd>
         <dt>Terrain</dt><dd>EA LIDAR DTM 2022, 1 m + core008 buildings</dd>
         <dt>Scenario</dt><dd>50 mm in 90 min, 12 July 2021 type</dd>
-        <dt>Export</dt><dd><code>physics/flood/</code></dd>
+        <dt>Export</dt><dd><code>scenes/south_kensington/physics/flood/</code></dd>
       </dl>
     </aside>
     <div class="body">
@@ -807,7 +807,7 @@ python3 serve.py 9000   # custom port</code></pre>
       <h4>Place the large files</h4>
       <p>Paths relative to the repository root.</p>
 <pre><code>south_kensington_core008_web.glb   254 MB
-physics/*/ *.npy            field arrays
+scenes/<id>/physics/*/ *.npy  field arrays (one folder per scene)
 agents/demo_rev02/data/traffic/replay/    full hour (optional)
 south_kensington_current.glb       180 MB (optional)</code></pre>
     </div>

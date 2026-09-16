@@ -1,12 +1,12 @@
-/* Pre-rendered field frames (physics/web/<layer>/NNN.png, written by physics/tools/export_web_frames.py).
+/* Pre-rendered field frames (scenes/<id>/physics/web/<layer>/NNN.png, written by scenes/tools/export_web_frames.py).
    ~100 KB per frame instead of 1-9 MB of raw float16, so the fields also play over a slow link. Decoded back to the same
    Float32Array layout the raw path produces (gray: N values; rgb3: [u..., v..., w...]; bit: Uint8Array 0/1), quantised to
-   1/255 of the layer's range. When physics/web/index.json is missing the viewer keeps reading the raw .npy files. */
+   1/255 of the layer's range. When web/index.json is missing the viewer keeps reading the raw .npy files. */
 import { DATA } from './npy.js';
 
-const BASE = DATA + 'web/';
-let index = null;
+let BASE = '', index = null;
 export async function initFrames() {
+  BASE = DATA + 'web/';
   try { const r = await fetch(BASE + 'index.json', { cache: 'no-cache' }); index = r.ok ? await r.json() : null; } catch { index = null; }
   return !!index;
 }

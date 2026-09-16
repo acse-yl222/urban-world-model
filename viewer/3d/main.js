@@ -1,62 +1,73 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { LineSegments2 } from 'three/addons/lines/LineSegments2.js';
 import { LineSegmentsGeometry } from 'three/addons/lines/LineSegmentsGeometry.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
-import { getFrame, f16, loadMask, npy, DATA } from '../npy.js';
-import { initFrames, hasLayer, getFrameF32, framesInfo } from '../frames.js';
-import { CITY_GLB } from '../config.js';
-import { CITY_FROM_PARTS, fetchCityModel } from '../model-source.js';
+import { loadScene, sceneLink, ROOT } from '../scene.js';
+import { getFrame, f16, loadMask, npy, DATA, setDataBase } from '../npy.js';
+import { initFrames, hasLayer, layerMeta, getFrameF32, framesInfo } from '../frames.js';
+import { ON_PAGES } from '../config.js';
+import { fetchCityModel } from '../model-source.js';
 import { buildProxyCity } from './proxy.js';
-// Lite mode: phones, tablets and low-memory machines get a proxy city extruded from the 4 m voxel masks instead of the
-// 254 MB model (which needs ~1.6 GB of browser memory). ?lite=1 forces it, ?lite=0 forces the full model.
+import { batchStaticCity } from '../../agents/demo_rev02/static-batches.js';
+import { createReplay, applyCityFilter, timeString } from './replay.js';
+import { TILE, placeTile, tileClipPlanes, setClipping, tileBuildingCentre, tileBuildingIds, hideReplaced, materialsOf } from './tile.js';
+import { EXPANSION_BATCHES, installExpansion } from './expansion.js';
+import { createTransport } from './transport.js';
+
+// ------------------------------------------------------------------ scene (scenes/<id>/scene.json)
+// Everything site-specific comes from the scene file: the field grid and its placement in the model frame, the city model,
+// the masks, the field layers (files, frame counts, clocks, display ranges) and the camera focus. South Kensington also
+// switches on the traffic / UAV / bird replay, the station tile, the OSM supplement and the building refinements.
+const SCENE = await loadScene();
+setDataBase(SCENE.physics);
+document.title = `${SCENE.title} · 3D`;
+// Lite mode: phones, tablets and low-memory machines get a proxy city extruded from the voxel masks instead of the
+// full model (which needs 1.5-2 GB of browser memory). ?lite=1 forces it, ?lite=0 forces the full model.
 const qs0 = new URLSearchParams(location.search);
 const LITE = qs0.get('lite') === '1' || (qs0.get('lite') !== '0' && (/iPhone|iPad|Android|Mobile/i.test(navigator.userAgent)
   || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform)) || (navigator.deviceMemory !== undefined && navigator.deviceMemory <= 4)));
-import { batchStaticCity } from '../../agents/demo_rev02/static-batches.js';
-import { createReplay, applyCityFilter, SHOT_ORDER, timeString } from './replay.js';
-import { TILE, placeTile, tileClipPlanes, setClipping, tileBuildingCentre, tileBuildingIds, hideReplaced, materialsOf } from './tile.js';
-import { EXPANSION_BATCHES, installExpansion } from './expansion.js';
 
 // ------------------------------------------------------------------ grid <-> model alignment
-// Field arrays: 4 m cells, 768 cols (west->east) x 704 rows (south->north), domain origin (480, 640) m.
-// Model (glTF, Y up): X = domain_x - 2116, Z = -(domain_y - 2124). Verified: the model's building
-// extent [-1491,1358] x north [-1370,1224] equals the README's building extent in domain coords.
-const W = 768, H = 704, CELL = 4;
-const X0 = 480 - 2116;          // west edge of column 0            -> -1636
-const ZS = -(640 - 2124);       // Z of the south edge of row 0     ->  1484
-const CX = X0 + W * CELL / 2;   // plane centre X                    ->  -100
-const CZ = ZS - H * CELL / 2;   // plane centre Z                    ->    76
-const CAMPUS = { min: [514, -9], max: [897, 324] };  // Imperial College buildings (X, Z)
-const GLB = CITY_GLB;   // viewer/config.js: models/ locally, a GitHub Release on the Pages copy
-const SUPPLEMENT_GLB = '../../models/buildings_supplement.glb';
-let supplementBatches = null;
-const expansions = [];
+// Field arrays: `cell_m` cells, `cols` columns (west->east) x `rows` rows (south->north). Model (glTF, Y up): column c
+// starts at X = x0 + c*cell, row r (0 = south) spans Z from z_south - r*cell down to z_south - (r+1)*cell.
+const G = SCENE.grid;
+const W = G.cols, H = G.rows, CELL = G.cell_m;
+const X0 = G.x0, ZS = G.z_south;
+const SPAN_X = W * CELL, SPAN_Z = H * CELL;
+const CX = X0 + SPAN_X / 2, CZ = ZS - SPAN_Z / 2;   // plane centre
+const LAYERS = SCENE.layers, has = k => !!LAYERS[k];
+const gridOf = cell => ({ w: Math.round(SPAN_X / cell), h: Math.round(SPAN_Z / cell), cell });
+const LG = {};   // the grid of every layer (layers may be coarser or finer than the base grid)
+for (const k of Object.keys(LAYERS)) LG[k] = gridOf(LAYERS[k].cell_m ?? CELL);
+if (has('solar')) LG.shadow = gridOf(LAYERS.solar.shadow_cell_m ?? LAYERS.solar.cell_m ?? CELL);
+const TL = SCENE.timeline ?? { step_s: 25, steps: 100 }, STEP_S = TL.step_s, STEPS = TL.steps;
+const FOCUS = SCENE.focus;                          // {box: [[x, z], [x, z]], orbit_m, label}
+const HAS_REPLAY = SCENE.replay === 'demo_rev02';   // the South Kensington traffic / UAV / bird replay
+const MODEL = SCENE.model;
+const PHASE_ORDER = (SCENE.phase_order ?? ['wind', 'temp', 'solar', 'diurnal', 'poll', 'flood']).filter(has);
+const TAB_NAME = { wind: 'Wind', temp: 'Temperature', solar: 'Sunlight', diurnal: 'Day cycle', poll: 'Pollution', flood: 'Flooding' };
 const TREE_NODE = /simplified canopy|simplified trunk|inherited tre|\btrees?\b|canopy|crown|hedge|planting|planter/i;
-const TREE_MAT = /broadleaf|crown|tree bark|hedge|foliage|grass/i;
+const TREE_MAT = /broadleaf|crown|tree bark|hedge|foliage|grass|substrate|shrub|lawn/i;
 const FILES = {
-  wind: 'wind/uvw_z8-12m_tcyx.npy',
-  poll: 'pollution/concentration_z12-16m_tyx.npy',
-  temp: 'temperature2d/temperature_tyx.npy',
-  flood: 'flood/depth_4m_tyx.npy',          // 19 frames, every 10 min of a 3 h cloudburst (1 m shallow-water run, 4 m block means)
-  floodMax: 'flood/max_depth_4m_yx.npy',    // static: maximum depth over the event (shown in overlay mode)
-  // Sunlight (physics/solar): clear-sky global horizontal irradiance every 10 min (4 m block means of the 1 m model) and the
-  // 1 m direct-beam shadow mask on the hour, for the summer and winter solstice. Both days have their own frame count (manifest).
-  solar: { '20260621': 'solar/ghi_4m_20260621_tyx.npy', '20261221': 'solar/ghi_4m_20261221_tyx.npy' },
-  shadow: { '20260621': 'solar/shadow_1m_20260621_tyx.npy', '20261221': 'solar/shadow_1m_20261221_tyx.npy' },
-  // Day cycle (physics/temperature3d_solar): Yi Qi's 3-D temperature model driven by the solar model, 21 June, hourly 05:00-24:00
-  diurnal: { ground: 'temperature3d_solar/diurnal_20260621_ground_surface_c_tyx.npy', air0: 'temperature3d_solar/diurnal_20260621_air_0_4m_c_tyx.npy', air12: 'temperature3d_solar/diurnal_20260621_air_12_16m_c_tyx.npy' },
+  wind: LAYERS.wind?.file, poll: LAYERS.poll?.file, temp: LAYERS.temp?.file,
+  flood: LAYERS.flood?.file, floodMax: LAYERS.flood?.max,   // flood: own clock; the static maximum map is shown in overlay mode
+  solar: {}, shadow: {},                                     // by date: irradiance frames and the fine shadow mask
+  diurnal: LAYERS.diurnal?.files ?? {},                      // by display mode (ground / air0 / air12)
 };
-const W1 = 3072, H1 = 2816;   // the 1 m shadow grid (same origin / orientation as the 4 m grid)
-const LAYER_Y = { wind: 10, temp: 0.6, iso: 12, poll: 14, particles: 11, flood: 0.8, solar: 0.7, shadow: 0.75, diurnal: 0.6 };
-const DIURNAL_RANGE = { ground: [8, 38], groundRel: [-12, 12], air0: [12, 30], air0Rel: [-3, 3], air12: [12, 30] };   // °C per display mode; *Rel = minus the hour's ambient air temperature (series.json: ground 12-35, air 14-28)
-const ISO_LEVELS = Array.from({ length: 11 }, (_, i) => +(31.0 + 0.1 * i).toFixed(1));
+if (has('solar')) for (const [d, v] of Object.entries(LAYERS.solar.dates)) { FILES.solar[d] = v.ghi; FILES.shadow[d] = v.shadow; }
+const LAYER_Y = { wind: LAYERS.wind?.y ?? 10, temp: LAYERS.temp?.y ?? 0.6, iso: LAYERS.temp?.iso_y ?? 12, poll: LAYERS.poll?.y ?? 14, particles: (LAYERS.wind?.y ?? 10) + 1,
+  flood: LAYERS.flood?.y ?? 0.8, solar: 0.7, shadow: 0.75, diurnal: LAYERS.diurnal?.y ?? 0.6 };
+const DIURNAL_RANGE = { ground: [8, 38], groundRel: [-12, 12], air0: [12, 30], air0Rel: [-3, 3], air12: [12, 30] };   // °C per display mode; *Rel = minus the hour's ambient air temperature
+const ISO = LAYERS.temp?.iso ?? { from: 31.0, step: 0.1, n: 11 };
+const ISO_LEVELS = Array.from({ length: ISO.n }, (_, i) => +(ISO.from + ISO.step * i).toFixed(3));
 const ISO_COLORS = ['#ffffb2', '#fed976', '#feb24c', '#fd8d3c', '#f03b20', '#bd0026'];
-const TEMP_RANGE = [31.2, 32.2];
-const WIND_RANGE = [0, 1.6];
-const FLOOD_RANGE = [0.02, 0.6];   // m of water; below 0.02 m counts as dry (manifest hint); 0.6 m ≈ the 99th percentile of ground cells, deeper cells saturate
+const TEMP_RANGE = LAYERS.temp?.range ?? [31.2, 32.2];
+const WIND_RANGE = LAYERS.wind?.range ?? [0, 1.6];
+const FLOOD_RANGE = LAYERS.flood?.range ?? [0.02, 0.6];   // m of water; below the low end counts as dry, the high end saturates
 
 // ------------------------------------------------------------------ DOM
 const $ = id => document.getElementById(id);
@@ -72,10 +83,37 @@ const ui = {
   lCars: $('l-cars'), lUavs: $('l-uavs'), lSignals: $('l-signals'), lStations: $('l-stations'), lRoads: $('l-roads'), lMap: $('l-map'),
   lTile: $('l-tile'), lBirds: $('l-birds'),
 };
+// scene-driven page chrome: title, scene switcher, tabs, layer rows and legends
+function setupSceneUI() {
+  $('title').textContent = SCENE.title; $('title').title = SCENE.description ?? '';
+  $('loading-title').textContent = `Loading the ${SCENE.title} 3D model`;
+  const sel = $('scene-select');
+  sel.replaceChildren(...SCENE.index.scenes.map(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.short ?? s.title; return o; }));
+  sel.value = SCENE.id; sel.addEventListener('change', () => { location.href = sceneLink(sel.value); });
+  const tabs = $('tabs'), auto = $('auto').closest('label'), mk = (cls, data, key, text) => { const b = document.createElement('button'); b.className = 'tab ' + cls; b.dataset[data] = key; b.textContent = text; return b; };
+  const shots = HAS_REPLAY ? [['overview', 'Campus'], ['junction', 'Junction'], ['traffic', 'Traffic'], ['uavs', 'UAVs'], ['birds', 'Birds']] : [['overview', 'Overview'], ...(SCENE.transport ? [['transport', 'Transport']] : [])];
+  tabs.replaceChildren(...shots.map(([k, t]) => mk('shot', 'shot', k, t)), ...PHASE_ORDER.map(k => mk('field', 'field', k, TAB_NAME[k] ?? k)), auto);
+  for (const el of document.querySelectorAll('[data-layer]')) el.style.display = has(el.dataset.layer) ? '' : 'none';
+  const legend = (k, L) => { if (!L.legend) return; $(`lg-${k}-lo`).textContent = L.legend[0]; $(`lg-${k}-unit`).textContent = L.legend[1]; $(`lg-${k}-hi`).textContent = L.legend[2]; };
+  for (const k of ['wind', 'temp', 'poll', 'flood', 'solar', 'diurnal']) if (has(k)) { $(`lbl-${k}`).textContent = LAYERS[k].label; if (k !== 'solar' && k !== 'diurnal') legend(k, LAYERS[k]); }
+  if (has('temp')) $('temp-iso-option').textContent = LAYERS.temp.iso_label ?? `Isotherms (every ${ISO.step} °C)`;
+  if (has('solar')) {
+    ui.solarDate.replaceChildren(...Object.entries(LAYERS.solar.dates).map(([d, v]) => { const o = document.createElement('option'); o.value = d; o.textContent = v.label; return o; }));
+    $('solar-ghi-option').textContent = LAYERS.solar.ghi_label ?? 'Irradiance'; $('solar-shadow-option').textContent = LAYERS.solar.shadow_label ?? 'Shadows';
+  }
+  $('replay-ctl').style.display = HAS_REPLAY ? '' : 'none';
+  if (SCENE.transport) { $('transport-title').textContent = SCENE.transport.label ?? 'Transport'; $('transport-attribution').textContent = SCENE.transport.attribution ?? ''; }
+  $('attribution-hint').style.display = MODEL.expansion ? '' : 'none';
+  if (MODEL.supplement) { $('supplement-ctl').style.display = ''; $('supplement-label').textContent = MODEL.supplement.label; $('supplement-ctl').title = MODEL.supplement.title ?? ''; }
+  $('lite-link').href = sceneLink(SCENE.id) + '&lite=0';
+  if (SCENE.limits?.length) { $('limits').replaceChildren(...SCENE.limits.map(t => { const d = document.createElement('div'); d.textContent = '· ' + t; return d; })); }
+}
+setupSceneUI();
 const shotButtons = [...document.querySelectorAll('.shot[data-shot]')];
 const fieldButtons = [...document.querySelectorAll('.field[data-field]')];
-let section = 'campus';   // 'campus' (traffic / UAV tour) | 'fields' (overhead physics fields) | 'free'
-let replayLayer = null;   // created after the city loads
+let section = 'campus';   // 'campus' (the site tour: replay shots, or the plain orbit) | 'fields' (overhead physics fields) | 'free'
+let replayLayer = null;   // created after the city loads (South Kensington only)
+let transport = null;     // TfL transport layer (transport.js), scenes with scene.transport
 
 // ------------------------------------------------------------------ colour maps
 function hex(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
@@ -88,7 +126,6 @@ function lut(stops) {
   return out;
 }
 const TEMP_LUT = lut(['#ffffb2', '#fed976', '#feb24c', '#fd8d3c', '#f03b20', '#bd0026']);
-const REDS = lut(['#fff5f0', '#fee0d2', '#fcbba1', '#fc9272', '#fb6a4a', '#ef3b2c', '#cb181d', '#a50f15', '#67000d']);
 const BLUES = lut(['#f7fbff', '#deebf7', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#08519c', '#08306b']);
 const FLOOD_LUT = lut(['#9fd8f2', '#4fb3e6', '#1e88d0', '#0d5fb0', '#083b85', '#041f52']);
 const DIURNAL_LUT = lut(['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026']);
@@ -118,58 +155,57 @@ scene.add(sun);
 scene.add(new THREE.AmbientLight(0xffffff, 0.25));
 
 // dark base plate under the model so the field planes have a ground even outside the site mesh
-const base = new THREE.Mesh(new THREE.PlaneGeometry(W * CELL + 400, H * CELL + 400), new THREE.MeshStandardMaterial({ color: 0x2b2f35, roughness: 1 }));
+const base = new THREE.Mesh(new THREE.PlaneGeometry(SPAN_X + 400, SPAN_Z + 400), new THREE.MeshStandardMaterial({ color: MODEL.plate_color ? new THREE.Color(MODEL.plate_color) : 0x2b2f35, roughness: 1 }));
 base.rotation.x = -Math.PI / 2; base.position.set(CX, -0.5, CZ);
 scene.add(base);
 
 const model = new THREE.Group();
 scene.add(model);
 
-// ------------------------------------------------------------------ field planes (textures)
-function makePlane(y, opacity, renderOrder) {
-  const data = new Uint8Array(W * H * 4);
-  const tex = new THREE.DataTexture(data, W, H, THREE.RGBAFormat);
+// ------------------------------------------------------------------ field planes (textures), one per layer on its own grid
+const planes = {};
+function makePlane(key, g, y, opacity, renderOrder, magFilter = THREE.LinearFilter) {
+  const data = new Uint8Array(g.w * g.h * 4);
+  const tex = new THREE.DataTexture(data, g.w, g.h, THREE.RGBAFormat);
   tex.colorSpace = THREE.SRGBColorSpace;
-  tex.minFilter = THREE.LinearFilter; tex.magFilter = THREE.LinearFilter; tex.generateMipmaps = false;
+  tex.minFilter = THREE.LinearFilter; tex.magFilter = magFilter; tex.generateMipmaps = false;
   const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity, depthWrite: false, side: THREE.DoubleSide });
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(W * CELL, H * CELL), mat);
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(SPAN_X, SPAN_Z), mat);
   mesh.rotation.x = -Math.PI / 2; mesh.position.set(CX, y, CZ); mesh.renderOrder = renderOrder;
   mesh.visible = false;
   scene.add(mesh);
-  return { mesh, tex, data, mat, fade: 0 };
+  return (planes[key] = { mesh, tex, data, mat, fade: 0, target: 0, g });
 }
-const tempPlane = makePlane(LAYER_Y.temp, +ui.oTemp.value, 1);
-const windPlane = makePlane(LAYER_Y.wind, +ui.oWind.value, 2);
-const pollPlane = makePlane(LAYER_Y.poll, +ui.oPoll.value, 3);
-const floodPlane = makePlane(LAYER_Y.flood, +ui.oFlood.value, 1);
-const solarPlane = makePlane(LAYER_Y.solar, +ui.oSolar.value, 1);
-const diurnalPlane = makePlane(LAYER_Y.diurnal, +ui.oDiurnal.value, 1);
-// 1 m shadow mask: the uint8 frame (1 = shaded) is expanded into an RGBA texture of the full 1 m grid (34.6 MB): a dark veil where
+const tempPlane = has('temp') ? makePlane('temp', LG.temp, LAYER_Y.temp, +ui.oTemp.value, 1) : null;
+const windPlane = has('wind') ? makePlane('wind', LG.wind, LAYER_Y.wind, +ui.oWind.value, 2) : null;
+const pollPlane = has('poll') ? makePlane('poll', LG.poll, LAYER_Y.poll, +ui.oPoll.value, 3) : null;
+const floodPlane = has('flood') ? makePlane('flood', LG.flood, LAYER_Y.flood, +ui.oFlood.value, 1) : null;
+const solarPlane = has('solar') ? makePlane('solar', LG.solar, LAYER_Y.solar, +ui.oSolar.value, 1) : null;
+const diurnalPlane = has('diurnal') ? makePlane('diurnal', LG.diurnal, LAYER_Y.diurnal, +ui.oDiurnal.value, 1) : null;
+// fine shadow mask: the uint8 frame (1 = shaded) is expanded into an RGBA texture of the full fine grid: a dark veil where
 // shaded, a faint warm tint where sunlit, so the model's own streets show through. (A single-channel R8 texture sampled from a
-// ShaderMaterial rendered nothing under the logarithmic depth buffer, so the plain textured plane is used, as for the 4 m layers.)
-function makeShadowPlane() {
-  const data = new Uint8Array(W1 * H1 * 4);
-  const tex = new THREE.DataTexture(data, W1, H1, THREE.RGBAFormat);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.minFilter = THREE.LinearFilter; tex.magFilter = THREE.NearestFilter; tex.generateMipmaps = false;
-  const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: +ui.oSolar.value, depthWrite: false, side: THREE.DoubleSide });
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(W * CELL, H * CELL), mat);
-  mesh.rotation.x = -Math.PI / 2; mesh.position.set(CX, LAYER_Y.shadow, CZ); mesh.renderOrder = 1; mesh.visible = false;
-  scene.add(mesh);
-  return { mesh, tex, data, mat, fade: 0 };
-}
-const shadowPlane = makeShadowPlane();
+// ShaderMaterial rendered nothing under the logarithmic depth buffer, so the plain textured plane is used, as for the other layers.)
+const shadowPlane = has('solar') ? makePlane('shadow', LG.shadow, LAYER_Y.shadow, +ui.oSolar.value, 1, THREE.NearestFilter) : null;
+const fadeOf = p => p ? p.fade : 0;
 function uploadShadow(u8) {
-  const d = shadowPlane.data, n = W1 * H1;
+  const d = shadowPlane.data, n = LG.shadow.w * LG.shadow.h;
   for (let i = 0, o = 0; i < n; i++, o += 4) {
     if (u8[i]) { d[o] = 18; d[o + 1] = 28; d[o + 2] = 96; d[o + 3] = 158; } else { d[o] = 255; d[o + 1] = 234; d[o + 2] = 150; d[o + 3] = 80; }   // shade: blue-violet veil; sun: warm wash
   }
   shadowPlane.tex.needsUpdate = true;
 }
+/** packed shadow rows (uint8 [rows, cols/8], numpy packbits axis 1) -> Uint8Array 0/1 of the fine grid */
+function unpackBits(packed, g) {
+  const out = new Uint8Array(g.w * g.h), bpr = g.w >> 3;
+  for (let r = 0; r < g.h; r++) for (let b = 0; b < bpr; b++) { const v = packed[r * bpr + b], o = r * g.w + b * 8; for (let k = 0; k < 8; k++) out[o + k] = (v >> (7 - k)) & 1; }
+  return out;
+}
 
-let footprint = null, solidWind = null, studyArea = null;
+const footprints = {};   // building footprint masks by cell size (metres): each layer is masked at its own resolution
+const fpFor = g => footprints[g.cell] ?? null;
+let solidWind = null, studyArea = null;
 function paintWind(uv) {
-  const d = windPlane.data, n = W * H, inv = 255 / (WIND_RANGE[1] - WIND_RANGE[0]);
+  const g = LG.wind, d = windPlane.data, n = g.w * g.h, inv = 255 / (WIND_RANGE[1] - WIND_RANGE[0]);
   for (let i = 0; i < n; i++) {
     const o = i * 4;
     if (solidWind && solidWind[i]) { d[o + 3] = 0; continue; }
@@ -180,7 +216,7 @@ function paintWind(uv) {
   windPlane.tex.needsUpdate = true;
 }
 // ------------------------------------------------------------------ isotherms (marching squares on a 2x-averaged grid)
-const ISO_STRIDE = 2, NX = W / ISO_STRIDE, NY = H / ISO_STRIDE;
+const ISO_STRIDE = 2, TG = LG.temp ?? gridOf(CELL), NX = TG.w / ISO_STRIDE, NY = TG.h / ISO_STRIDE;
 const isoGrid = new Float32Array(NX * NY);
 const ISO_MAX_SEG = 600000;
 const iso = { pos: new Float32Array(ISO_MAX_SEG * 6), col: new Float32Array(ISO_MAX_SEG * 6), geom: null, lines: null, count: 0 };
@@ -196,21 +232,22 @@ function uploadIsotherms(n) {
   iso.geom.setColors(iso.col.subarray(0, n * 6));
   iso.lines = new LineSegments2(iso.geom, iso.material);
   iso.lines.renderOrder = 3; iso.lines.frustumCulled = false;
-  iso.lines.visible = tempPlane.fade > 0 && ui.tempMode.value === 'iso';
+  iso.lines.visible = fadeOf(tempPlane) > 0 && ui.tempMode.value === 'iso';
   scene.add(iso.lines);
 }
 function paintIsotherms(vals) {
   // average 2x2 blocks; blocks touching a building become NaN so contours stop at walls
+  const w = TG.w, footprint = fpFor(TG);
   for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) {
     const r0 = j * ISO_STRIDE, c0 = i * ISO_STRIDE;
-    const a = r0 * W + c0, b = a + 1, c = a + W, d = c + 1;
+    const a = r0 * w + c0, b = a + 1, c = a + w, d = c + 1;
     const blocked = (footprint && (footprint[a] || footprint[b] || footprint[c] || footprint[d])) || (studyArea && !(studyArea[a] && studyArea[b] && studyArea[c] && studyArea[d]));
     isoGrid[j * NX + i] = blocked ? NaN : (vals[a] + vals[b] + vals[c] + vals[d]) * 0.25;
   }
   const pos = iso.pos, col = iso.col;
-  const y = LAYER_Y.iso, sx = ISO_STRIDE * CELL;
+  const y = LAYER_Y.iso, sx = ISO_STRIDE * TG.cell;
   let n = 0;
-  const px = (i, j) => [X0 + (i * ISO_STRIDE + ISO_STRIDE / 2) * CELL, ZS - (j * ISO_STRIDE + ISO_STRIDE / 2) * CELL];
+  const px = (i, j) => [X0 + (i * ISO_STRIDE + ISO_STRIDE / 2) * TG.cell, ZS - (j * ISO_STRIDE + ISO_STRIDE / 2) * TG.cell];
   const put = (x1, z1, x2, z2, rgb) => {
     if (n >= ISO_MAX_SEG) return;
     const o = n * 6;
@@ -247,8 +284,8 @@ function paintIsotherms(vals) {
   uploadIsotherms(n);
 }
 function paintTemperature(vals) {
-  const d = tempPlane.data, inv = 255 / (TEMP_RANGE[1] - TEMP_RANGE[0]);
-  for (let i = 0; i < W * H; i++) {
+  const g = LG.temp, footprint = fpFor(g), d = tempPlane.data, inv = 255 / (TEMP_RANGE[1] - TEMP_RANGE[0]);
+  for (let i = 0; i < g.w * g.h; i++) {
     const o = i * 4;
     if ((footprint && footprint[i]) || (studyArea && !studyArea[i])) { d[o + 3] = 0; continue; }
     let k = (vals[i] - TEMP_RANGE[0]) * inv; k = k < 0 ? 0 : k > 255 ? 255 : k | 0;
@@ -257,8 +294,8 @@ function paintTemperature(vals) {
   tempPlane.tex.needsUpdate = true;
 }
 function paintFlood(vals) {
-  const d = floodPlane.data, inv = 255 / (FLOOD_RANGE[1] - FLOOD_RANGE[0]);
-  for (let i = 0; i < W * H; i++) {
+  const g = LG.flood, footprint = fpFor(g), d = floodPlane.data, inv = 255 / (FLOOD_RANGE[1] - FLOOD_RANGE[0]);
+  for (let i = 0; i < g.w * g.h; i++) {
     const o = i * 4, h = vals[i];
     if (!(h > FLOOD_RANGE[0]) || (footprint && footprint[i])) { d[o + 3] = 0; continue; }
     let k = (h - FLOOD_RANGE[0]) * inv; k = k > 255 ? 255 : k | 0;
@@ -270,13 +307,13 @@ function paintFlood(vals) {
 // open sky) is painted as a dark veil, sunlit cells get a faint warm tint, so the model's own streets show through the shadows.
 let solarOpen = 0;
 function paintSolar(vals) {
-  const d = solarPlane.data, n = W * H;
+  const g = LG.solar, d = solarPlane.data, n = g.w * g.h;
   const sorted = Float32Array.from(vals).sort(); solarOpen = sorted[Math.floor(n * 0.99)];
   const dusk = solarOpen < 15, inv = dusk ? 0 : 1 / solarOpen;
   for (let i = 0; i < n; i++) {
     const o = i * 4;
     let sh = dusk ? 1 : 1 - vals[i] * inv; sh = sh < 0 ? 0 : sh > 1 ? 1 : sh;
-    // same look as the 1 m shadow layer: warm wash where the cell sees the full sky, blue-violet veil scaled by the shade fraction
+    // same look as the fine shadow layer: warm wash where the cell sees the full sky, blue-violet veil scaled by the shade fraction
     if (sh > 0.08) { const t = Math.pow(sh, 0.8); d[o] = 18; d[o + 1] = 28; d[o + 2] = 96; d[o + 3] = (158 * t) | 0; }
     else { d[o] = 255; d[o + 1] = 234; d[o + 2] = 150; d[o + 3] = 80; }
   }
@@ -284,11 +321,13 @@ function paintSolar(vals) {
   solarPlane.tex.needsUpdate = true;
 }
 const diurnalArray = () => FILES.diurnal[ui.diurnalMode.value.replace('Rel', '')];
-const diurnalAmbient = k => manifest?.temperature3d_solar?.diurnal?.['diurnal_2026-06-21']?.ambient_c?.[k];
+const diurnalSeries = () => manifest?.temperature3d_solar?.diurnal?.[LAYERS.diurnal?.series ?? 'diurnal_2026-06-21'];
+const diurnalAmbient = k => diurnalSeries()?.ambient_c?.[k];
 function paintDiurnal(vals) {
+  const g = LG.diurnal, footprint = fpFor(g);
   const mode = ui.diurnalMode.value, rel = /Rel$/.test(mode), d = diurnalPlane.data, [lo, hi] = DIURNAL_RANGE[mode], inv = 255 / (hi - lo), air = !/^ground/.test(mode);
   const ref = rel ? (diurnalAmbient(frameIndex(state.step).diurnal) ?? 0) : 0;
-  for (let i = 0; i < W * H; i++) {
+  for (let i = 0; i < g.w * g.h; i++) {
     const o = i * 4;
     if (footprint && footprint[i] && !air) { d[o + 3] = 0; continue; }   // the surface map has no value inside buildings; the air layers do
     let k = (vals[i] - ref - lo) * inv; k = k < 0 ? 0 : k > 255 ? 255 : k | 0;
@@ -298,8 +337,8 @@ function paintDiurnal(vals) {
   diurnalPlane.tex.needsUpdate = true;
 }
 function paintPollution(vals) {
-  const d = pollPlane.data;
-  for (let i = 0; i < W * H; i++) {
+  const g = LG.poll, d = pollPlane.data;
+  for (let i = 0; i < g.w * g.h; i++) {
     const o = i * 4, c = vals[i];
     if (!(c > 0.1)) { d[o + 3] = 0; continue; }
     let f = (Math.log10(c) + 1) / 4; f = f > 1 ? 1 : f;   // 0.1 -> 0, 1000 -> 1
@@ -310,8 +349,8 @@ function paintPollution(vals) {
   pollPlane.tex.needsUpdate = true;
 }
 
-// ------------------------------------------------------------------ wind particles (comet tails)
-const TAIL = 7;
+// ------------------------------------------------------------------ wind particles (comet tails), on the wind layer's grid
+const TAIL = 7, WG = LG.wind ?? gridOf(CELL);
 const wind = { uv: null, n: 0, x: null, y: null, age: null, hist: null, geom: null, lines: null, fade: 0 };
 function buildParticles(n) {
   if (wind.lines) { scene.remove(wind.lines); wind.geom.dispose(); }
@@ -328,37 +367,37 @@ function buildParticles(n) {
   for (let i = 0; i < n; i++) respawn(i, true);
 }
 function respawn(i, randomAge) {
-  const x = Math.random() * W, y = Math.random() * H;
+  const x = Math.random() * WG.w, y = Math.random() * WG.h;
   wind.x[i] = x; wind.y[i] = y; wind.age[i] = randomAge ? (Math.random() * 100) | 0 : 0;
   for (let k = 0; k < TAIL; k++) { wind.hist[(i * TAIL + k) * 2] = x; wind.hist[(i * TAIL + k) * 2 + 1] = y; }
 }
 function stepParticles(dtSec) {
   if (!wind.uv) return;
-  const n = W * H, uv = wind.uv, pos = wind.geom.attributes.position.array, col = wind.geom.attributes.color.array;
-  const vis = dtSec * 60;             // visual seconds of physical time per real second, in cells: (m/s) * s / 4 m
+  const n = WG.w * WG.h, uv = wind.uv, pos = wind.geom.attributes.position.array, col = wind.geom.attributes.color.array;
+  const vis = dtSec * 60;             // visual seconds of physical time per real second, in cells: (m/s) * s / cell
   const invR = 1 / (WIND_RANGE[1] - WIND_RANGE[0]);
   for (let i = 0; i < wind.n; i++) {
     let x = wind.x[i], y = wind.y[i];
-    const c = x | 0, r = y | 0, idx = r * W + c;
+    const c = x | 0, r = y | 0, idx = r * WG.w + c;
     const u = uv[idx], v = uv[n + idx], sp = Math.hypot(u, v);
     wind.age[i]++;
     if (sp < 0.03 || wind.age[i] > 160) { respawn(i, false); continue; }
-    x += u * vis / CELL; y += v * vis / CELL;
-    if (x < 0 || x >= W || y < 0 || y >= H) { respawn(i, false); continue; }
+    x += u * vis / WG.cell; y += v * vis / WG.cell;
+    if (x < 0 || x >= WG.w || y < 0 || y >= WG.h) { respawn(i, false); continue; }
     // shift history
     const h = i * TAIL * 2;
     for (let k = TAIL - 1; k > 0; k--) { wind.hist[h + k * 2] = wind.hist[h + (k - 1) * 2]; wind.hist[h + k * 2 + 1] = wind.hist[h + (k - 1) * 2 + 1]; }
     wind.hist[h] = x; wind.hist[h + 1] = y; wind.x[i] = x; wind.y[i] = y;
     const t = Math.min(1, (sp - WIND_RANGE[0]) * invR);
-    const R = 0.45 + 0.55 * t, G = 0.65 + 0.35 * t, B = 1.0;
+    const R = 0.45 + 0.55 * t, Gc = 0.65 + 0.35 * t, B = 1.0;
     for (let k = 0; k < TAIL - 1; k++) {
       const s = (i * (TAIL - 1) + k) * 6;
       const ax = wind.hist[h + k * 2], ay = wind.hist[h + k * 2 + 1], bx = wind.hist[h + (k + 1) * 2], by = wind.hist[h + (k + 1) * 2 + 1];
-      pos[s] = X0 + ax * CELL; pos[s + 1] = LAYER_Y.particles; pos[s + 2] = ZS - ay * CELL;
-      pos[s + 3] = X0 + bx * CELL; pos[s + 4] = LAYER_Y.particles; pos[s + 5] = ZS - by * CELL;
+      pos[s] = X0 + ax * WG.cell; pos[s + 1] = LAYER_Y.particles; pos[s + 2] = ZS - ay * WG.cell;
+      pos[s + 3] = X0 + bx * WG.cell; pos[s + 4] = LAYER_Y.particles; pos[s + 5] = ZS - by * WG.cell;
       const fa = 1 - k / (TAIL - 1), fb = 1 - (k + 1) / (TAIL - 1);
-      col[s] = R * fa; col[s + 1] = G * fa; col[s + 2] = B * fa;
-      col[s + 3] = R * fb; col[s + 4] = G * fb; col[s + 5] = B * fb;
+      col[s] = R * fa; col[s + 1] = Gc * fa; col[s + 2] = B * fa;
+      col[s + 3] = R * fb; col[s + 4] = Gc * fb; col[s + 5] = B * fb;
     }
   }
   wind.geom.attributes.position.needsUpdate = true;
@@ -366,36 +405,41 @@ function stepParticles(dtSec) {
 }
 
 // ------------------------------------------------------------------ time / frames / sequencing
-// Timeline = wind step 1..100 (25 s each). Pollution shares it; the 2-D temperature run starts at step 41
-// (its frame k = step - 40). In "seq" mode the three fields play one after another, each alone.
-// The flood run has its own clock (19 frames, every 10 min of a 3 h cloudburst), so its phase uses steps 1..19 at 2 steps/s
-// and, in overlay mode, the static maximum-depth map is shown instead.
-const PHASES = { wind: { start: 1, end: 100, label: 'Wind speed · 8–12 m' }, temp: { start: 41, end: 100, label: 'Temperature · 2-D model (12–16 m)' }, poll: { start: 1, end: 100, label: 'Pollutant concentration · 12–16 m' },
-  flood: { start: 1, end: 19, rate: 2, label: 'Flooding · surface water depth (3 h cloudburst, 1 m shallow-water model)' },
-  // Sunlight and the day cycle have their own clocks: 10-min GHI frames (99 on 21 June, 47 on 21 December) or hourly 1 m shadows
-  // (17 / 7 frames); the coupled temperature run is hourly 05:00-24:00 (20 frames). `end` of the solar phase follows the day / mode.
-  solar: { start: 1, end: 99, rate: 12, label: 'Sunlight · clear-sky irradiance (1 m shadow model, 4 m block means)' },
-  diurnal: { start: 1, end: 20, rate: 2, label: 'Day cycle · solar-coupled 3-D temperature model, 21 June' } };
-const PHASE_ORDER = ['wind', 'temp', 'solar', 'diurnal', 'poll', 'flood'];
-const OVERLAY_LABEL = 'Overlay · wind speed / temperature / sunlight / day cycle / pollution / flooding';
-const state = { step: 1, playing: false, timer: null, token: 0, loading: false, fields: { wind: null, temp: null, poll: null, flood: null, solar: null, shadow: null, diurnal: null }, introDone: false, phase: 'wind' };
-let floodMeta = null, manifest = null;   // manifest entry of flood/depth_4m_tyx.npy (time_s, rain_mm_h); the whole manifest (solar / diurnal frame times)
+// Timeline = the wind run: steps 1..STEPS of STEP_S seconds (scene.json timeline). Layers on that clock (wind, pollution,
+// temperature) map a step to their frame through t0_s / step_s; a layer can start later (South Kensington's 2-D temperature
+// run starts at 1000 s). Layers with their own clock (flood, sunlight, day cycle) play their own frames in sequence mode;
+// in overlay mode they follow the timeline (flood shows its static maximum-depth map instead).
+const clamp = (v, lo, hi) => v < lo ? lo : v > hi ? hi : v;
+const mapped = (L, step) => clamp(Math.floor((step * STEP_S - L.t0_s) / L.step_s + 1e-6), 0, L.frames - 1);
+function phaseSpan(key) {
+  const L = LAYERS[key];
+  if (key === 'solar') return { start: 1, end: L.frames ?? 99 };
+  if (L.own_clock) return { start: 1, end: L.frames };
+  return { start: Math.max(1, Math.ceil(L.t0_s / STEP_S - 1e-6)), end: Math.min(STEPS, Math.floor((L.t0_s + (L.frames - 1) * L.step_s) / STEP_S + 1e-6)) };
+}
+const PHASES = {};
+for (const k of PHASE_ORDER) PHASES[k] = { ...phaseSpan(k), rate: LAYERS[k].rate, label: LAYERS[k].title ?? LAYERS[k].label };
+const OVERLAY_LABEL = 'Overlay · ' + PHASE_ORDER.map(k => (TAB_NAME[k] ?? k).toLowerCase()).join(' / ');
+const state = { step: 1, playing: false, timer: null, token: 0, loading: false, fields: { wind: null, temp: null, poll: null, flood: null, solar: null, shadow: null, diurnal: null }, introDone: false, phase: PHASE_ORDER[0] };
+let floodMeta = null, manifest = null;   // manifest entry of the flood array (time_s, rain_mm_h); the whole manifest (solar / diurnal frame times)
 fetch(DATA + 'manifest.json').then(r => r.json()).then(m => { manifest = m; floodMeta = m.arrays?.[FILES.flood] ?? null; solarPhaseSetup(); }).catch(() => {});
 const solarFile = () => (ui.solarMode.value === 'shadow' ? FILES.shadow : FILES.solar)[ui.solarDate.value];
 const solarKey = () => (ui.solarMode.value === 'shadow' ? 'shadow_' : 'solar_') + ui.solarDate.value;
+const solarDayLabel = () => LAYERS.solar?.dates?.[ui.solarDate.value]?.label ?? ui.solarDate.value;
 // Decoded frame of a layer: the pre-rendered PNG (physics/web/, ~100 KB) when present, else the raw .npy Range read.
-// Both give the same array layout (wind: [u..., v..., w...]; shadow: Uint8Array 0/1).
+// Both give the same array layout (wind: [u..., v..., w...]; shadow: Uint8Array 0/1, unpacked when the array stores packed bits).
 function frame(key, file, k, raw = false) {
   if (hasLayer(key)) return getFrameF32(key, k);
-  return getFrame(file, k).then(a => raw ? a : f16(a));
+  return getFrame(file, k).then(a => raw ? (LAYERS.solar?.shadow_packed && /^shadow_/.test(key) ? unpackBits(a, LG.shadow) : a) : f16(a));
 }
 function prefetch(key, file, k) { if (hasLayer(key)) getFrameF32(key, k); else getFrame(file, k); }
 const solarMeta = () => manifest?.arrays?.[solarFile()];
 function solarPhaseSetup() {   // frame count and rate of the solar phase follow the chosen day and display mode
-  const meta = solarMeta(), shadow = ui.solarMode.value === 'shadow';
-  PHASES.solar.end = meta?.shape?.[0] ?? (shadow ? (ui.solarDate.value === '20260621' ? 17 : 7) : (ui.solarDate.value === '20260621' ? 99 : 47));
-  PHASES.solar.rate = shadow ? 2 : 12;
-  PHASES.solar.label = `Sunlight · ${ui.solarDate.value === '20260621' ? '21 June' : '21 December'} · ${shadow ? '1 m shadows on the hour' : 'clear-sky irradiance every 10 min'}`;
+  if (!has('solar')) return;
+  const S = LAYERS.solar, meta = solarMeta(), shadow = ui.solarMode.value === 'shadow';
+  PHASES.solar.end = meta?.shape?.[0] ?? layerMeta(solarKey())?.frames ?? PHASES.solar.end;
+  PHASES.solar.rate = shadow ? (S.shadow_rate ?? 2) : (S.ghi_rate ?? 12);
+  PHASES.solar.label = `Sunlight · ${solarDayLabel()} · ${shadow ? (S.shadow_label ?? 'shadows') : (S.ghi_label ?? 'clear-sky irradiance')}`;
 }
 // the scene's sun follows the real sun position of the solar frame (azimuth 0 = north, clockwise; model north = -Z)
 const SUN_DEFAULT = { pos: sun.position.clone(), intensity: sun.intensity };
@@ -405,27 +449,31 @@ function placeSun(altDeg, azDeg) {
   sun.position.set(r * Math.cos(alt) * Math.sin(az), r * Math.sin(alt), -r * Math.cos(alt) * Math.cos(az));
   sun.intensity = SUN_DEFAULT.intensity * (0.35 + 0.65 * Math.min(1, Math.max(0, altDeg) / 40));
 }
-function floodFrame(step) { return seqMode() && state.phase === 'flood' ? Math.max(0, Math.min(PHASES.flood.end - 1, step - 1)) : null; }   // null = static max depth
 function frameIndex(step) {
-  const own = ph => seqMode() && state.phase === ph;
-  return { wind: step - 1, poll: step - 1, temp: Math.max(0, Math.min(60, step - 40)), flood: floodFrame(step),
-    solar: Math.min(PHASES.solar.end - 1, step - 1),                                   // overlay: the 100 wind steps run through the day
-    diurnal: own('diurnal') ? Math.min(19, step - 1) : Math.min(19, Math.floor((step - 1) / 5)) };
+  const own = ph => seqMode() && state.phase === ph, fi = {};
+  for (const k of Object.keys(LAYERS)) {
+    const L = LAYERS[k];
+    if (k === 'solar') fi.solar = Math.min(PHASES.solar.end - 1, Math.max(0, step - 1));               // overlay: the timeline runs through the day
+    else if (L.own_clock) fi[k] = own(k) ? Math.min(L.frames - 1, step - 1) : (L.max ? null : mapped(L, step));   // null = static maximum map
+    else fi[k] = mapped(L, step);
+  }
+  return fi;
 }
 function seqMode() { return ui.mode.value === 'seq'; }
 function activeLayers() {
-  if (seqMode()) return { wind: state.phase === 'wind', temp: state.phase === 'temp', poll: state.phase === 'poll', flood: state.phase === 'flood', solar: state.phase === 'solar', diurnal: state.phase === 'diurnal' };
-  return { wind: ui.lWind.checked, temp: ui.lTemp.checked, poll: ui.lPoll.checked, flood: ui.lFlood.checked, solar: ui.lSolar.checked, diurnal: ui.lDiurnal.checked };
+  const chk = { wind: ui.lWind, temp: ui.lTemp, poll: ui.lPoll, flood: ui.lFlood, solar: ui.lSolar, diurnal: ui.lDiurnal }, act = {};
+  for (const k of Object.keys(chk)) act[k] = has(k) && (seqMode() ? state.phase === k : chk[k].checked);
+  return act;
 }
 function repaint() {
   const f = state.fields, act = activeLayers();
-  if (!f.wind) return;
-  if (act.wind || windPlane.fade > 0) paintWind(f.wind);
-  if (act.poll || pollPlane.fade > 0) paintPollution(f.poll);
-  if ((act.flood || floodPlane.fade > 0) && f.flood) paintFlood(f.flood);
-  if ((act.solar || solarPlane.fade > 0) && f.solar && ui.solarMode.value !== 'shadow') paintSolar(f.solar);
-  if ((act.diurnal || diurnalPlane.fade > 0) && f.diurnal) paintDiurnal(f.diurnal);
-  if (act.temp || tempPlane.fade > 0) {
+  if (has('wind') && !f.wind) return;
+  if (has('wind') && (act.wind || windPlane.fade > 0)) paintWind(f.wind);
+  if (has('poll') && (act.poll || pollPlane.fade > 0) && f.poll) paintPollution(f.poll);
+  if (has('flood') && (act.flood || floodPlane.fade > 0) && f.flood) paintFlood(f.flood);
+  if (has('solar') && (act.solar || solarPlane.fade > 0) && f.solar && ui.solarMode.value !== 'shadow') paintSolar(f.solar);
+  if (has('diurnal') && (act.diurnal || diurnalPlane.fade > 0) && f.diurnal) paintDiurnal(f.diurnal);
+  if (has('temp') && (act.temp || tempPlane.fade > 0) && f.temp) {
     if (ui.tempMode.value === 'iso') { paintIsotherms(f.temp); } else { paintTemperature(f.temp); }
   }
 }
@@ -434,10 +482,11 @@ async function loadStep(step) {
 }
 async function loadStepInner(step) {
   const token = ++state.token, fi = frameIndex(step);
-  const act = activeLayers(), wantFlood = act.flood || floodPlane.fade > 0, wantSolar = act.solar || solarPlane.fade > 0, wantDiurnal = act.diurnal || diurnalPlane.fade > 0;
+  const act = activeLayers();
+  const wantFlood = has('flood') && (act.flood || floodPlane.fade > 0), wantSolar = has('solar') && (act.solar || solarPlane.fade > 0), wantDiurnal = has('diurnal') && (act.diurnal || diurnalPlane.fade > 0);
   const shadowMode = ui.solarMode.value === 'shadow';
   // fetch only what is shown or fading (plus a first frame of each field for the readout); every other layer keeps its last frame
-  const wantWind = act.wind || windPlane.fade > 0 || !state.fields.wind, wantPoll = act.poll || pollPlane.fade > 0 || !state.fields.poll, wantTemp = act.temp || tempPlane.fade > 0 || !state.fields.temp;
+  const wantWind = has('wind') && (act.wind || windPlane.fade > 0 || !state.fields.wind), wantPoll = has('poll') && (act.poll || pollPlane.fade > 0 || !state.fields.poll), wantTemp = has('temp') && (act.temp || tempPlane.fade > 0 || !state.fields.temp);
   state.loading = true;
   const dKey = 'diurnal_' + ui.diurnalMode.value.replace('Rel', '');
   const [wr, pr, tr, fr, sr, dr] = await Promise.all([wantWind ? frame('wind', FILES.wind, fi.wind) : null, wantPoll ? frame('poll', FILES.poll, fi.poll) : null, wantTemp ? frame('temp', FILES.temp, fi.temp) : null,
@@ -463,17 +512,17 @@ async function loadStepInner(step) {
     ui.timeLabel.textContent = `Flooding · frame ${k + 1} / ${ph.end} · t = ${ts !== undefined ? Math.round(ts / 60) : k * 10} min` + (rain !== undefined ? ` · rain ${rain.toFixed(1)} mm/h` : '');
   } else if (seqMode() && state.phase === 'solar') {
     const k = fi.solar, tl = sm?.time_local?.[k];
-    ui.timeLabel.textContent = `${ui.solarDate.value === '20260621' ? '21 June' : '21 December'} · ${tl ?? `frame ${k + 1}`} local · sun altitude ${sAlt !== undefined ? sAlt.toFixed(0) + '°' : '–'} · ${k + 1} / ${ph.end}`;
+    ui.timeLabel.textContent = `${solarDayLabel()} · ${tl ?? `frame ${k + 1}`} local · sun altitude ${sAlt !== undefined ? sAlt.toFixed(0) + '°' : '–'} · ${k + 1} / ${ph.end}`;
   } else if (seqMode() && state.phase === 'diurnal') {
-    const k = fi.diurnal, dm = manifest?.temperature3d_solar?.diurnal?.['diurnal_2026-06-21'], hr = dm?.hours_local?.[k], amb = dm?.ambient_c?.[k];
-    ui.timeLabel.textContent = `21 June · ${hr !== undefined ? String(hr).padStart(2, '0') + ':00' : `hour ${k + 1}`} local · ambient ${amb !== undefined ? amb.toFixed(1) + ' °C' : '–'} · ${k + 1} / ${ph.end}`;
+    const k = fi.diurnal, dm = diurnalSeries(), hr = dm?.hours_local?.[k], amb = dm?.ambient_c?.[k];
+    ui.timeLabel.textContent = `${LAYERS.diurnal.day_label ?? ''} · ${hr !== undefined ? String(hr).padStart(2, '0') + ':00' : `hour ${k + 1}`} local · ambient ${amb !== undefined ? amb.toFixed(1) + ' °C' : '–'} · ${k + 1} / ${ph.end}`;
   } else ui.timeLabel.textContent = seqMode()
-    ? `${ph.label} · frame ${step - ph.start + 1} / ${ph.end - ph.start + 1} · t = ${step * 25} s`
-    : `Step ${step} · t = ${step * 25} s` + (step < 41 ? ' · temperature run not started' : '') + (act.flood ? ' · flood layer = maximum depth of the 3 h event' : '');
+    ? `${ph.label} · frame ${step - ph.start + 1} / ${ph.end - ph.start + 1} · t = ${step * STEP_S} s`
+    : `Step ${step} · t = ${step * STEP_S} s` + (has('temp') && step < PHASES.temp?.start ? ' · temperature run not started' : '') + (act.flood && LAYERS.flood?.max ? ' · flood layer = maximum depth of the event' : '');
   for (let k = 1; k <= 4; k++) { const n = step + k; if (n <= ph.end) { const f = frameIndex(n); if (act.wind) prefetch('wind', FILES.wind, f.wind); if (act.poll) prefetch('poll', FILES.poll, f.poll); if (act.temp) prefetch('temp', FILES.temp, f.temp); if (act.flood && f.flood !== null) prefetch('flood', FILES.flood, f.flood); if (act.solar) prefetch(solarKey(), solarFile(), f.solar); if (act.diurnal) prefetch(dKey, diurnalArray(), f.diurnal); } }
 }
 function setStep(s) {
-  const lo = seqMode() ? PHASES[state.phase].start : 1, hi = seqMode() ? PHASES[state.phase].end : 100;
+  const lo = seqMode() ? PHASES[state.phase].start : 1, hi = seqMode() ? PHASES[state.phase].end : STEPS;
   state.step = Math.max(lo, Math.min(hi, s)); ui.step.min = lo; ui.step.max = hi; ui.step.value = state.step;
   loadStep(state.step);
 }
@@ -488,7 +537,7 @@ function setPhase(phase) {
 }
 function tick() {
   if (state.loading) return;   // previous frame still loading: wait for it rather than cancelling it (that starved the painter)
-  if (state.step < (seqMode() ? PHASES[state.phase].end : 100)) { setStep(state.step + 1); return; }
+  if (state.step < (seqMode() ? PHASES[state.phase].end : STEPS)) { setStep(state.step + 1); return; }
   if (seqMode()) {
     const i = PHASE_ORDER.indexOf(state.phase);
     if (i === PHASE_ORDER.length - 1 && ui.auto.checked && section === 'fields') { runCampus(); return; }
@@ -508,10 +557,11 @@ function setRateOptions(kind, value) {
 }
 ui.play.addEventListener('click', () => {
   if (section === 'campus' && replayLayer) { replayLayer.playing = !replayLayer.playing; ui.play.textContent = replayLayer.playing ? '❚❚' : '▶'; }
+  else if (section === 'campus' && tour.active) { tour.paused = !tour.paused; ui.play.textContent = tour.paused ? '▶' : '❚❚'; }
   else setPlaying(!state.playing);
 });
 ui.rate.addEventListener('change', () => { if (section === 'campus' && replayLayer) replayLayer.speed = +ui.rate.value; else if (state.playing) setPlaying(true); });
-ui.step.addEventListener('input', () => { if (section === 'campus' && replayLayer) { replayLayer.t = +ui.step.value; replayLayer.update(replayLayer.t); } else setStep(+ui.step.value); });
+ui.step.addEventListener('input', () => { if (section === 'campus' && replayLayer) { replayLayer.t = +ui.step.value; replayLayer.update(replayLayer.t); } else if (section !== 'campus') setStep(+ui.step.value); });
 ui.mode.addEventListener('change', () => { if (seqMode()) setPhase(state.phase); else { ui.stage.textContent = OVERLAY_LABEL; applyLayers(); setStep(state.step); } });
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
@@ -528,6 +578,8 @@ let mainScene = null, mainBatches = null, tileGroup = null, tileBatches = null, 
 const tileHidden = new Set();          // main / supplementary meshes the tile replaces (hidden while the tile is on)
 const holeMaterials = new Set();       // materials of the main model's ground / road layers: clipped inside the tile
 const tileHole = tileClipPlanes(false), tileKeep = tileClipPlanes(true);
+let supplementBatches = null;
+const expansions = [];
 function applyTile() {
   if (!tileGroup) return;
   const on = ui.lTile.checked;
@@ -544,13 +596,13 @@ $('l-expansion').addEventListener('input', applyLayers);
 const FADE_SEC = 0.6;
 function applyLayers() {
   const on = state.introDone, act = activeLayers();
-  windPlane.target = on && act.wind ? 1 : 0;
-  tempPlane.target = on && act.temp ? 1 : 0;
-  pollPlane.target = on && act.poll ? 1 : 0;
-  floodPlane.target = on && act.flood ? 1 : 0;
-  solarPlane.target = on && act.solar && ui.solarMode.value !== 'shadow' ? 1 : 0;
-  shadowPlane.target = on && act.solar && ui.solarMode.value === 'shadow' ? 1 : 0;
-  diurnalPlane.target = on && act.diurnal ? 1 : 0;
+  if (windPlane) windPlane.target = on && act.wind ? 1 : 0;
+  if (tempPlane) tempPlane.target = on && act.temp ? 1 : 0;
+  if (pollPlane) pollPlane.target = on && act.poll ? 1 : 0;
+  if (floodPlane) floodPlane.target = on && act.flood ? 1 : 0;
+  if (solarPlane) solarPlane.target = on && act.solar && ui.solarMode.value !== 'shadow' ? 1 : 0;
+  if (shadowPlane) shadowPlane.target = on && act.solar && ui.solarMode.value === 'shadow' ? 1 : 0;
+  if (diurnalPlane) diurnalPlane.target = on && act.diurnal ? 1 : 0;
   model.visible = ui.lModel.checked;
   if (supplementBatches) supplementBatches.visible = $('l-supplement').checked;
   for (const expansion of expansions) expansion.setEnabled($('l-expansion').checked);
@@ -561,29 +613,28 @@ function applyLayers() {
 }
 function updateFades(dt) {
   let changed = false;
-  for (const L of [windPlane, tempPlane, pollPlane, floodPlane, solarPlane, shadowPlane, diurnalPlane]) {
+  for (const L of Object.values(planes)) {
     const t = L.target ?? 0;
     if (L.fade !== t) { L.fade = dt > 0 ? (L.fade < t ? Math.min(t, L.fade + dt / FADE_SEC) : Math.max(t, L.fade - dt / FADE_SEC)) : L.fade; changed = true; }
   }
   const isoMode = ui.tempMode.value === 'iso';
-  windPlane.mesh.visible = windPlane.fade > 0;
-  windPlane.mat.opacity = +ui.oWind.value * windPlane.fade;
-  wind.lines.visible = windPlane.fade > 0 && ui.lPart.checked;
-  wind.lines.material.opacity = 0.9 * windPlane.fade;
-  tempPlane.mesh.visible = tempPlane.fade > 0 && !isoMode;
-  tempPlane.mat.opacity = +ui.oTemp.value * tempPlane.fade;
-  if (iso.lines) iso.lines.visible = tempPlane.fade > 0 && isoMode;
-  iso.material.opacity = +ui.oTemp.value * tempPlane.fade;
-  pollPlane.mesh.visible = pollPlane.fade > 0;
-  pollPlane.mat.opacity = +ui.oPoll.value * pollPlane.fade;
-  floodPlane.mesh.visible = floodPlane.fade > 0 && !!state.fields.flood;
-  floodPlane.mat.opacity = +ui.oFlood.value * floodPlane.fade;
-  solarPlane.mesh.visible = solarPlane.fade > 0 && !!state.fields.solar;
-  solarPlane.mat.opacity = +ui.oSolar.value * solarPlane.fade;
-  shadowPlane.mesh.visible = shadowPlane.fade > 0 && !!state.fields.shadow;
-  shadowPlane.mat.opacity = +ui.oSolar.value * shadowPlane.fade;
-  diurnalPlane.mesh.visible = diurnalPlane.fade > 0 && !!state.fields.diurnal;
-  diurnalPlane.mat.opacity = +ui.oDiurnal.value * diurnalPlane.fade;
+  if (windPlane) {
+    windPlane.mesh.visible = windPlane.fade > 0;
+    windPlane.mat.opacity = +ui.oWind.value * windPlane.fade;
+    wind.lines.visible = windPlane.fade > 0 && ui.lPart.checked;
+    wind.lines.material.opacity = 0.9 * windPlane.fade;
+  }
+  if (tempPlane) {
+    tempPlane.mesh.visible = tempPlane.fade > 0 && !isoMode;
+    tempPlane.mat.opacity = +ui.oTemp.value * tempPlane.fade;
+    if (iso.lines) iso.lines.visible = tempPlane.fade > 0 && isoMode;
+    iso.material.opacity = +ui.oTemp.value * tempPlane.fade;
+  }
+  if (pollPlane) { pollPlane.mesh.visible = pollPlane.fade > 0; pollPlane.mat.opacity = +ui.oPoll.value * pollPlane.fade; }
+  if (floodPlane) { floodPlane.mesh.visible = floodPlane.fade > 0 && !!state.fields.flood; floodPlane.mat.opacity = +ui.oFlood.value * floodPlane.fade; }
+  if (solarPlane) { solarPlane.mesh.visible = solarPlane.fade > 0 && !!state.fields.solar; solarPlane.mat.opacity = +ui.oSolar.value * solarPlane.fade; }
+  if (shadowPlane) { shadowPlane.mesh.visible = shadowPlane.fade > 0 && !!state.fields.shadow; shadowPlane.mat.opacity = +ui.oSolar.value * shadowPlane.fade; }
+  if (diurnalPlane) { diurnalPlane.mesh.visible = diurnalPlane.fade > 0 && !!state.fields.diurnal; diurnalPlane.mat.opacity = +ui.oDiurnal.value * diurnalPlane.fade; }
   return changed;
 }
 for (const el of [ui.lWind, ui.lTemp, ui.lPoll, ui.lFlood, ui.lSolar, ui.lDiurnal]) el.addEventListener('input', () => {
@@ -622,14 +673,14 @@ ui.nPart.addEventListener('change', () => { buildParticles(+ui.nPart.value); app
 
 // ------------------------------------------------------------------ camera choreography
 const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-const campusCentre = new THREE.Vector3((CAMPUS.min[0] + CAMPUS.max[0]) / 2, 15, (CAMPUS.min[1] + CAMPUS.max[1]) / 2);
+const campusCentre = new THREE.Vector3((FOCUS.box[0][0] + FOCUS.box[1][0]) / 2, 15, (FOCUS.box[0][1] + FOCUS.box[1][1]) / 2);
 const domainCentre = new THREE.Vector3(CX, 0, CZ);
 function fitDistance() {
   const vFov = THREE.MathUtils.degToRad(camera.fov), hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect);
-  return 1.08 * Math.max((H * CELL / 2) / Math.tan(vFov / 2), (W * CELL / 2) / Math.tan(hFov / 2));
+  return 1.08 * Math.max((SPAN_Z / 2) / Math.tan(vFov / 2), (SPAN_X / 2) / Math.tan(hFov / 2));
 }
 function campusPose(azimuth) {
-  const dist = 480, elev = THREE.MathUtils.degToRad(32);
+  const dist = FOCUS.orbit_m ?? 480, elev = THREE.MathUtils.degToRad(32);
   const pos = new THREE.Vector3(
     campusCentre.x + dist * Math.cos(elev) * Math.sin(azimuth),
     campusCentre.y + dist * Math.sin(elev),
@@ -656,70 +707,132 @@ function updateFlight(now) {
   if (k >= 1) { const f = flight; flight = null; controls.enabled = true; controls.update(); if (f.onDone) f.onDone(); }
 }
 function campusPoseDeg(azDeg) { return campusPose(THREE.MathUtils.degToRad(azDeg)); }
+// Plain site tour for scenes without a replay: a slow orbit around the focus (then, with a transport layer, a wide orbit
+// over the network), then (auto loop) the fields.
+const TOUR_SHOTS = { overview: { dist: 1, elev: 32, dur: 16000, label: () => `${FOCUS.label ?? SCENE.title} · overview`, time: () => `Overview · orbiting ${FOCUS.label ?? SCENE.title}` },
+  transport: { dist: 2.4, elev: 52, dur: 14000, label: () => `${SCENE.transport?.label ?? 'Transport'} · tube, rail and bus network, road disruptions and traffic cameras`, time: () => transport?.summary ?? 'Transport' } };
+const TOUR_ORDER = ['overview', ...(SCENE.transport ? ['transport'] : [])];
+const tour = { active: false, paused: false, az: 0, t0: 0, dur: 16000, shot: 'overview', hold: false };
+function tourPose(az, shot = tour.shot) {
+  const s = TOUR_SHOTS[shot], dist = (FOCUS.orbit_m ?? 480) * s.dist, elev = THREE.MathUtils.degToRad(s.elev);
+  return { pos: new THREE.Vector3(campusCentre.x + dist * Math.cos(elev) * Math.sin(az), campusCentre.y + dist * Math.sin(elev), campusCentre.z + dist * Math.cos(elev) * Math.cos(az)), target: campusCentre.clone() };
+}
+function startTour(shot = 'overview') {
+  const first = !tour.active || tour.shot === shot;
+  tour.active = true; tour.paused = false; tour.shot = shot; tour.t0 = performance.now(); tour.dur = TOUR_SHOTS[shot].dur;
+  if (first) tour.az = THREE.MathUtils.degToRad(-150);
+  ui.stage.textContent = TOUR_SHOTS[shot].label(); ui.info.textContent = shot === 'overview' ? (SCENE.description ?? '') : (transport?.statusLines?.slice(0, 4).join(' · ') ?? '');
+  const p = tourPose(tour.az);
+  if (camera.position.distanceTo(p.pos) > 50) { flyTo(p, 2600, () => { controls.enabled = false; tour.t0 = performance.now(); }); }
+  else { controls.enabled = false; flight = null; }
+  setSectionUI();
+}
+function updateTour(now, dt) {
+  if (!tour.active || flight) return;
+  if (!tour.paused) tour.az += dt * (tour.shot === 'overview' ? 0.09 : 0.05);
+  const p = tourPose(tour.az);
+  camera.position.copy(p.pos); controls.target.copy(p.target); camera.lookAt(p.target);
+  ui.timeLabel.textContent = TOUR_SHOTS[tour.shot].time();
+  if (!tour.paused && !tour.hold && now - tour.t0 > tour.dur) {
+    const i = TOUR_ORDER.indexOf(tour.shot);
+    if (i + 1 < TOUR_ORDER.length) startTour(TOUR_ORDER[i + 1]);
+    else if (ui.auto.checked) { tour.active = false; runFields(); }
+    else startTour(TOUR_ORDER[0]);
+  }
+}
 function setSectionUI() {
-  shotButtons.forEach(b => b.classList.toggle('active', section === 'campus' && replayLayer?.shot === b.dataset.shot));
+  shotButtons.forEach(b => b.classList.toggle('active', section === 'campus' && (replayLayer ? replayLayer.shot === b.dataset.shot : tour.active && tour.shot === b.dataset.shot)));
   fieldButtons.forEach(b => b.classList.toggle('active', section === 'fields' && (seqMode() ? state.phase === b.dataset.field : true)));
 }
-/** Campus section: ground, trees and the traffic / UAV replay visible; the physics fields hidden; the shot tour runs. */
-function runCampus() {
+/** Site section: ground, trees and (South Kensington) the traffic / UAV replay visible; the physics fields hidden; the shot tour runs. */
+function runCampus(shot = 'overview') {
   section = 'campus'; placeSun();
   setPlaying(false); state.introDone = false; applyLayers();            // fields fade out
   ui.lGround.checked = true; ui.lTrees.checked = true; applyLayers();
   if (replayLayer) { replayLayer.setVisible(true); replayLayer.playing = true; }
+  applyTransportLayers();
   setRateOptions('replay', replayLayer?.speed ?? 1); ui.play.textContent = '❚❚';
-  if (replayLayer) { ui.step.min = replayLayer.traffic?.firstTime ?? 0; ui.step.max = replayLayer.duration || 3600; ui.step.step = 0.1; }
-  replayLayer?.startShot('overview');
+  if (replayLayer) { ui.step.min = replayLayer.traffic?.firstTime ?? 0; ui.step.max = replayLayer.duration || 3600; ui.step.step = 0.1; ui.step.disabled = false; ui.rate.disabled = false; }
+  else { ui.step.disabled = true; ui.rate.disabled = true; }
+  if (replayLayer) replayLayer.startShot(shot); else startTour(TOUR_SHOTS[shot] ? shot : 'overview');
   setSectionUI();
 }
-/** Fields section: climb to the overhead view, hide ground / trees / replay, play the three fields in sequence. */
-function runFields(phase = 'wind') {
+// ---- transport layer controls (panel): sub-layer toggles, snapshot summary, live arrivals at a chosen station
+const trUI = { box: $('transport-ctl'), on: $('l-transport'), rail: $('l-tr-rail'), bus: $('l-tr-bus'), stations: $('l-tr-stations'), stops: $('l-tr-stops'), disruptions: $('l-tr-disruptions'), cams: $('l-tr-cams'), stats: $('transport-stats'), station: $('tr-station'), live: $('tr-live'), arrivals: $('tr-arrivals') };
+function applyTransportLayers() {
+  if (!transport) return;
+  transport.setVisible(trUI.on.checked && section !== 'fields');
+  transport.setLayers({ rail: trUI.rail.checked, bus: trUI.bus.checked, stations: trUI.stations.checked, stops: trUI.stops.checked, disruptions: trUI.disruptions.checked, cams: trUI.cams.checked });
+}
+let arrivalsTimer = null;
+async function refreshArrivals() {
+  if (!transport || !trUI.station.value) return;
+  const id = trUI.station.value, r = await transport.arrivals(id);
+  if (trUI.station.value !== id) return;
+  trUI.live.textContent = r.live ? `live · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'snapshot (offline)';
+  trUI.arrivals.textContent = r.list.length ? r.list.map(a => `${String(Math.max(0, Math.round((a.seconds ?? 0) / 60))).padStart(2, ' ')} min · ${a.line} → ${a.destination ?? ''}${a.platform ? ' · ' + a.platform.replace('Platform ', 'pl. ') : ''}`).join('\n') : 'no arrivals listed';
+}
+function setupTransportUI() {
+  if (!transport) return;
+  trUI.box.style.display = '';
+  trUI.stats.textContent = transport.summary + (transport.statusLines.length ? '\n' + transport.statusLines.join('\n') : '');
+  trUI.station.replaceChildren(...transport.stations.sort((a, b) => a.name.localeCompare(b.name)).map(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.name.replace(/ (Underground|Rail) Station$/, ''); return o; }));
+  const first = transport.stations.find(s => /White City/.test(s.name)) ?? transport.stations[0]; if (first) trUI.station.value = first.id;
+  for (const el of [trUI.on, trUI.rail, trUI.bus, trUI.stations, trUI.stops, trUI.disruptions, trUI.cams]) el.addEventListener('input', applyTransportLayers);
+  trUI.station.addEventListener('change', refreshArrivals);
+  refreshArrivals(); clearInterval(arrivalsTimer); arrivalsTimer = setInterval(refreshArrivals, 45000);
+  applyTransportLayers();
+}
+/** Fields section: climb to the overhead view, hide ground / trees / replay, play the fields in sequence. */
+function runFields(phase = PHASE_ORDER[0]) {
   if (section === 'fields' && state.introDone) { ui.mode.value = 'seq'; setPhase(phase); setPlaying(true); return; }   // already overhead: jump to that field
-  section = 'fields';
+  section = 'fields'; tour.active = false;
   replayLayer?.stopShots(); if (replayLayer) replayLayer.playing = false;
-  ui.stage.textContent = 'Climbing to the overhead view · aligned with the 4 m simulation grid (3072 × 2816 m)'; ui.info.textContent = '';
+  ui.stage.textContent = `Climbing to the overhead view · aligned with the ${CELL} m simulation grid (${G.size_note ?? `${SPAN_X} × ${SPAN_Z} m`})`; ui.info.textContent = '';
+  ui.step.disabled = false; ui.rate.disabled = false;
   setSectionUI();
   flyTo(overheadPose(), 3800, () => {
     state.introDone = true;
     ui.lGround.checked = false; ui.lTrees.checked = false;
-    replayLayer?.setVisible(false);
+    replayLayer?.setVisible(false); applyTransportLayers();
     setRateOptions('fields', 12); ui.step.step = 1;
     setPhase(seqMode() ? phase : state.phase); setPlaying(true);
   });
 }
 function playIntro() {
-  state.introDone = false; windPlane.fade = tempPlane.fade = pollPlane.fade = floodPlane.fade = solarPlane.fade = shadowPlane.fade = diurnalPlane.fade = 0; placeSun();
+  state.introDone = false; for (const L of Object.values(planes)) L.fade = 0; placeSun();
   const a0 = campusPoseDeg(-150);
   camera.position.copy(a0.pos); controls.target.copy(a0.target); camera.lookAt(a0.target);
   runCampus();
 }
 shotButtons.forEach(b => b.addEventListener('click', () => {
-  if (!replayLayer) return;
-  if (section !== 'campus') { runCampus(); }
-  replayLayer.startShot(b.dataset.shot); setSectionUI();
+  if (replayLayer) { if (section !== 'campus') runCampus(); replayLayer.startShot(b.dataset.shot); }
+  else runCampus(b.dataset.shot);
+  setSectionUI();
 }));
 fieldButtons.forEach(b => b.addEventListener('click', () => runFields(b.dataset.field)));
 ui.replay.addEventListener('click', playIntro);
 
 // ------------------------------------------------------------------ hover readout
 const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), hit = new THREE.Vector3();
+const cellOf = g => { const c = Math.floor((hit.x - X0) / g.cell), r = Math.floor((ZS - hit.z) / g.cell); return c < 0 || c >= g.w || r < 0 || r >= g.h ? -1 : r * g.w + c; };
 renderer.domElement.addEventListener('pointermove', e => {
-  if (!state.introDone) return;
   ndc.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
+  const tInfo = transport?.hover(ndc, camera);   // TfL markers: stations, bus stops, road disruptions, JamCams
+  if (!state.introDone) { ui.readout.hidden = !tInfo; if (tInfo) ui.readout.textContent = tInfo; return; }
   ray.setFromCamera(ndc, camera);
   if (!ray.ray.intersectPlane(groundPlane, hit)) { ui.readout.hidden = true; return; }
   const c = Math.floor((hit.x - X0) / CELL), r = Math.floor((ZS - hit.z) / CELL);
-  if (c < 0 || c >= W || r < 0 || r >= H || !state.fields.wind) { ui.readout.hidden = true; return; }
-  const i = r * W + c, n = W * H, f = state.fields;
-  const u = f.wind ? f.wind[i] : NaN, v = f.wind ? f.wind[n + i] : NaN, w = f.wind ? f.wind[2 * n + i] : NaN;
-  const dom = `Domain x ${480 + c * CELL} m, y ${640 + r * CELL} m · cell (${c}, ${r})`;
-  const lines = [dom,
-    `Wind |V| ${Math.hypot(u, v, w).toFixed(2)} m/s  (u ${u.toFixed(2)}, v ${v.toFixed(2)}, w ${w.toFixed(2)})`,
-    ...(f.temp ? [`Temperature ${f.temp[i].toFixed(2)} °C` + (footprint && footprint[i] ? ' (building cell)' : '')] : []),
-    ...(f.poll ? [`Concentration ${f.poll[i] < 10 ? f.poll[i].toFixed(2) : f.poll[i].toFixed(0)}`] : [])];
-  if (f.flood) lines.push(`Flood depth ${f.flood[i] > 0.02 ? f.flood[i].toFixed(2) + ' m' : 'dry'}` + (seqMode() && state.phase === 'flood' ? '' : ' (maximum of the event)'));
-  if (f.solar) lines.push(`Sunlight GHI ${f.solar[i].toFixed(0)} W/m²` + (solarOpen >= 15 ? ` (${(100 * f.solar[i] / solarOpen).toFixed(0)} % of open sky)` : ''));
-  if (f.shadow) { const c1 = Math.floor(hit.x - X0), r1 = Math.floor(ZS - hit.z); if (c1 >= 0 && c1 < W1 && r1 >= 0 && r1 < H1) lines.push(`Sunlight · 1 m cell ${f.shadow[r1 * W1 + c1] ? 'in shadow' : 'sunlit'}`); }
-  if (f.diurnal) { const amb = diurnalAmbient(frameIndex(state.step).diurnal); lines.push(`Day cycle ${({ ground: 'ground surface', air0: 'air 0–4 m', air12: 'air 12–16 m' })[ui.diurnalMode.value.replace('Rel', '')]} ${f.diurnal[i].toFixed(1)} °C` + (amb !== undefined ? ` (${(f.diurnal[i] - amb >= 0 ? '+' : '')}${(f.diurnal[i] - amb).toFixed(1)} vs ambient ${amb.toFixed(1)})` : '')); }
+  if (c < 0 || c >= W || r < 0 || r >= H) { ui.readout.hidden = true; return; }
+  const f = state.fields, [ox, oy] = G.domain_origin_xy_m ?? [0, 0];
+  const lines = [...(tInfo ? [tInfo, ''] : []), `${G.origin_label ?? 'Domain'} x ${ox + c * CELL} m, y ${oy + r * CELL} m · cell (${c}, ${r})`];
+  if (f.wind) { const i = cellOf(LG.wind), n = LG.wind.w * LG.wind.h; if (i >= 0) { const u = f.wind[i], v = f.wind[n + i], w = f.wind[2 * n + i]; lines.push(`Wind |V| ${Math.hypot(u, v, w).toFixed(2)} m/s  (u ${u.toFixed(2)}, v ${v.toFixed(2)}, w ${w.toFixed(2)})`); } }
+  if (f.temp) { const i = cellOf(LG.temp), fp = fpFor(LG.temp); if (i >= 0) lines.push(`Temperature ${f.temp[i].toFixed(2)} °C` + (fp && fp[i] ? ' (building cell)' : '')); }
+  if (f.poll) { const i = cellOf(LG.poll); if (i >= 0) lines.push(`Concentration ${f.poll[i] < 10 ? f.poll[i].toFixed(2) : f.poll[i].toFixed(0)}`); }
+  if (f.flood) { const i = cellOf(LG.flood); if (i >= 0) lines.push(`Flood depth ${f.flood[i] > FLOOD_RANGE[0] ? f.flood[i].toFixed(2) + ' m' : 'dry'}` + (seqMode() && state.phase === 'flood' ? '' : ' (maximum of the event)')); }
+  if (f.solar) { const i = cellOf(LG.solar); if (i >= 0) lines.push(`Sunlight GHI ${f.solar[i].toFixed(0)} W/m²` + (solarOpen >= 15 ? ` (${(100 * f.solar[i] / solarOpen).toFixed(0)} % of open sky)` : '')); }
+  if (f.shadow) { const i = cellOf(LG.shadow); if (i >= 0) lines.push(`Sunlight · ${LG.shadow.cell} m cell ${f.shadow[i] ? 'in shadow' : 'sunlit'}`); }
+  if (f.diurnal) { const i = cellOf(LG.diurnal); const amb = diurnalAmbient(frameIndex(state.step).diurnal); if (i >= 0) lines.push(`Day cycle ${({ ground: 'ground surface', air0: 'air 0–4 m', air12: 'air 12–16 m' })[ui.diurnalMode.value.replace('Rel', '')]} ${f.diurnal[i].toFixed(1)} °C` + (amb !== undefined ? ` (${(f.diurnal[i] - amb >= 0 ? '+' : '')}${(f.diurnal[i] - amb).toFixed(1)} vs ambient ${amb.toFixed(1)})` : '')); }
   ui.readout.textContent = lines.join('\n'); ui.readout.hidden = false;
 });
 renderer.domElement.addEventListener('pointerleave', () => { ui.readout.hidden = true; });
@@ -738,18 +851,19 @@ function animate(now) {
     ui.timeLabel.textContent = `Replay ${timeString(replayLayer.t)} · ${replayLayer.speed}×`; ui.step.value = replayLayer.t;
     if (ui.rate.value !== String(replayLayer.speed)) ui.rate.value = String(replayLayer.speed);
     if (boundary) { setSectionUI(); if (replayLayer.cycleDone) { if (ui.auto.checked) runFields(); else replayLayer.startShot('overview'); } }
-  }
+  } else if (section === 'campus') updateTour(now, dt);
   updateFlight(now);
   if (controls.enabled) controls.update();
   updateFades(dt);
   if (state.introDone && wind.lines.visible) stepParticles(dt);
   renderer.render(scene, camera);
 }
-renderer.domElement.addEventListener('pointerdown', () => { if (section === 'campus') { if (flight) { flight = null; controls.enabled = true; } replayLayer?.cancelCamera(); } });
+renderer.domElement.addEventListener('pointerdown', () => { if (section === 'campus') { if (flight) { flight = null; controls.enabled = true; } replayLayer?.cancelCamera(); if (tour.active) { tour.active = false; controls.enabled = true; setSectionUI(); } } });
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
   iso.material.resolution.set(window.innerWidth, window.innerHeight);
+  transport?.resize(window.innerWidth, window.innerHeight);
 });
 
 // ------------------------------------------------------------------ memory: drop the source geometry of batched meshes
@@ -780,20 +894,23 @@ async function boot() {
   requestAnimationFrame(animate);
 
   // data first (small), then the model
+  const M = SCENE.masks ?? {};
   const dataReady = (async () => {
     await initFrames(); console.log('field frames:', framesInfo());
-    footprint = await loadMask('masks/building_footprint_yx.npy');
-    solidWind = await npy('masks/solid_4m_zyx.npy').read(2);   // 8-12 m layer
-    studyArea = await loadMask('temperature2d/study_area_mask_yx.npy');
-    await loadStep(60);
+    for (const [cell, file] of Object.entries(M.footprint ?? {})) footprints[+cell] = await loadMask(file);
+    if (M.solid_wind && has('wind')) solidWind = await npy(M.solid_wind.file).read(M.solid_wind.layer ?? 0);
+    if (M.study_area) studyArea = await loadMask(M.study_area);
+    await loadStep(Math.round(STEPS * 0.6));
   })().catch(e => { ui.stage.textContent = 'Data error: ' + e.message; console.error(e); });
 
   const loader = new GLTFLoader();
   loader.setMeshoptDecoder(MeshoptDecoder);
+  if (MODEL.compression === 'draco') { const d = new DRACOLoader(); d.setDecoderPath(ROOT + 'vendor/three/examples/jsm/libs/draco/gltf/'); loader.setDRACOLoader(d); }
   // the detail tile downloads alongside the main model and is placed once the main model is batched
   // The station detail tile is off by default (its colours stand out against the main model); ?tile=1 loads it.
   let tileMB = '';
-  const tileLoad = new URLSearchParams(location.search).get('tile') !== '1' ? Promise.resolve(null)
+  if (MODEL.tile) { TILE.url = SCENE.url(MODEL.tile); TILE.bytes = MODEL.tile_bytes ?? TILE.bytes; }
+  const tileLoad = !MODEL.tile || new URLSearchParams(location.search).get('tile') !== '1' ? Promise.resolve(null)
     : new Promise((resolve, reject) => loader.load(TILE.url, resolve, ev => { tileMB = ` · tile ${(ev.loaded / 1048576).toFixed(0)} / ${(TILE.bytes / 1048576).toFixed(0)} MB`; }, reject))
       .catch(e => { console.error('detail tile failed to load', e); return null; });
   const onCity = (gltf, resolve) => {
@@ -815,7 +932,7 @@ async function boot() {
       resolve(gltf);
   };
   const onCityProgress = ev => {
-    const total = ev.total || 254723368, pct = Math.min(100, ev.loaded / total * 100);
+    const total = ev.total || MODEL.bytes || 1, pct = Math.min(100, ev.loaded / total * 100);
     ui.bar.style.width = pct.toFixed(1) + '%';
     ui.pct.textContent = `${(ev.loaded / 1048576).toFixed(0)} / ${(total / 1048576).toFixed(0)} MB · ${pct.toFixed(0)} %${tileMB}`;
   };
@@ -823,26 +940,29 @@ async function boot() {
     // proxy city from the masks (already needed for the fields), then the replay layers
     ui.pct.textContent = 'Lite mode · building the voxel city…';
     await dataReady;
-    const roof = await loadMask('masks/roof_height_m_yx.npy');
-    const proxy = buildProxyCity({ footprint, roof, W, H, CELL, X0, ZS });
+    const lite = SCENE.lite, lg = gridOf(lite.cell_m ?? CELL);
+    const footprint = footprints[lg.cell] ?? await loadMask(lite.footprint), roof = await loadMask(lite.roof);
+    const proxy = buildProxyCity({ footprint, roof, W: lg.w, H: lg.h, CELL: lg.cell, X0, ZS });
     model.add(proxy.mesh);
     base.material.color.set(0x8f938c);   // the proxy city has no ground layer: a lighter plate stands in for it
     console.log('lite city:', proxy.boxes, 'columns,', proxy.triangles, 'triangles');
-    $('lite-hint').style.display = ''; $('l-supplement').closest('label').style.display = 'none';
-    ui.pct.textContent = 'Traffic and UAV replay…';
-    replayLayer = await createReplay({ scene, camera, controls, campusCentre, campusPose: campusPoseDeg, flyTo, onProgress: t => { ui.pct.textContent = t; } })
-      .catch(e => { console.error('replay unavailable', e); return null; });
-    applyReplayLayers(); setupBirdTracker();
+    $('lite-hint').style.display = ''; $('supplement-ctl').style.display = 'none';
+    if (HAS_REPLAY) {
+      ui.pct.textContent = 'Traffic and UAV replay…';
+      replayLayer = await createReplay({ scene, camera, controls, campusCentre, campusPose: campusPoseDeg, flyTo, onProgress: t => { ui.pct.textContent = t; } })
+        .catch(e => { console.error('replay unavailable', e); return null; });
+      applyReplayLayers(); setupBirdTracker();
+    }
   } else {
   await new Promise((resolve, reject) => {
-    if (CITY_FROM_PARTS) fetchCityModel(onCityProgress).then(buf => loader.parse(buf, '', gltf => onCity(gltf, resolve), reject)).catch(reject);   // GitHub Pages: parts from the models repository
-    else loader.load(GLB, gltf => onCity(gltf, resolve), onCityProgress, err => reject(err));
+    if (ON_PAGES && MODEL.parts_manifest) fetchCityModel(MODEL.parts_manifest, onCityProgress).then(buf => loader.parse(buf, '', gltf => onCity(gltf, resolve), reject)).catch(reject);   // GitHub Pages: parts from the models repository
+    else loader.load(SCENE.url(MODEL.url), gltf => onCity(gltf, resolve), onCityProgress, err => reject(err));
   }).then(async gltf => {
     // demo_rev02's display filter (hide the GLB's own animated traffic / birds; parked-car filter), then merge the
     // static buildings into a few draw calls. Ground and trees stay separate meshes so their toggles keep working.
     ui.pct.textContent = 'Merging static buildings…';
-    await applyCityFilter(gltf.scene);
-    for (const batch of EXPANSION_BATCHES) {
+    if (MODEL.demo_filter) await applyCityFilter(gltf.scene);
+    if (MODEL.expansion) for (const batch of EXPANSION_BATCHES) {
       try {
         const refined = await loader.loadAsync(batch.url);
         const expansion = await installExpansion(gltf.scene, refined.scene, batch.ids, batch.projectionM);
@@ -869,6 +989,7 @@ async function boot() {
     const batches = await batchStaticCity(gltf.scene); model.add(batches.object);
     for (const m of [...groundMeshes, ...treeMeshes]) if (!tileHidden.has(m)) m.visible = true;
     mainScene = gltf.scene; mainBatches = batches.object;
+    console.log('city batches:', batches.stats);
     if (tile) ui.pct.textContent = 'South Kensington detail tile…';
     $('tile-ctl').style.display = tile ? 'contents' : 'none';
     if (tile) {
@@ -889,29 +1010,37 @@ async function boot() {
       const c = tileBuildingCentre(tile.scene, '107039270');
       if (ref && c) console.log('tile alignment (19 Exhibition Road) tile centre', c.toArray().map(v => v.toFixed(1)).join(', '), '| main centre', new THREE.Box3().setFromObject(ref).getCenter(new THREE.Vector3()).toArray().map(v => v.toFixed(1)).join(', '));
     }
-    ui.pct.textContent = 'Supplementary buildings…';
-    const supplement = await loader.loadAsync(SUPPLEMENT_GLB);
-    supplement.scene.updateMatrixWorld(true);
-    if (tileGroup) for (const o of hideReplaced(supplement.scene, tileIds, { buildingsByCentre: true })) tileHidden.add(o);   // the tile models its own area
-    const supplementMerged = (await batchStaticCity(supplement.scene)).object;
-    supplementBatches = new THREE.Group();
-    supplementBatches.add(supplement.scene, supplementMerged);
-    supplementBatches.name = 'OSM missing buildings · estimated heights';
-    model.add(supplementBatches);
+    if (MODEL.supplement) {
+      ui.pct.textContent = 'Supplementary buildings…';
+      const supplement = await loader.loadAsync(SCENE.url(MODEL.supplement.url));
+      supplement.scene.updateMatrixWorld(true);
+      if (tileGroup) for (const o of hideReplaced(supplement.scene, tileIds, { buildingsByCentre: true })) tileHidden.add(o);   // the tile models its own area
+      const supplementMerged = (await batchStaticCity(supplement.scene)).object;
+      supplementBatches = new THREE.Group();
+      supplementBatches.add(supplement.scene, supplementMerged);
+      supplementBatches.name = 'OSM missing buildings · estimated heights';
+      model.add(supplementBatches);
+    }
     applyTile(); applyLayers();
-    ui.pct.textContent = 'Traffic and UAV replay…';
-    replayLayer = await createReplay({ scene, camera, controls, campusCentre, campusPose: campusPoseDeg, flyTo, onProgress: t => { ui.pct.textContent = t; } });
-    applyReplayLayers(); setupBirdTracker();
+    if (HAS_REPLAY) {
+      ui.pct.textContent = 'Traffic and UAV replay…';
+      replayLayer = await createReplay({ scene, camera, controls, campusCentre, campusPose: campusPoseDeg, flyTo, onProgress: t => { ui.pct.textContent = t; } });
+      applyReplayLayers(); setupBirdTracker();
+    }
   }).catch(e => { ui.pct.textContent = 'Loading failed: ' + (e.message || e); console.error(e); throw e; });
   releaseBatchedGeometry();
+  }
+  if (SCENE.transport) {
+    transport = await createTransport({ scene, url: SCENE.url(SCENE.transport.file), onProgress: t => { ui.pct.textContent = t; } }).catch(e => { console.error('transport layer unavailable', e); return null; });
+    setupTransportUI();
   }
   await dataReady;
   ui.loading.classList.add('hide');
   // ?pose=campus|overhead jumps straight to that view (no intro); ?step=N picks the time step
   const qs = new URLSearchParams(location.search), pose = qs.get('pose');
-  if (qs.has('cam')) {   // ?cam=px,py,pz,tx,ty,tz : fixed free camera over the campus scene (debug / screenshots)
+  if (qs.has('cam')) {   // ?cam=px,py,pz,tx,ty,tz : fixed free camera over the site (debug / screenshots)
     const v = qs.get('cam').split(',').map(Number);
-    ui.auto.checked = false; runCampus(); replayLayer?.stopShots(); flight = null; if (replayLayer) replayLayer.playing = false;
+    ui.auto.checked = false; runCampus(); replayLayer?.stopShots(); flight = null; tour.active = false; if (replayLayer) replayLayer.playing = false;
     ui.stage.textContent = 'Free camera';
     if (qs.get('replay') === '0') replayLayer?.setVisible(false);
     if (qs.has('t') && replayLayer) { replayLayer.t = +qs.get('t'); replayLayer.update(replayLayer.t); }
@@ -921,9 +1050,9 @@ async function boot() {
   if (pose === 'campus' && qs.get('fields') !== '1') {
     const p = campusPoseDeg(-135); camera.position.copy(p.pos); controls.target.copy(p.target); camera.lookAt(p.target);
     runCampus(); if (qs.has('t') && replayLayer) { replayLayer.t = +qs.get('t'); replayLayer.update(replayLayer.t); }
-    if (qs.has('shot')) replayLayer?.startShot(qs.get('shot'));
-    if (qs.get('hold') === '1' && replayLayer) replayLayer.shotUntil = Infinity;
-    if (qs.get('play') === '0' && replayLayer) replayLayer.playing = false;
+    if (qs.has('shot')) { if (replayLayer) replayLayer.startShot(qs.get('shot')); else if (TOUR_SHOTS[qs.get('shot')]) startTour(qs.get('shot')); }
+    if (qs.get('hold') === '1') { if (replayLayer) replayLayer.shotUntil = Infinity; tour.hold = true; }
+    if (qs.get('play') === '0') { if (replayLayer) replayLayer.playing = false; tour.paused = true; }
     setSectionUI(); return;
   }
   if (pose === 'overhead' || pose === 'campus') {
@@ -933,18 +1062,18 @@ async function boot() {
     state.introDone = pose === 'overhead' || qs.get('fields') === '1';
     if (state.introDone) { ui.lGround.checked = false; ui.lTrees.checked = false; }
     if (qs.has('mode')) ui.mode.value = qs.get('mode');
-    if (qs.has('phase')) state.phase = qs.get('phase');
+    if (qs.has('phase') && has(qs.get('phase'))) state.phase = qs.get('phase');
     if (qs.has('solar')) ui.solarMode.value = qs.get('solar');       // ?solar=shadow|ghi
     if (qs.has('day')) ui.solarDate.value = qs.get('day');           // ?day=20260621|20261221
     if (qs.has('diurnal')) ui.diurnalMode.value = qs.get('diurnal'); // ?diurnal=ground|air0|air12
     solarPhaseSetup();
     if (state.introDone && seqMode() && (state.phase === 'flood' || state.phase === 'solar')) ui.lGround.checked = ui.lTrees.checked = true;
-    applyLayers(); for (const L of [windPlane, tempPlane, pollPlane, floodPlane, solarPlane, shadowPlane, diurnalPlane]) L.fade = L.target; updateFades(0);
+    applyLayers(); for (const L of Object.values(planes)) L.fade = L.target; updateFades(0);
     if (qs.has('step')) setStep(+qs.get('step')); else setStep(state.step);
-    ui.stage.textContent = pose === 'overhead' ? 'Overhead view · wind / temperature / sunlight / day cycle / pollution / flooding' : 'Imperial College London, South Kensington campus';
+    ui.stage.textContent = pose === 'overhead' ? 'Overhead view · ' + PHASE_ORDER.map(k => (TAB_NAME[k] ?? k).toLowerCase()).join(' / ') : (FOCUS.label ?? SCENE.title);
     return;
   }
   setTimeout(playIntro, 400);
 }
 boot();
-window.viewer = { THREE, scene, camera, controls, model, state, renderer, planes: { windPlane, tempPlane, pollPlane, solarPlane, shadowPlane, diurnalPlane, floodPlane }, get replay() { return replayLayer; }, get tile() { return tileGroup; }, get tileBatches() { return tileBatches; } };   // console / debugging access
+window.viewer = { THREE, scene, camera, controls, model, state, renderer, planes, SCENE, LAYERS, PHASES, LG, get replay() { return replayLayer; }, get transport() { return transport; }, get tile() { return tileGroup; }, get tileBatches() { return tileBatches; } };   // console / debugging access

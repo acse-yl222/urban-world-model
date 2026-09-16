@@ -1,12 +1,12 @@
 """Bird voxel geometry for the South Kensington station area (2026-09-12).
 
-Crops the viewer's own 4 m building voxels (physics/masks/solid_4m_zyx.npy: 16 layers x 4 m, True = building,
+Crops the viewer's own 4 m building voxels (scenes/south_kensington/physics/masks/solid_4m_zyx.npy: 16 layers x 4 m, True = building,
 the conservative voxels used by the wind model) to a box around South Kensington station and writes the NPZ that
 Akira's simulation expects (geometry[z, y, x] bool, grid_spacing, grid_spacing_z, grid_origin) plus a META json for
 build_bird_replay_v2.py. Frame contract as in build_bird_geometry_v2.py: bird (x, y, z) = (worldX, -worldZ, worldY).
 Field arrays: row 0 = south = domain y 640 -> world Z = -(640 - 2124) = +1484 (south is +Z), so row index increases
 northwards = bird y increases; col 0 = west = domain x 480 -> world X = 480 - 2116 = -1636.
-Usage: python build_bird_geometry_southken.py --mask physics/masks/solid_4m_zyx.npy --out geometry.npz --x0 640 --x1 1240 --z0 380 --z1 980
+Usage: python build_bird_geometry_southken.py --mask scenes/south_kensington/physics/masks/solid_4m_zyx.npy --out geometry.npz --x0 640 --x1 1240 --z0 380 --z1 980
 """
 import argparse, json, hashlib
 import numpy as np
@@ -30,7 +30,7 @@ G = np.zeros((nz, sub.shape[1], sub.shape[2]), dtype=bool); G[:min(nz, nz0)] = s
 origin = np.array([X0 + c0 * CELL, r0 * CELL - ZS, 0.0])
 np.savez_compressed(a.out, geometry=G, grid_spacing=CELL, grid_spacing_z=CELL, grid_origin=origin)
 h = hashlib.sha256(open(a.mask, 'rb').read()).hexdigest()
-meta = {'schema': 'UWM_VIEWER_BIRD_GEOMETRY_SOUTHKEN_V1', 'source_mask': {'path': a.mask, 'sha256': h, 'meaning': 'physics/masks/solid_4m_zyx.npy, 16 x 4 m layers of conservative building voxels (wind model solids)'},
+meta = {'schema': 'UWM_VIEWER_BIRD_GEOMETRY_SOUTHKEN_V1', 'source_mask': {'path': a.mask, 'sha256': h, 'meaning': 'scenes/south_kensington/physics/masks/solid_4m_zyx.npy, 16 x 4 m layers of conservative building voxels (wind model solids)'},
         'transform': 'bird=(worldX, -worldZ, worldY); viewer=(bird_x, bird_z, -bird_y)', 'ground_datum_m': 0.0,
         'world_box': {'x': [origin[0], origin[0] + G.shape[2] * CELL], 'z': [-(origin[1] + G.shape[1] * CELL), -origin[1]], 'ceiling_m': nz * CELL},
         'bird_grid': {'origin': origin.tolist(), 'spacing_xy_m': CELL, 'spacing_z_m': CELL, 'shape_zyx': list(G.shape), 'voxels': int(G.size), 'occupied_voxels': int(G.sum()), 'occupied_share': round(float(G.mean()), 4)},

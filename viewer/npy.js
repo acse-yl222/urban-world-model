@@ -1,5 +1,7 @@
-/* Minimal .npy reader over HTTP Range requests (ES module), used by the 3-D page. */
-export const DATA = new URL('../physics/', import.meta.url).href;
+/* Minimal .npy reader over HTTP Range requests (ES module), used by the 3-D page. Paths are relative to the scene's
+   physics/ folder (DATA, set by main.js from scene.json before any read). */
+export let DATA = '';
+export function setDataBase(url) { DATA = url; }
 
 const F16 = new Float32Array(65536);
 for (let h = 0; h < 65536; h++) {

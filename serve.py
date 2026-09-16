@@ -2,8 +2,8 @@
 """Static file server with HTTP Range support for the field visualiser.
 
 The web page reads individual frames straight out of the .npy files in
-physics/ using Range requests, so no preprocessing (and no numpy)
-is needed. Run:
+scenes/<id>/physics/ using Range requests, so no preprocessing (and no numpy)
+is needed. ?scene=<id> picks the scene (scenes/index.json). Run:
 
     python3 serve.py                      # http://localhost:8787/viewer/3d/ (next free port if busy), opens a browser
     python3 serve.py 9000                 # custom port

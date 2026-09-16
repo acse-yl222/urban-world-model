@@ -1,4 +1,3 @@
-import { TILE_GLB } from '../config.js';
 // Detailed South Kensington station tile: south_kensington_current.glb (Blender glTF export, Y up, a 390 x 400 m
 // plate around the station: 245 OSM buildings with PBR facades, the station with its open railway cutting and
 // platforms, roads / footways, gardens, trees, street lamps). Its local frame is rotated against the main model by
@@ -9,7 +8,7 @@ import { TILE_GLB } from '../config.js';
 import * as THREE from 'three';
 
 export const TILE = {
-  url: TILE_GLB,
+  url: null,                            // set by main.js from scene.json (model.tile)
   bytes: 180338152,
   position: [901.85, 0.3, 689.57],      // tile origin in model coordinates; lifted 0.3 m above the main roads
   rotationY: 0.03799,                   // radians, about +Y

@@ -51,7 +51,7 @@ const MODEL = SCENE.model;
 const PHASE_ORDER = (SCENE.phase_order ?? ['wind', 'temp', 'solar', 'diurnal', 'poll', 'flood']).filter(has);
 const TAB_NAME = { wind: 'Wind', temp: 'Temperature', solar: 'Sunlight', diurnal: 'Day cycle', poll: 'Pollution', flood: 'Flooding' };
 const TREE_NODE = /simplified canopy|simplified trunk|inherited tre|\btrees?\b|canopy|crown|hedge|planting|planter/i;
-const TREE_MAT = /broadleaf|crown|tree bark|hedge|foliage|grass|substrate|shrub|lawn/i;
+const TREE_MAT = /broadleaf|crown|tree bark|hedge|foliage|grass|substrate|shrub|lawn|leaves|planting/i;
 const FILES = {
   wind: LAYERS.wind?.file, poll: LAYERS.poll?.file, temp: LAYERS.temp?.file,
   flood: LAYERS.flood?.file, floodMax: LAYERS.flood?.max,   // flood: own clock; the static maximum map is shown in overlay mode
@@ -914,6 +914,20 @@ async function boot() {
     : new Promise((resolve, reject) => loader.load(TILE.url, resolve, ev => { tileMB = ` · tile ${(ev.loaded / 1048576).toFixed(0)} / ${(TILE.bytes / 1048576).toFixed(0)} MB`; }, reject))
       .catch(e => { console.error('detail tile failed to load', e); return null; });
   const onCity = (gltf, resolve) => {
+      // scene.json model.recolor: [{match: <regex on the material name>, color}] - e.g. the White City GLB paints its parks a
+      // muted sage that reads as grey next to the roads; the viewer shows vegetation in a clearer green (the file is untouched).
+      // model.lift: [{match, dy}] raises meshes whose material matches (the same GLB buries its park grass 7 cm under the ground plate).
+      const recolor = (MODEL.recolor ?? []).map(r => ({ re: new RegExp(r.match, 'i'), color: new THREE.Color(r.color) })), lift = (MODEL.lift ?? []).map(r => ({ re: new RegExp(r.match, 'i'), dy: r.dy }));
+      if (recolor.length || lift.length) {
+        const done = new Set(); let n = 0, m2 = 0;
+        gltf.scene.traverse(o => {
+          if (!o.isMesh) return;
+          const mats = Array.isArray(o.material) ? o.material : [o.material], name = mats.map(m => m?.name || '').join(' | ');
+          const L = lift.find(r => r.re.test(name)); if (L) { o.position.y += L.dy; m2++; }
+          for (const m of mats) { if (!m || done.has(m)) continue; done.add(m); const rule = recolor.find(r => r.re.test(m.name || '')); if (rule) { m.color.copy(rule.color); n++; } }
+        });
+        console.log('recoloured', n, 'materials, lifted', m2, 'meshes');
+      }
       gltf.scene.updateMatrixWorld(true);
       const box = new THREE.Box3(), size = new THREE.Vector3();
       gltf.scene.traverse(o => {

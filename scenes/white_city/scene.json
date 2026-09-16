@@ -17,9 +17,27 @@
   },
   "model": {
     "url": "models/white_city_9km2.glb",
-    "bytes": 190588872,
+    "bytes": 186290580,
     "compression": "meshopt",
-    "parts_manifest": "https://acse-yl222.github.io/urban-world-model-models/white_city/manifest.json"
+    "parts_manifest": "https://acse-yl222.github.io/urban-world-model-models/white_city/manifest.json",
+    "recolor": [
+      {
+        "match": "park grass|garden grass|living grass|planting approximate extent|planted roof substrate",
+        "color": "#5c9440",
+        "note": "the GLB paints grass a muted sage; the viewer shows it as grass green"
+      },
+      {
+        "match": "trees foliage|illustrative (light )?foliage|tree (sage|deep) leaves|roof garden foliage|designed planting|low planting|terrace planting",
+        "color": "#4b8a33"
+      }
+    ],
+    "lift": [
+      {
+        "match": "park grass|living grass|garden grass|planting approximate extent",
+        "dy": 0.1,
+        "note": "the GLB puts its park grass 7 cm under the neutral ground plate, so the parks rendered grey; lifted 2 cm above the ground, under the footway paving"
+      }
+    ]
   },
   "lite": {
     "footprint": "masks/building_footprint_2m_yx.npy",

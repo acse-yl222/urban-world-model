@@ -55,3 +55,6 @@ agents/demo_rev02/assets/city.glb
 !scenes/white_city/physics/masks/roof_height_m_2m_yx.npy
 !scenes/white_city/physics/masks/solid_8m_zyx.npy
 !agents/demo_rev02/actors/sedan_4p5m.glb
+
+# Published windfarm geometry (22 MB)
+!scenes/region/models/region.glb

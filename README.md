@@ -36,6 +36,9 @@ reads; see `.gitignore` and `scenes/README.md` (the `scene.json` schema and how 
 
 ## Online
 
+- **Windfarm — interactive 3D wind**: https://acse-yl222.github.io/urban-world-model/viewer/windfarm-movie/ — all 23 turbines, terrain geometry and 151 frames from the 2 m, 300 s MAC experiment. Display-only rotor speed follows each disk's mean wind using assumed TSR 7; blade motion is not resolved by the solver.
+
+
 - **Live viewer**: https://acse-yl222.github.io/urban-world-model/viewer/3d/ (GitHub Pages; the 254 MB South Kensington model and the 191 MB White City model are fetched in parts from the companion repository https://github.com/acse-yl222/urban-world-model-models, whose Pages site allows cross-origin reads; the `models-v1` release holds the South Kensington file for download). White City: https://acse-yl222.github.io/urban-world-model/viewer/3d/?scene=white_city
 - **Project page**: https://acse-yl222.github.io/urban-world-model/docs/
 - Repository: https://github.com/acse-yl222/urban-world-model
